@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFC Notas - Sistema de Médias</title>
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --card: #151921;
+            --primary: #7c4dff;
+            --secondary: #00e5ff;
+            --accent: #ff4081;
+            --text: #ffffff;
+            --bus: #ffab00;
+            --success: #00e676;
+            --danger: #ff5252;
+            --warning: #fdd835;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container { width: 100%; max-width: 600px; }
+        h1 { color: var(--secondary); text-align: center; margin-bottom: 20px; font-size: 1.6rem; letter-spacing: 2px; }
+
+        .top-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 20px; }
+        
+        button {
+            background: #1c1c1c; color: #eee; border: 1px solid #444; padding: 12px;
+            border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.2s;
+        }
+        .btn-back { border-color: var(--accent); color: var(--accent); }
+        .btn-download { border-color: var(--success); color: var(--success); }
+        .btn-add-np { background: var(--primary); color: white; border: none; margin-top: 10px; width: 100%; }
+
+        .materia-card { 
+            background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; 
+            border: 1px solid #222; width: 100%; box-sizing: border-box; 
+        }
+        .materia-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; 
+        }
+        .materia-title { color: var(--secondary); font-size: 1.2rem; font-weight: bold; margin: 0; }
+        
+        .np-box { 
+            background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px; 
+            border-left: 4px solid var(--primary); position: relative;
+        }
+        .np-header { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+        
+        .nota-row { display: grid; grid-template-columns: 1.5fr 0.8fr 1fr 30px; gap: 8px; margin-bottom: 8px; align-items: center; }
+        input { 
+            background: #000; color: #fff; border: 1px solid #444; padding: 8px; 
+            border-radius: 6px; font-size: 0.8rem; width: 100%; box-sizing: border-box;
+        }
+
+        .previsao-tag { 
+            background: rgba(255, 171, 0, 0.1); color: var(--bus); border: 1px dashed var(--bus);
+            padding: 8px; border-radius: 8px; font-size: 0.75rem; margin-top: 10px; font-style: italic;
+        }
+
+        .media-final-display { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-top: 15px; padding-top: 10px; border-top: 1px dotted #444;
+        }
+        
+        .status-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; }
+        .aprovado { background: var(--success); color: #000; }
+        .recuperacao { background: var(--warning); color: #000; }
+        .reprovado { background: var(--danger); color: #fff; }
+
+        .btn-del-small { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; }
+        
+        .semestre-input { 
+            background: transparent; border: none; border-bottom: 1px solid var(--primary); 
+            color: var(--primary); text-align: center; font-weight: bold; width: 100px; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 PONTUAÇÕES</h1>
+
+        <div class="top-menu">
+            <button class="btn-back" onclick="window.location.href='index.html'">⬅️ Voltar ao Planner</button>
+            <button class="btn-download" onclick="baixarHistorico()">📥 Baixar Histórico (.txt)</button>
+        </div>
+
+        <div style="text-align: center;">
+            <input type="text" id="input-semestre" class="semestre-input" value="2026.1" placeholder="Semestre">
+        </div>
+
+        <div id="materias-container"></div>
+    </div>
+
+    <script>
+        // Carrega matérias do Planner e as notas salvas
+        let listaMateriasPlanner = JSON.parse(localStorage.getItem('ufc_materias_transporte')) || [];
+        let dadosNotas = JSON.parse(localStorage.getItem('ufc_sistema_notas_v1')) || {};
+
+        // SINCRONIZAÇÃO: Se a matéria foi apagada no Planner, apaga aqui também
+        function sincronizar() {
+            let novosDados = {};
+            listaMateriasPlanner.forEach(m => {
+                if (dadosNotas[m]) {
+                    novosDados[m] = dadosNotas[m]; // Mantém o que existe
+                } else {
+                    novosDados[m] = { parciais: [] }; // Cria vazio para novas
+                }
+            });
+            dadosNotas = novosDados;
+            salvar();
+        }
+
+        function salvar() {
+            localStorage.setItem('ufc_sistema_notas_v1', JSON.stringify(dadosNotas));
+        }
+
+        function renderizar() {
+            const container = document.getElementById('materias-container');
+            container.innerHTML = "";
+
+            listaMateriasPlanner.forEach(mNome => {
+                const mData = dadosNotas[mNome];
+                let htmlMateria = `
+                    <div class="materia-card">
+                        <div class="materia-header">
+                            <h3 class="materia-title">${mNome}</h3>
+                            <button class="btn-del-small" onclick="apagarMateria('${mNome}')" title="Limpar dados desta matéria">🗑️</button>
+                        </div>
+                        <div id="parciais-${mNome}">`;
+
+                let somaMediasParciais = 0;
+                let totalParciais = mData.parciais.length;
+
+                mData.parciais.forEach((p, pIdx) => {
+                    htmlMateria += `
+                        <div class="np-box">
+                            <div class="np-header">
+                                <span>${p.nome}</span>
+                                <button class="btn-del-small" onclick="removerNP('${mNome}', ${pIdx})">✕</button>
+                            </div>
+                            <div class="notas-list">`;
+
+                    let somaPonderada = 0;
+                    let somaPesos = 0;
+                    let notaFaltante = null;
+
+                    p.notas.forEach((n, nIdx) => {
+                        const val = parseFloat(n.valor);
+                        if (!isNaN(val)) {
+                            somaPonderada += (val * n.peso);
+                            somaPesos += n.peso;
+                        } else {
+                            notaFaltante = { mNome, pIdx, nIdx, tipo: n.tipo, peso: n.peso };
+                            somaPesos += n.peso;
+                        }
+
+                        htmlMateria += `
+                            <div class="nota-row">
+                                <input type="text" placeholder="Tipo" value="${n.tipo}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'tipo', this.value)">
+                                <input type="number" placeholder="Peso" value="${n.peso}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'peso', this.value)">
+                                <input type="number" step="0.1" placeholder="Nota" value="${n.valor}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'valor', this.value)">
+                                <button class="btn-del-small" onclick="removerLinhaNota('${mNome}', ${pIdx}, ${nIdx})">×</button>
+                            </div>`;
+                    });
+
+                    let mediaNP = somaPonderada / (somaPesos || 1);
+                    
+                    // Cálculo de quanto falta
+                    if (notaFaltante) {
+                        let qtoFalta = (7 * somaPesos - somaPonderada) / notaFaltante.peso;
+                        htmlMateria += `<div class="previsao-tag">🎯 Para média 7.0 na parcial, tire <b>${Math.max(0, qtoFalta).toFixed(1)}</b> na ${notaFaltante.tipo || 'Próxima Nota'}</div>`;
+                    } else {
+                        somaMediasParciais += mediaNP;
+                        htmlMateria += `<div style="text-align:right; font-size:0.75rem; color:var(--success); margin-top:5px;">Média Parcial: ${mediaNP.toFixed(1)}</div>`;
+                    }
+
+                    htmlMateria += `
+                            <button style="font-size:0.6rem; margin-top:10px; padding:5px" onclick="addLinhaNota('${mNome}', ${pIdx})">+ Nota (Prova/Lista)</button>
+                        </div>
+                    </div>`;
+                });
+
+                let mediaFinal = totalParciais > 0 ? somaMediasParciais / totalParciais : 0;
+                let status = "reprovado"; let txtStatus = "REPROVADO";
+                if(mediaFinal >= 7) { status = "aprovado"; txtStatus = "APROVADO"; }
+                else if(mediaFinal >= 4) { status = "recuperacao"; txtStatus = "RECUPERAÇÃO"; }
+
+                htmlMateria += `
+                        </div>
+                        <button class="btn-add-np" onclick="addNP('${mNome}')">+ Nova Parcial (NP${totalParciais + 1})</button>
+                        <div class="media-final-display">
+                            <span>Média Semestral: <b>${mediaFinal.toFixed(1)}</b></span>
+                            <span class="status-badge ${status}">${txtStatus}</span>
+                        </div>
+                    </div>`;
+                container.innerHTML += htmlMateria;
+            });
+        }
+
+        // Funções de Gerenciamento
+        function addNP(m) {
+            dadosNotas[m].parciais.push({ nome: 'NP' + (dadosNotas[m].parciais.length + 1), notas: [] });
+            salvar(); renderizar();
+        }
+
+        function removerNP(m, idx) {
+            dadosNotas[m].parciais.splice(idx, 1);
+            salvar(); renderizar();
+        }
+
+        function addLinhaNota(m, pIdx) {
+            dadosNotas[m].parciais[pIdx].notas.push({ tipo: '', peso: 1, valor: '' });
+            salvar(); renderizar();
+        }
+
+        function removerLinhaNota(m, pIdx, nIdx) {
+            dadosNotas[m].parciais[pIdx].notas.splice(nIdx, 1);
+            salvar(); renderizar();
+        }
+
+        function atualizarNota(m, pIdx, nIdx, campo, valor) {
+            dadosNotas[m].parciais[pIdx].notas[nIdx][campo] = campo === 'peso' ? parseInt(valor) : valor;
+            salvar(); renderizar();
+        }
+
+        function apagarMateria(m) {
+            if(confirm(`Realmente apagar todos os dados de ${m}? Isso não pode ser desfeito.`)) {
+                dadosNotas[m] = { parciais: [] };
+                salvar(); renderizar();
+            }
+        }
+
+        function baixarHistorico() {
+            const semestre = document.getElementById('input-semestre').value;
+            let txt = `========================================\n`;
+            txt += `🎓 HISTÓRICO ACADÊMICO - SEMESTRE ${semestre}\n`;
+            txt += `Data da Exportação: ${new Date().toLocaleString()}\n`;
+            txt += `========================================\n\n`;
+
+            listaMateriasPlanner.forEach(m => {
+                const data = dadosNotas[m];
+                txt += `📚 MATÉRIA: ${m.toUpperCase()}\n`;
+                let somaP = 0;
+                data.parciais.forEach(p => {
+                    let sPond = 0; let sPes = 0;
+                    txt += `   [${p.nome}]: `;
+                    p.notas.forEach(n => {
+                        txt += `${n.tipo || 'Nota'}=${n.valor || '0'} (P${n.peso}) | `;
+                        sPond += (parseFloat(n.valor) || 0) * n.peso;
+                        sPes += n.peso;
+                    });
+                    let mNP = sPond / (sPes || 1);
+                    somaP += mNP;
+                    txt += ` -> Média NP: ${mNP.toFixed(1)}\n`;
+                });
+                let mF = data.parciais.length > 0 ? somaP / data.parciais.length : 0;
+                txt += `   >>> MÉDIA FINAL: ${mF.toFixed(1)} <<<\n`;
+                txt += `----------------------------------------\n\n`;
+            });
+
+            const blob = new Blob(["\ufeff" + txt], {type: 'text/plain;charset=utf-8'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Historico_${semestre.replace('.','-')}.txt`;
+            link.click();
+        }
+
+        sincronizar();
+        renderizar();
+    </script>
+</body>
+</html>
