@@ -68,12 +68,12 @@
         }
         .btn-backup { border-color: var(--primary); color: var(--primary); grid-column: span 2; box-shadow: 0 4px 0 #4a148c; }
 
-        /* Estilos do Painel de Configuração (Ajustado) */
+        /* --- AJUSTE FLEXBOX NAS CONFIGURAÇÕES --- */
         #config-panel, #backup-panel {
             display: none;
             background: #1a1f29;
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
             width: 100%;
             box-sizing: border-box;
@@ -83,7 +83,7 @@
 
         .config-box {
             background: rgba(0,0,0,0.2);
-            padding: 15px;
+            padding: 12px;
             border-radius: 15px;
             margin-bottom: 15px;
             border: 1px solid #333;
@@ -93,12 +93,12 @@
 
         .config-row {
             display: flex;
-            gap: 8px;
+            flex-wrap: wrap; /* Mágica para não ter scroll horizontal */
+            gap: 6px;
             margin-bottom: 10px;
             align-items: center;
         }
 
-        /* Inputs dentro das configurações */
         #config-panel input {
             background: #000;
             color: #fff;
@@ -106,12 +106,14 @@
             padding: 8px;
             border-radius: 8px;
             font-size: 0.85rem;
+            box-sizing: border-box;
         }
 
-        .in-bus { width: 100%; border-color: var(--bus) !important; color: var(--bus) !important; }
-        .in-time { width: 60px; text-align: center; }
-        .in-aula { flex: 1; }
-        .in-sala { width: 50px; text-align: center; color: var(--accent) !important; }
+        /* Comportamento dos Inputs no Flex */
+        .in-bus { flex: 1 1 100%; border-color: var(--bus) !important; color: var(--bus) !important; font-weight: bold; }
+        .in-time { flex: 1 1 65px; text-align: center; }
+        .in-aula { flex: 2 1 120px; } /* Matéria ganha mais espaço */
+        .in-sala { flex: 1 1 55px; text-align: center; color: var(--accent) !important; font-weight: bold; }
 
         .btn-del {
             background: none;
@@ -119,12 +121,11 @@
             color: var(--danger);
             font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: none;
-            padding: 0 5px;
+            padding: 5px;
+            flex-shrink: 0; /* Não deixa o X sumir */
         }
-        .btn-del:active { transform: scale(0.8); }
+        /* ----------------------------------------- */
 
-        /* Restante do CSS do Planner */
         .quick-add { display: flex; gap: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid #333; }
         .quick-add input[type="text"] { flex: 1; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 8px; font-size: 0.85rem; }
         .quick-add input[type="date"] { width: 120px; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 5px; font-size: 0.75rem; }
@@ -173,7 +174,6 @@
 
         <div id="backup-panel">
             <h3 style="margin-top:0; color: var(--secondary)">Backup Completo</h3>
-            <p style="font-size: 0.75rem; color: #aaa; margin-bottom: 15px;">Este arquivo salva tudo: cronograma, tarefas e as notas da outra página.</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button onclick="baixarEstrutura()" style="border-color: var(--success); color: var(--success);">📤 Exportar</button>
                 <button onclick="document.getElementById('importFile').click()" style="border-color: var(--secondary); color: var(--secondary);">📥 Importar</button>
@@ -197,7 +197,6 @@
     </div>
 
     <script>
-        // O JAVASCRIPT CONTINUA EXATAMENTE O MESMO DO SEU ANTERIOR
         const defaultData = {
             dias: [
                 { nome: "Segunda", bus: "16:15 ➔ 21:40", aulas: [["17:30", "Matéria 1", "S01"]] },
@@ -372,9 +371,9 @@
                     <div class="config-row">🚌 <input type="text" class="in-bus" value="${d.bus}" onchange="dados.dias[${i}].bus=this.value"></div>`;
                 d.aulas.forEach((aula, ai) => {
                     diaHtml += `<div class="config-row">
-                        <input type="text" class="in-time" value="${aula[0]}" onchange="dados.dias[${i}].aulas[${ai}][0]=this.value">
-                        <input type="text" class="in-aula" value="${aula[1]}" onchange="dados.dias[${i}].aulas[${ai}][1]=this.value">
-                        <input type="text" class="in-sala" value="${aula[2]}" onchange="dados.dias[${i}].aulas[${ai}][2]=this.value">
+                        <input type="text" class="in-time" placeholder="Hora" value="${aula[0]}" onchange="dados.dias[${i}].aulas[${ai}][0]=this.value">
+                        <input type="text" class="in-aula" placeholder="Aula" value="${aula[1]}" onchange="dados.dias[${i}].aulas[${ai}][1]=this.value">
+                        <input type="text" class="in-sala" placeholder="Sala" value="${aula[2]}" onchange="dados.dias[${i}].aulas[${ai}][2]=this.value">
                         <button class="btn-del" onclick="dados.dias[${i}].aulas.splice(${ai},1); abrirEditor()">✕</button>
                     </div>`;
                 });
