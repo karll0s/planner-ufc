@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UFC Planner</title>
+    <title>UFC Planner - Fixed</title>
     <style>
         :root {
             --bg: #0b0e14;
@@ -68,7 +68,6 @@
         }
         .btn-backup { border-color: var(--primary); color: var(--primary); grid-column: span 2; box-shadow: 0 4px 0 #4a148c; }
 
-        /* --- AJUSTE FLEXBOX NAS CONFIGURAÇÕES --- */
         #config-panel, #backup-panel {
             display: none;
             background: #1a1f29;
@@ -93,7 +92,7 @@
 
         .config-row {
             display: flex;
-            flex-wrap: wrap; /* Mágica para não ter scroll horizontal */
+            flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 10px;
             align-items: center;
@@ -109,10 +108,9 @@
             box-sizing: border-box;
         }
 
-        /* Comportamento dos Inputs no Flex */
         .in-bus { flex: 1 1 100%; border-color: var(--bus) !important; color: var(--bus) !important; font-weight: bold; }
         .in-time { flex: 1 1 65px; text-align: center; }
-        .in-aula { flex: 2 1 120px; } /* Matéria ganha mais espaço */
+        .in-aula { flex: 2 1 120px; }
         .in-sala { flex: 1 1 55px; text-align: center; color: var(--accent) !important; font-weight: bold; }
 
         .btn-del {
@@ -122,9 +120,8 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 5px;
-            flex-shrink: 0; /* Não deixa o X sumir */
+            flex-shrink: 0;
         }
-        /* ----------------------------------------- */
 
         .quick-add { display: flex; gap: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; border: 1px solid #333; }
         .quick-add input[type="text"] { flex: 1; background: #000; color: #fff; border: 1px solid #444; border-radius: 8px; padding: 8px; font-size: 0.85rem; }
@@ -188,7 +185,7 @@
 
             <h3 style="color: var(--secondary)">📚 Matérias</h3>
             <div id="mats-editor"></div>
-            <button onclick="addItem('materias')" style="width:100%; padding:12px; margin-top:10px; border-color: var(--secondary);">+ Nova Matéria</button>
+            <button onclick="addItem()" style="width:100%; padding:12px; margin-top:10px; border-color: var(--secondary);">+ Nova Matéria</button>
 
             <button style="background: var(--success); color: #000; border: none; width: 100%; margin: 30px 0 10px 0; padding: 20px; border-radius: 12px; font-weight: 900; font-size: 1rem; box-shadow: 0 5px 0 #007a3d;" onclick="salvarEFechar()">✅ SALVAR TUDO</button>
         </div>
@@ -366,35 +363,42 @@
             const dEd = document.getElementById('dias-editor');
             const mEd = document.getElementById('mats-editor');
             dEd.innerHTML = "";
+            
+            // Renderizar Cronograma
             dados.dias.forEach((d, i) => {
                 let diaHtml = `<div class="config-box"><h4>${d.nome}</h4>
-                    <div class="config-row">🚌 <input type="text" class="in-bus" value="${d.bus}" onchange="dados.dias[${i}].bus=this.value"></div>`;
+                    <div class="config-row">🚌 <input type="text" class="in-bus" value="${d.bus}" oninput="dados.dias[${i}].bus=this.value"></div>`;
                 d.aulas.forEach((aula, ai) => {
                     diaHtml += `<div class="config-row">
-                        <input type="text" class="in-time" placeholder="Hora" value="${aula[0]}" onchange="dados.dias[${i}].aulas[${ai}][0]=this.value">
-                        <input type="text" class="in-aula" placeholder="Aula" value="${aula[1]}" onchange="dados.dias[${i}].aulas[${ai}][1]=this.value">
-                        <input type="text" class="in-sala" placeholder="Sala" value="${aula[2]}" onchange="dados.dias[${i}].aulas[${ai}][2]=this.value">
+                        <input type="text" class="in-time" placeholder="Hora" value="${aula[0]}" oninput="dados.dias[${i}].aulas[${ai}][0]=this.value">
+                        <input type="text" class="in-aula" placeholder="Aula" value="${aula[1]}" oninput="dados.dias[${i}].aulas[${ai}][1]=this.value">
+                        <input type="text" class="in-sala" placeholder="Sala" value="${aula[2]}" oninput="dados.dias[${i}].aulas[${ai}][2]=this.value">
                         <button class="btn-del" onclick="dados.dias[${i}].aulas.splice(${ai},1); abrirEditor()">✕</button>
                     </div>`;
                 });
                 diaHtml += `<button onclick="dados.dias[${i}].aulas.push(['','','']); abrirEditor()" style="width:100%; font-size:0.75rem; box-shadow:none; margin-top:5px;">+ Adicionar Aula</button></div>`;
                 dEd.innerHTML += diaHtml;
             });
+
+            // Renderizar Matérias
             mEd.innerHTML = "";
             dados.materias.forEach((m, i) => {
                 mEd.innerHTML += `<div class="config-row">
-                    <input type="text" value="${m}" onchange="dados.materias[i]=this.value" style="flex:1">
+                    <input type="text" value="${m}" oninput="dados.materias[${i}]=this.value" style="flex:1" placeholder="Nome da matéria">
                     <button class="btn-del" onclick="dados.materias.splice(${i},1); abrirEditor()">✕</button>
                 </div>`;
             });
         }
 
-        function addItem(tipo) {
-            dados.materias.push("");
+        function addItem() {
+            dados.materias.push("Nova Matéria"); 
             abrirEditor();
         }
 
         function salvarEFechar() {
+            // Remove matérias que ficaram totalmente vazias para evitar bugs visuais
+            dados.materias = dados.materias.filter(m => m.trim() !== "");
+            
             localStorage.setItem('ufc_planner_data_v6_9', JSON.stringify(dados));
             desenharTudo();
             toggleConfig();
