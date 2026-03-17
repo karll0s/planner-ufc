@@ -60,6 +60,19 @@ O **UFC Planner** é uma ferramenta de alta performance desenvolvida para estuda
 
 ---
 
+## Preview do projeto
+![Preview](screenshot-app-1.png)
+
+---
+
+![Preview](screenshot-app-2.png)
+
+---
+
+![Preview](screenshot-app-3.png)
+
+---
+
 <div align="center">
 
 ### 🛰️ DESENVOLVIDO PARA A ELITE ACADÊMICA
