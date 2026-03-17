@@ -22,19 +22,19 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 15px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .container { width: 100%; max-width: 600px; }
-        h1 { color: var(--secondary); text-align: center; margin-bottom: 20px; font-size: 1.8rem; letter-spacing: 2px; }
+        h1 { color: var(--secondary); text-align: center; margin-bottom: 20px; font-size: 1.6rem; letter-spacing: 2px; }
 
         .menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             margin-bottom: 20px;
         }
@@ -43,48 +43,71 @@
             background: #1c1c1c;
             color: #eee;
             border: 1px solid #444;
-            padding: 12px;
+            padding: 12px 8px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             transition: 0.2s;
         }
 
-        button:hover { background: #333; transform: translateY(-2px); }
+        button:hover { background: #333; }
         .btn-config { border-color: var(--bus); color: var(--bus); }
         .btn-notes { border-color: var(--success); color: var(--success); }
+        .btn-grades { border-color: var(--secondary); color: var(--secondary); grid-column: span 2; font-size: 0.85rem; padding: 15px; border-width: 2px; }
         .btn-backup { border-color: var(--primary); color: var(--primary); grid-column: span 2; }
+        .btn-clean { background: rgba(255, 82, 82, 0.1); border: 1px solid var(--danger); color: var(--danger); width: 100%; margin-top: 10px; padding: 8px; font-size: 0.7rem; }
 
         #backup-panel, #config-panel {
             display: none;
             background: #1a1f29;
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 20px;
             width: 100%;
             box-sizing: border-box;
         }
         #backup-panel { border: 2px solid var(--primary); text-align: center; }
-        #config-panel { border: 2px solid var(--bus); }
+        #config-panel { border: 2px solid var(--bus); max-height: 85vh; overflow-y: auto; }
 
         .config-box { background: rgba(0,0,0,0.3); border: 1px solid #333; padding: 12px; border-radius: 12px; margin-bottom: 15px; }
         .config-box h4 { margin: 0 0 10px 0; color: var(--secondary); border-bottom: 1px solid #444; padding-bottom: 5px; }
-        .config-row { display: flex; gap: 5px; margin-bottom: 8px; align-items: center; }
-        .config-row input { background: #000; color: #fff; border: 1px solid #444; padding: 8px; border-radius: 8px; font-size: 0.8rem; }
-        .btn-del { background: none; border: none; color: var(--danger); font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        
+        .config-row { 
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center;
+            background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px;
+        }
 
-        .section-title { color: var(--primary); text-transform: uppercase; font-size: 0.85rem; margin: 30px 0 12px 0; border-bottom: 1px solid #333; width: 100%; letter-spacing: 2px; font-weight: 800; }
+        .config-row input { 
+            background: #000; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 8px; font-size: 0.85rem; box-sizing: border-box;
+        }
+
+        .in-time { width: 70px; }
+        .in-aula { flex: 1; min-width: 140px; }
+        .in-sala { width: 60px; }
+        .in-bus { width: 100%; margin-left: 5px; }
+
+        .btn-del { background: none; border: none; color: var(--danger); font-weight: bold; cursor: pointer; font-size: 1.2rem; padding: 5px; }
+
+        .section-title { color: var(--primary); text-transform: uppercase; font-size: 0.8rem; margin: 30px 0 12px 0; border-bottom: 1px solid #333; width: 100%; letter-spacing: 2px; font-weight: 800; }
         .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #222; width: 100%; box-sizing: border-box; }
-        .card h2 { color: var(--secondary); margin: 0 0 10px 0; font-size: 1.4rem; }
-        .bus-txt { color: var(--bus); font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; display: block; }
-        .aula-item { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 8px 0; border-bottom: 1px solid #2a2a2a; }
-        .time { color: var(--primary); font-weight: bold; }
-        .sala { color: var(--accent); font-weight: bold; background: rgba(255, 64, 129, 0.1); padding: 2px 6px; border-radius: 5px; font-size: 0.8rem; }
+        
+        .card.today-highlight { 
+            border: 2px solid var(--secondary); 
+            background: linear-gradient(145deg, #151921 0%, #1a2533 100%);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+        }
+        .today-badge { background: var(--secondary); color: #000; font-size: 0.6rem; padding: 2px 8px; border-radius: 10px; vertical-align: middle; margin-left: 10px; font-weight: 900; }
 
-        textarea { width: 100%; background: rgba(0,0,0,0.4); color: #eee; border: 1px solid #333; border-radius: 12px; padding: 12px; margin-top: 10px; min-height: 80px; resize: none; box-sizing: border-box; font-family: inherit; }
-        .todo-line { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #222; }
-        .todo-line input { width: 20px; height: 20px; accent-color: var(--success); cursor: pointer; }
+        .card h2 { color: var(--secondary); margin: 0 0 10px 0; font-size: 1.3rem; }
+        .bus-txt { color: var(--bus); font-size: 0.8rem; font-weight: bold; margin-bottom: 12px; display: block; }
+        .aula-item { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 10px 0; border-bottom: 1px solid #2a2a2a; }
+        .time { color: var(--primary); font-weight: bold; margin-right: 8px; }
+        .sala { color: var(--accent); font-weight: bold; background: rgba(255, 64, 129, 0.1); padding: 2px 6px; border-radius: 5px; font-size: 0.75rem; }
+
+        textarea { width: 100%; background: rgba(0,0,0,0.4); color: #eee; border: 1px solid #333; border-radius: 12px; padding: 12px; margin-top: 10px; min-height: 100px; resize: none; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        .todo-line { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid #222; }
+        .todo-line input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--success); cursor: pointer; }
 
         #importFile { display: none; }
     </style>
@@ -95,6 +118,7 @@
         <h1>UFC</h1>
 
         <div class="menu">
+            <button class="btn-grades" onclick="irParaNotas()">📊 Ver Pontuações</button>
             <button class="btn-config" onclick="toggleConfig()">⚙️ Configurações</button>
             <button class="btn-notes" onclick="baixarNotasTxt()">📄 Baixar Notas (.txt)</button>
             <button class="btn-backup" onclick="toggleBackup()">📂 Backup Completo</button>
@@ -102,25 +126,28 @@
 
         <div id="backup-panel">
             <h3 style="margin-top:0; color: var(--primary)">Gerenciar Dados</h3>
-            <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">O backup salva cronograma, checklists e todas as suas anotações em um único arquivo.</p>
+            <p style="font-size: 0.7rem; color: #888; margin-bottom: 15px;">O backup inclui cronograma, tarefas, anotações e todas as notas da segunda página.</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
-                <button onclick="baixarEstrutura()" style="border-color: var(--success); color: var(--success);">📤 Exportar Backup</button>
-                <button onclick="document.getElementById('importFile').click()" style="border-color: var(--secondary); color: var(--secondary);">📥 Importar Backup</button>
-                <input type="file" id="importFile" accept=".json,.txt" onchange="importarBackup(this)">
+                <button onclick="baixarEstrutura()" style="border-color: var(--success); color: var(--success);">📤 Exportar</button>
+                <button onclick="document.getElementById('importFile').click()" style="border-color: var(--secondary); color: var(--secondary);">📥 Importar</button>
+                <input type="file" id="importFile" accept=".json" onchange="importarBackup(this)">
             </div>
             <button onclick="toggleBackup()" style="margin-top: 15px; border:none; background:none; color: #666;">Fechar</button>
         </div>
 
         <div id="config-panel">
-            <h3 style="margin-top:0; color: var(--bus)">⚙️ Configurações</h3>
+            <h3 style="margin-top:0; color: var(--bus)">⚙️ Cronograma</h3>
             <div id="dias-editor"></div>
+            
             <h3 style="color: var(--success)">✅ Checklist</h3>
             <div id="todo-editor"></div>
-            <button onclick="addItem('todos')" style="width:100%; padding:8px">+ Nova Tarefa</button>
-            <h3 style="color: var(--secondary)">📚 Matérias Extras</h3>
+            <button onclick="addItem('todos')" style="width:100%; padding:12px; margin-top:10px">+ Nova Tarefa</button>
+            
+            <h3 style="color: var(--secondary)">📚 Matérias</h3>
             <div id="mats-editor"></div>
-            <button onclick="addItem('materias')" style="width:100%; padding:8px">+ Novo Card</button>
-            <button style="background: var(--success); color: #000; border: none; width: 100%; margin-top: 25px; padding: 18px; border-radius: 12px; font-weight: bold; font-size: 1rem;" onclick="salvarEFechar()">✅ SALVAR E APLICAR</button>
+            <button onclick="addItem('materias')" style="width:100%; padding:12px; margin-top:10px">+ Nova Matéria</button>
+            
+            <button style="background: var(--success); color: #000; border: none; width: 100%; margin: 30px 0 10px 0; padding: 20px; border-radius: 12px; font-weight: bold; font-size: 1rem;" onclick="salvarEFechar()">✅ SALVAR TUDO</button>
         </div>
 
         <div id="render-area"></div>
@@ -136,28 +163,46 @@
                 { nome: "Sexta", bus: "12:20 ➔ 19:40", aulas: [["13:00", "Cálculo I", "S11"], ["17:30", "Estrutura", "LAB 2"]] }
             ],
             materias: ["Estrutura de Dados", "Álgebra Linear", "Cálculo I", "Probabilidade"],
-            todos: ["Estudar para prova"]
+            todos: []
         };
 
-        let dados = JSON.parse(localStorage.getItem('ufc_planner_v6')) || defaultData;
+        let dados = JSON.parse(localStorage.getItem('ufc_planner_data_v6_9')) || defaultData;
+
+        function irParaNotas() {
+            localStorage.setItem('ufc_materias_transporte', JSON.stringify(dados.materias));
+            window.location.href = 'notas.html';
+        }
 
         function desenharTudo() {
             const area = document.getElementById('render-area');
             let html = "";
+            const hojeData = new Date().toISOString().split('T')[0];
+            const hojeNome = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"][new Date().getDay()];
 
             html += '<div class="section-title">💡 Lembretes Gerais</div>';
             html += '<div class="card"><textarea id="not-geral" placeholder="Escreva lembretes importantes aqui..."></textarea></div>';
 
             html += '<div class="section-title">✅ Check-list</div><div class="card">';
+            if(dados.todos.length === 0) html += '<p style="color:#666; font-size:0.8rem; text-align:center;">Nenhuma tarefa pendente.</p>';
             dados.todos.forEach((t, i) => {
                 const status = localStorage.getItem(`chk-${i}`) === 'true' ? 'checked' : '';
-                html += `<label class="todo-line"><input type="checkbox" id="chk-${i}" ${status} onchange="localStorage.setItem(this.id, this.checked)"> <span>${t}</span></label>`;
+                const eHoje = (t.data === hojeData) ? 'style="color: var(--secondary)"' : '';
+                const dataFmt = t.data ? t.data.split('-').reverse().join('/') : '';
+                html += `
+                <label class="todo-line">
+                    <input type="checkbox" id="chk-${i}" ${status} onchange="localStorage.setItem(this.id, this.checked)"> 
+                    <span ${eHoje}>${t.texto || "Nova Tarefa"}</span>
+                    ${t.data ? `<span style="font-size:0.7rem; color:#666; margin-left:auto">📅 ${dataFmt}</span>` : ''}
+                </label>`;
             });
-            html += '</div>';
+            html += `<button class="btn-clean" onclick="limparConcluidos()">🧹 Limpar Concluídas</button></div>`;
 
             html += '<div class="section-title">📅 Cronograma</div>';
             dados.dias.forEach(d => {
-                html += `<div class="card"><h2>${d.nome}</h2><span class="bus-txt">🚌 ${d.bus}</span>`;
+                const eHoje = (d.nome === hojeNome) ? 'today-highlight' : '';
+                html += `<div class="card ${eHoje}">
+                    <h2>${d.nome}${eHoje ? '<span class="today-badge">HOJE</span>' : ''}</h2>
+                    <span class="bus-txt">🚌 ${d.bus}</span>`;
                 d.aulas.forEach(a => {
                     html += `<div class="aula-item"><span><span class="time">${a[0]}</span> ${a[1]}</span><span class="sala">${a[2]}</span></div>`;
                 });
@@ -166,11 +211,23 @@
 
             html += '<div class="section-title">📚 Anotações de Matérias</div>';
             dados.materias.forEach(m => {
-                html += `<div class="card"><h2>${m}</h2><textarea id="not-${m}" placeholder="Anotações para ${m}..."></textarea></div>`;
+                html += `<div class="card"><h2>${m || "Nova Matéria"}</h2><textarea id="not-${m}" placeholder="Anotações para ${m}..."></textarea></div>`;
             });
 
             area.innerHTML = html;
             recuperarNotas();
+        }
+
+        function limparConcluidos() {
+            if(!confirm("Remover tarefas marcadas?")) return;
+            const novasTarefas = [];
+            dados.todos.forEach((t, i) => {
+                if(localStorage.getItem(`chk-${i}`) !== 'true') novasTarefas.push(t);
+                localStorage.removeItem(`chk-${i}`);
+            });
+            dados.todos = novasTarefas;
+            localStorage.setItem('ufc_planner_data_v6_9', JSON.stringify(dados));
+            desenharTudo();
         }
 
         function recuperarNotas() {
@@ -180,24 +237,75 @@
             });
         }
 
+        // --- SISTEMA DE BACKUP UNIFICADO ---
+        function baixarEstrutura() {
+            const agora = new Date();
+            const dataFmt = agora.toLocaleDateString('pt-BR').replace(/\//g, '-');
+            const horaFmt = agora.getHours().toString().padStart(2, '0') + 'h' + agora.getMinutes().toString().padStart(2, '0');
+            
+            // Pega os dados desta página e da página de notas
+            const backupTotal = { 
+                config: dados, 
+                storage: {},
+                notas: JSON.parse(localStorage.getItem('ufc_sistema_notas_v1')) || {}
+            };
+
+            // Pega os textos salvos (lembretes e checkboxes)
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k.startsWith('not-') || k.startsWith('chk-')) backupTotal.storage[k] = localStorage.getItem(k);
+            }
+
+            const blob = new Blob(["\ufeff" + JSON.stringify(backupTotal, null, 2)], {type: 'application/json'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `backup_COMPLETO_ufc_${dataFmt}_${horaFmt}.json`;
+            link.click();
+        }
+
+        function importarBackup(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const b = JSON.parse(e.target.result);
+                    if(!confirm("Isso apagará seus dados atuais para restaurar o backup. Continuar?")) return;
+                    
+                    localStorage.clear();
+                    
+                    // Restaura dados do planner
+                    dados = b.config;
+                    localStorage.setItem('ufc_planner_data_v6_9', JSON.stringify(dados));
+                    
+                    // Restaura sistema de notas da outra página
+                    if(b.notas) localStorage.setItem('ufc_sistema_notas_v1', JSON.stringify(b.notas));
+                    
+                    // Restaura textos e checks
+                    if(b.storage) {
+                        Object.keys(b.storage).forEach(k => localStorage.setItem(k, b.storage[k]));
+                    }
+                    
+                    desenharTudo();
+                    alert("✅ Backup COMPLETO restaurado com sucesso!");
+                    toggleBackup();
+                } catch (err) { alert("❌ Erro ao ler arquivo."); }
+            };
+            reader.readAsText(input.files[0]);
+        }
+
         function baixarNotasTxt() {
-            let txt = `🗒️ NOTAS UFC - ${new Date().toLocaleDateString('pt-BR')}\n\n`;
-            const geral = localStorage.getItem('not-geral');
-            if(geral) txt += `--- LEMBRETES GERAIS ---\n${geral}\n\n`;
-            txt += `--- CHECKLIST ---\n`;
-            dados.todos.forEach((t, i) => {
-                const status = localStorage.getItem(`chk-${i}`) === 'true' ? '[X]' : '[ ]';
-                txt += `${status} ${t}\n`;
-            });
-            txt += `\n--- MATÉRIAS ---\n`;
+            const agora = new Date();
+            const dataFmt = agora.toLocaleDateString('pt-BR');
+            let txt = `🗒️ NOTAS UFC - ${dataFmt}\n\n`;
+            txt += `💡 [LEMBRETES GERAIS]\n${localStorage.getItem('not-geral') || '-'}\n\n`;
+            txt += `📚 [ANOTAÇÕES]\n`;
             dados.materias.forEach(m => {
-                const nota = localStorage.getItem(`not-${m}`);
-                if (nota && nota.trim()) txt += `\n[${m.toUpperCase()}]\n${nota}\n`;
+                const n = localStorage.getItem(`not-${m}`);
+                if(n) txt += `> ${m}: ${n}\n\n`;
             });
             const blob = new Blob(["\ufeff" + txt], {type: 'text/plain;charset=utf-8'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `notas_ufc.txt`;
+            link.download = `anotacoes_ufc.txt`;
             link.click();
         }
 
@@ -218,101 +326,52 @@
             const dEd = document.getElementById('dias-editor');
             const mEd = document.getElementById('mats-editor');
             const tEd = document.getElementById('todo-editor');
+            
             dEd.innerHTML = "";
             dados.dias.forEach((d, i) => {
                 let diaHtml = `<div class="config-box"><h4>${d.nome}</h4>
-                    <div class="config-row">🚌 <input type="text" value="${d.bus}" onchange="dados.dias[${i}].bus=this.value"></div>
-                    <div>`;
+                    <div class="config-row">🚌 <input type="text" class="in-bus" value="${d.bus}" onchange="dados.dias[${i}].bus=this.value"></div>`;
                 d.aulas.forEach((aula, ai) => {
                     diaHtml += `<div class="config-row">
-                        <input type="text" style="width:60px" value="${aula[0]}" onchange="dados.dias[${i}].aulas[${ai}][0]=this.value">
-                        <input type="text" style="flex:2" value="${aula[1]}" onchange="dados.dias[${i}].aulas[${ai}][1]=this.value">
-                        <input type="text" style="width:50px" value="${aula[2]}" onchange="dados.dias[${i}].aulas[${ai}][2]=this.value">
+                        <input type="text" class="in-time" value="${aula[0]}" onchange="dados.dias[${i}].aulas[${ai}][0]=this.value">
+                        <input type="text" class="in-aula" value="${aula[1]}" onchange="dados.dias[${i}].aulas[${ai}][1]=this.value">
+                        <input type="text" class="in-sala" value="${aula[2]}" onchange="dados.dias[${i}].aulas[${ai}][2]=this.value">
                         <button class="btn-del" onclick="dados.dias[${i}].aulas.splice(${ai},1); abrirEditor()">✕</button>
                     </div>`;
                 });
-                diaHtml += `</div><button onclick="dados.dias[${i}].aulas.push(['00:00','Nova Aula','S00']); abrirEditor()" style="width:100%; font-size:0.7rem;">+ Aula</button></div>`;
+                diaHtml += `<button onclick="dados.dias[${i}].aulas.push(['','','']); abrirEditor()" style="width:100%; font-size:0.75rem;">+ Aula</button></div>`;
                 dEd.innerHTML += diaHtml;
             });
+
             tEd.innerHTML = "";
             dados.todos.forEach((t, i) => {
-                tEd.innerHTML += `<div class="config-row"><input type="text" value="${t}" onchange="dados.todos[${i}]=this.value" style="flex:1"><button class="btn-del" onclick="dados.todos.splice(${i},1); abrirEditor()">✕</button></div>`;
+                tEd.innerHTML += `
+                <div class="config-row">
+                    <input type="text" value="${t.texto}" onchange="dados.todos[${i}].texto=this.value" style="flex:2">
+                    <input type="date" value="${t.data}" onchange="dados.todos[${i}].data=this.value" style="width:130px">
+                    <button class="btn-del" onclick="dados.todos.splice(${i},1); abrirEditor()">✕</button>
+                </div>`;
             });
+
             mEd.innerHTML = "";
             dados.materias.forEach((m, i) => {
-                mEd.innerHTML += `<div class="config-row"><input type="text" value="${m}" onchange="dados.materias[${i}]=this.value" style="flex:1"><button class="btn-del" onclick="dados.materias.splice(${i},1); abrirEditor()">✕</button></div>`;
+                mEd.innerHTML += `<div class="config-row">
+                    <input type="text" value="${m}" onchange="dados.materias[i]=this.value" style="flex:1">
+                    <button class="btn-del" onclick="dados.materias.splice(${i},1); abrirEditor()">✕</button>
+                </div>`;
             });
         }
 
         function addItem(tipo) {
-            if(tipo === 'todos') dados.todos.push("Nova Tarefa");
-            else dados.materias.push("Nova Matéria");
+            if(tipo === 'todos') dados.todos.push({texto: "", data: ""});
+            else dados.materias.push("");
             abrirEditor();
         }
 
         function salvarEFechar() {
-            localStorage.setItem('ufc_planner_v6', JSON.stringify(dados));
+            localStorage.setItem('ufc_planner_data_v6_9', JSON.stringify(dados));
             desenharTudo();
             toggleConfig();
-        }
-
-        // --- SISTEMA DE BACKUP TOTAL (V6.1) ---
-        function baixarEstrutura() {
-            const dataAt = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-            
-            const backupTotal = {
-                config: dados,
-                storage: {}
-            };
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const chave = localStorage.key(i);
-                if (chave.startsWith('not-') || chave.startsWith('chk-')) {
-                    backupTotal.storage[chave] = localStorage.getItem(chave);
-                }
-            }
-
-            const conteudo = JSON.stringify(backupTotal, null, 2);
-            const blob = new Blob(["\ufeff" + conteudo], {type: 'application/json;charset=utf-8'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `backup_FULL_ufc_${dataAt}.json`;
-            link.click();
-        }
-
-        function importarBackup(input) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const backupTotal = JSON.parse(e.target.result);
-                    
-                    if(backupTotal.config && backupTotal.storage) {
-                        // 1. Limpar checkboxes e notas antigas para evitar conflito
-                        for (let i = localStorage.length - 1; i >= 0; i--) {
-                            const key = localStorage.key(i);
-                            if(key.startsWith('not-') || key.startsWith('chk-')) localStorage.removeItem(key);
-                        }
-
-                        // 2. Restaurar estrutura
-                        dados = backupTotal.config;
-                        localStorage.setItem('ufc_planner_v6', JSON.stringify(dados));
-
-                        // 3. Restaurar notas e estados
-                        Object.keys(backupTotal.storage).forEach(chave => {
-                            localStorage.setItem(chave, backupTotal.storage[chave]);
-                        });
-
-                        desenharTudo();
-                        alert("✅ Backup COMPLETO restaurado!");
-                        toggleBackup();
-                    } else {
-                        alert("❌ Formato de arquivo não reconhecido.");
-                    }
-                } catch (err) {
-                    alert("❌ Erro ao ler arquivo. Verifique se selecionou o backup .json correto.");
-                }
-            };
-            reader.readAsText(input.files[0]);
         }
 
         window.onload = desenharTudo;
