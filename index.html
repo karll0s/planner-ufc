@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UFC Planner - Fixed</title>
+    <title>UFC Planner - Ultimate Edition</title>
     <style>
         :root {
             --bg: #0b0e14;
@@ -77,7 +77,7 @@
             width: 100%;
             box-sizing: border-box;
             border: 2px solid var(--secondary);
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
         }
 
         .config-box {
@@ -160,12 +160,12 @@
 <body>
 
     <div class="container">
-        <h1>UFC</h1>
+        <h1>UFC PLANNER</h1>
 
         <div class="menu">
-            <button class="btn-grades" onclick="irParaNotas()">📊 Ver Pontuações e Médias</button>
+            <button class="btn-grades" onclick="irParaNotas()">📊 Pontuações e Médias</button>
             <button class="btn-config" onclick="toggleConfig()">⚙️ Configurações</button>
-            <button class="btn-notes" onclick="baixarNotasTxt()">📄 Baixar Notas (.txt)</button>
+            <button class="btn-notes" onclick="baixarNotasTxt()">📄 Exportar Relatório (.txt)</button>
             <button class="btn-backup" onclick="toggleBackup()">📂 Backup do Semestre</button>
         </div>
 
@@ -176,7 +176,7 @@
                 <button onclick="document.getElementById('importFile').click()" style="border-color: var(--secondary); color: var(--secondary);">📥 Importar</button>
                 <input type="file" id="importFile" accept=".json" onchange="importarBackup(this)">
             </div>
-            <button onclick="toggleBackup()" style="margin-top: 15px; border:none; background:none; color: #666; font-weight: bold;">[ FECHAR ]</button>
+            <button onclick="toggleBackup()" style="margin-top: 15px; border:none; background:none; color: #666; font-weight: bold; cursor:pointer;">[ FECHAR ]</button>
         </div>
 
         <div id="config-panel">
@@ -336,15 +336,58 @@
         }
 
         function baixarNotasTxt() {
-            let txt = `🗒️ NOTAS UFC\n\n`;
+            const dataHora = new Date().toLocaleString('pt-BR');
+            let txt = `==========================================\n`;
+            txt += `        📝 RELATÓRIO GERAL - UFC PLANNER\n`;
+            txt += `        Gerado em: ${dataHora}\n`;
+            txt += `==========================================\n\n`;
+
+            // 1. Lembretes Gerais
+            const lembreteGeral = localStorage.getItem('not-geral') || "Nenhum lembrete anotado.";
+            txt += `💡 LEMBRETES GERAIS:\n`;
+            txt += `------------------------------------------\n`;
+            txt += `${lembreteGeral}\n\n`;
+
+            // 2. Checklist de Tarefas
+            txt += `✅ CHECKLIST DE TAREFAS:\n`;
+            txt += `------------------------------------------\n`;
+            if (dados.todos.length === 0) {
+                txt += `Nenhuma tarefa na lista.\n`;
+            } else {
+                dados.todos.forEach((t, i) => {
+                    const concluida = localStorage.getItem(`chk-${i}`) === 'true';
+                    const statusIcon = concluida ? "[X] FEITO    " : "[ ] PENDENTE ";
+                    const dataPrazo = t.data ? ` (Prazo: ${t.data.split('-').reverse().join('/')})` : "";
+                    txt += `${statusIcon} - ${t.texto}${dataPrazo}\n`;
+                });
+            }
+            txt += `\n`;
+
+            // 3. Anotações por Matéria
+            txt += `📚 ANOTAÇÕES DAS MATÉRIAS:\n`;
+            txt += `------------------------------------------\n`;
+            let temAnotacao = false;
             dados.materias.forEach(m => {
-                const n = localStorage.getItem(`not-${m}`);
-                if(n) txt += `> ${m}: ${n}\n\n`;
+                const anotacao = localStorage.getItem(`not-${m}`);
+                if (anotacao && anotacao.trim() !== "") {
+                    txt += `📖 MATÉRIA: ${m}\n`;
+                    txt += `${anotacao}\n`;
+                    txt += `..........................................\n`;
+                    temAnotacao = true;
+                }
             });
+
+            if (!temAnotacao) txt += `Nenhuma anotação de matéria encontrada.\n`;
+
+            txt += `\n==========================================\n`;
+            txt += `           FIM DO RELATÓRIO\n`;
+            txt += `==========================================`;
+
             const blob = new Blob(["\ufeff" + txt], {type: 'text/plain;charset=utf-8'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `anotacoes_ufc.txt`;
+            const dataIso = new Date().toISOString().split('T')[0];
+            link.download = `Relatorio_UFC_${dataIso}.txt`;
             link.click();
         }
 
@@ -364,7 +407,6 @@
             const mEd = document.getElementById('mats-editor');
             dEd.innerHTML = "";
             
-            // Renderizar Cronograma
             dados.dias.forEach((d, i) => {
                 let diaHtml = `<div class="config-box"><h4>${d.nome}</h4>
                     <div class="config-row">🚌 <input type="text" class="in-bus" value="${d.bus}" oninput="dados.dias[${i}].bus=this.value"></div>`;
@@ -380,7 +422,6 @@
                 dEd.innerHTML += diaHtml;
             });
 
-            // Renderizar Matérias
             mEd.innerHTML = "";
             dados.materias.forEach((m, i) => {
                 mEd.innerHTML += `<div class="config-row">
@@ -396,9 +437,7 @@
         }
 
         function salvarEFechar() {
-            // Remove matérias que ficaram totalmente vazias para evitar bugs visuais
             dados.materias = dados.materias.filter(m => m.trim() !== "");
-            
             localStorage.setItem('ufc_planner_data_v6_9', JSON.stringify(dados));
             desenharTudo();
             toggleConfig();
