@@ -2967,210 +2967,1472 @@ document
    RELATÓRIO
    ========================================================= */
 
+<script>
+
 function baixarHistorico() {
 
-    const semestre =
-        dados.semestre;
-
-
-    let txt =
-`===========================================
-       📊 RELATÓRIO DE NOTAS - UFC
-       SEMESTRE ${semestre}
-===========================================
-
-`;
-
+    const semestre = dados.semestre;
 
     const materias =
-        Object.values(
-            dados.materias
-        );
+        Object.values(dados.materias);
 
 
-    if (
-        materias.length === 0
-    ) {
+    /* =====================================================
+       GERAÇÃO DAS MATÉRIAS
+       ===================================================== */
 
-        txt +=
-            'Nenhuma matéria cadastrada.\n';
+    let materiasHTML = '';
+
+
+    if (materias.length === 0) {
+
+        materiasHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">📚</div>
+
+                <h2>Nenhuma matéria cadastrada</h2>
+
+                <p>
+                    Não existem notas cadastradas
+                    neste histórico.
+                </p>
+
+            </div>
+
+        `;
+
+    } else {
+
+        materiasHTML = materias.map(
+            materia => {
+
+                const mediaAP =
+                    calcularMediaAPs(materia);
+
+                const status =
+                    obterStatus(mediaAP);
+
+                const afNecessaria =
+                    calcularAFnecessaria(mediaAP);
+
+
+                let etapasHTML = '';
+
+
+                /* =========================================
+                   ETAPAS
+                   ========================================= */
+
+                materia.parciais.forEach(
+                    parcial => {
+
+                        const calculo =
+                            calcularEtapa(parcial);
+
+
+                        let notasHTML = '';
+
+
+                        parcial.notas.forEach(
+                            nota => {
+
+                                const valor =
+                                    nota.valor === ''
+                                        ? 'Pendente'
+                                        : numero(nota.valor)
+                                            .toFixed(1);
+
+
+                                notasHTML += `
+
+                                    <div class="nota">
+
+                                        <div class="nota-info">
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    nota.tipo ||
+                                                    'Avaliação'
+                                                )}
+                                            </strong>
+
+                                            <span>
+                                                Peso:
+                                                ${escapeHTML(
+                                                    nota.peso
+                                                )}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="nota-valor">
+
+                                            ${valor}
+
+                                        </div>
+
+                                    </div>
+
+                                `;
+
+                            }
+                        );
+
+
+                        let resultadoHTML = '';
+
+
+                        if (
+                            calculo.mediaFinal !== null
+                        ) {
+
+                            let classe =
+                                'boa';
+
+                            if (
+                                calculo.mediaFinal < 4
+                            ) {
+
+                                classe = 'ruim';
+
+                            } else if (
+                                calculo.mediaFinal < 7
+                            ) {
+
+                                classe = 'atencao';
+
+                            }
+
+
+                            resultadoHTML = `
+
+                                <div class="
+                                    resultado-etapa
+                                    ${classe}
+                                ">
+
+                                    Média da etapa:
+
+                                    <strong>
+                                        ${calculo.mediaFinal.toFixed(1)}
+                                    </strong>
+
+                                </div>
+
+                            `;
+
+                        } else if (
+                            calculo.meta !== null
+                        ) {
+
+                            if (
+                                calculo.meta <= 10
+                            ) {
+
+                                resultadoHTML = `
+
+                                    <div class="previsao">
+
+                                        🎯 Média necessária
+                                        nas próximas notas
+                                        para chegar a 7,0:
+
+                                        <strong>
+                                            ${Math.max(
+                                                0,
+                                                calculo.meta
+                                            ).toFixed(1)}
+                                        </strong>
+
+                                    </div>
+
+                                `;
+
+                            } else {
+
+                                resultadoHTML = `
+
+                                    <div class="
+                                        previsao
+                                        impossivel
+                                    ">
+
+                                        ⚠️ Não é mais possível
+                                        atingir 7,0 nesta etapa
+                                        apenas com as notas restantes.
+
+                                    </div>
+
+                                `;
+
+                            }
+
+                        }
+
+
+                        etapasHTML += `
+
+                            <section class="etapa">
+
+                                <div class="etapa-header">
+
+                                    <h3>
+                                        ${escapeHTML(
+                                            parcial.nome
+                                        )}
+                                    </h3>
+
+                                </div>
+
+
+                                ${
+                                    notasHTML ||
+
+                                    `
+
+                                    <div class="sem-notas">
+
+                                        Nenhuma avaliação
+                                        cadastrada.
+
+                                    </div>
+
+                                    `
+                                }
+
+
+                                ${resultadoHTML}
+
+                            </section>
+
+                        `;
+
+                    }
+                );
+
+
+                /* =========================================
+                   AF
+                   ========================================= */
+
+                let afHTML = '';
+
+
+                if (
+                    mediaAP !== null &&
+                    mediaAP >= 4 &&
+                    mediaAP < 7
+                ) {
+
+                    afHTML = `
+
+                        <div class="af-box">
+
+                            🎯 Nota mínima na AF:
+
+                            <strong>
+                                ${afNecessaria.toFixed(1)}
+                            </strong>
+
+                            <small>
+                                A AF precisa ser ≥ 4,0
+                                e a média final ≥ 5,0.
+                            </small>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                /* =========================================
+                   CARD DA MATÉRIA
+                   ========================================= */
+
+                return `
+
+                    <article class="materia">
+
+                        <header class="materia-header">
+
+                            <div>
+
+                                <h2>
+                                    📚
+                                    ${escapeHTML(
+                                        materia.nome
+                                    )}
+                                </h2>
+
+                                <span class="materia-id">
+                                    ${escapeHTML(
+                                        materia.id
+                                    )}
+                                </span>
+
+                            </div>
+
+
+                            <div class="
+                                materia-media
+                                ${
+                                    mediaAP === null
+                                        ? ''
+                                        : mediaAP >= 7
+                                            ? 'media-aprovado'
+                                            : mediaAP >= 4
+                                                ? 'media-atencao'
+                                                : 'media-reprovado'
+                                }
+                            ">
+
+                                ${
+                                    mediaAP === null
+                                        ? '--'
+                                        : mediaAP.toFixed(1)
+                                }
+
+                            </div>
+
+                        </header>
+
+
+                        <div class="etapas">
+
+                            ${etapasHTML}
+
+                        </div>
+
+
+                        <div class="resultado-final">
+
+                            <div class="media-final">
+
+                                <span>
+                                    Média das APs
+                                </span>
+
+                                <strong>
+                                    ${
+                                        mediaAP === null
+                                            ? 'Pendente'
+                                            : mediaAP.toFixed(1)
+                                    }
+                                </strong>
+
+                            </div>
+
+
+                            <div class="
+                                status
+                                ${status.classe}
+                            ">
+
+                                ${status.texto}
+
+                            </div>
+
+
+                            ${afHTML}
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }
+        ).join('');
 
     }
+
+
+    /* =====================================================
+       RESUMO
+       ===================================================== */
+
+    let aprovadas = 0;
+    let recuperacao = 0;
+    let aguardando = 0;
 
 
     materias.forEach(
         materia => {
 
-            txt +=
-`\n📚 DISCIPLINA: ${
-    materia.nome.toUpperCase()
-}
--------------------------------------------
-`;
+            const media =
+                calcularMediaAPs(materia);
 
 
-            materia.parciais.forEach(
-                parcial => {
+            if (media === null) {
 
-                    const calculo =
-                        calcularEtapa(
-                            parcial
-                        );
+                aguardando++;
 
+            } else if (media >= 7) {
 
-                    txt +=
-`\n${parcial.nome}:\n`;
+                aprovadas++;
 
+            } else if (media >= 4) {
 
-                    parcial.notas.forEach(
-                        nota => {
-
-                            const valor =
-                                nota.valor === ''
-                                    ? 'Pendente'
-                                    : nota.valor;
-
-                            txt +=
-`   • ${
-    nota.tipo || 'Avaliação'
-} | Peso: ${
-    nota.peso
-} | Nota: ${
-    valor
-}\n`;
-
-                        }
-                    );
-
-
-                    if (
-                        calculo.mediaFinal !== null
-                    ) {
-
-                        txt +=
-`   Média da etapa: ${
-    calculo.mediaFinal.toFixed(1)
-}\n`;
-
-                    } else if (
-                        calculo.meta !== null
-                    ) {
-
-                        txt +=
-`   Meta para 7,0: ${
-    calculo.meta.toFixed(1)
-}\n`;
-
-                    }
-
-                }
-            );
-
-
-            const mediaAP =
-                calcularMediaAPs(
-                    materia
-                );
-
-
-            txt +=
-`\nMÉDIA DAS APs: ${
-    mediaAP === null
-        ? 'Pendente'
-        : mediaAP.toFixed(1)
-}\n`;
-
-
-            if (
-                mediaAP !== null
-            ) {
-
-                if (
-                    mediaAP >= 7
-                ) {
-
-                    txt +=
-                        'STATUS: APROVADO POR MÉDIA 🏆\n';
-
-                } else if (
-                    mediaAP >= 4
-                ) {
-
-                    const af =
-                        calcularAFnecessaria(
-                            mediaAP
-                        );
-
-                    txt +=
-`STATUS: POSSÍVEL AF\n`;
-
-                    txt +=
-`AF necessária: ${
-    af.toFixed(1)
-}\n`;
-
-                } else {
-
-                    txt +=
-                        'STATUS: ABAIXO DE 4,0\n';
-
-                }
+                recuperacao++;
 
             }
-
-
-            txt += '\n';
 
         }
     );
 
 
-    txt +=
-`===========================================
-              FIM DO RELATÓRIO
-===========================================`;
+    /* =====================================================
+       HTML COMPLETO DO RELATÓRIO
+       ===================================================== */
 
+    const html = `
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width,
+             initial-scale=1.0"
+>
+
+<meta
+    name="theme-color"
+    content="#0d1117"
+>
+
+<title>
+    Relatório de Notas - UFC ${escapeHTML(semestre)}
+</title>
+
+
+<style>
+
+/* =====================================================
+   BASE
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    width: 100%;
+}
+
+
+body {
+
+    margin: 0;
+
+    padding: 15px;
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(124,77,255,.10),
+            transparent 35%
+        ),
+        #0d1117;
+
+    color: #eee;
+
+    font-family:
+        'Segoe UI',
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+    overflow-x: hidden;
+
+}
+
+
+.container {
+
+    width: 100%;
+
+    max-width: 850px;
+
+    margin: auto;
+
+}
+
+
+/* =====================================================
+   CABEÇALHO
+   ===================================================== */
+
+.header {
+
+    text-align: center;
+
+    padding: 15px 0 25px;
+
+}
+
+
+.header h1 {
+
+    margin: 0;
+
+    color: #00e5ff;
+
+    font-size:
+        clamp(
+            1.35rem,
+            5vw,
+            2rem
+        );
+
+    letter-spacing: 2px;
+
+    font-weight: 900;
+
+    text-shadow:
+        0 0 12px
+        rgba(0,229,255,.3);
+
+}
+
+
+.header p {
+
+    margin:
+        8px 0 0;
+
+    color: #888;
+
+    font-size: .85rem;
+
+}
+
+
+/* =====================================================
+   RESUMO
+   ===================================================== */
+
+.resumo {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.resumo-box {
+
+    background: #151a22;
+
+    border:
+        1px solid #2a2a2a;
+
+    border-radius: 15px;
+
+    padding:
+        14px 8px;
+
+    text-align: center;
+
+}
+
+
+.resumo-numero {
+
+    display: block;
+
+    font-size:
+        clamp(
+            1.25rem,
+            5vw,
+            1.6rem
+        );
+
+    font-weight: 900;
+
+    color: #00e5ff;
+
+}
+
+
+.resumo-label {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #888;
+
+    font-size: .65rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+}
+
+
+/* =====================================================
+   MATÉRIA
+   ===================================================== */
+
+.materia {
+
+    background:
+        linear-gradient(
+            145deg,
+            #151a22,
+            #11161d
+        );
+
+    border:
+        1px solid #2a2a2a;
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,.35);
+
+    width: 100%;
+
+    overflow: hidden;
+
+}
+
+
+.materia-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding-bottom: 15px;
+
+    margin-bottom: 15px;
+
+    border-bottom:
+        2px solid #292d35;
+
+}
+
+
+.materia-header h2 {
+
+    margin: 0;
+
+    color: #00e5ff;
+
+    font-size:
+        clamp(
+            1rem,
+            4vw,
+            1.35rem
+        );
+
+    font-weight: 900;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.materia-id {
+
+    display: block;
+
+    color: #555;
+
+    font-size: .6rem;
+
+    margin-top: 4px;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.materia-media {
+
+    min-width: 55px;
+
+    height: 55px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #000;
+
+    border: 2px solid #444;
+
+    font-size: 1.1rem;
+
+    font-weight: 900;
+
+}
+
+
+.media-aprovado {
+
+    color: #00c853;
+
+    border-color: #00c853;
+
+}
+
+
+.media-atencao {
+
+    color: #ffab00;
+
+    border-color: #ffab00;
+
+}
+
+
+.media-reprovado {
+
+    color: #ff5252;
+
+    border-color: #ff5252;
+
+}
+
+
+/* =====================================================
+   ETAPA
+   ===================================================== */
+
+.etapa {
+
+    background:
+        rgba(0,0,0,.20);
+
+    border:
+        1px solid #333;
+
+    border-left:
+        4px solid #7c4dff;
+
+    border-radius: 14px;
+
+    padding: 14px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.etapa-header h3 {
+
+    margin:
+        0 0 12px;
+
+    color: #7c4dff;
+
+    font-size: .95rem;
+
+    font-weight: 900;
+
+}
+
+
+/* =====================================================
+   NOTAS
+   ===================================================== */
+
+.nota {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border-bottom:
+        1px solid #242424;
+
+    padding:
+        10px 5px;
+
+}
+
+
+.nota:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.nota-info {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.nota-info strong {
+
+    font-size: .82rem;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.nota-info span {
+
+    color: #777;
+
+    font-size: .68rem;
+
+}
+
+
+.nota-valor {
+
+    flex-shrink: 0;
+
+    min-width: 65px;
+
+    text-align: center;
+
+    padding: 7px 9px;
+
+    border-radius: 9px;
+
+    background: #000;
+
+    color: #fff;
+
+    font-weight: 900;
+
+    font-size: .8rem;
+
+}
+
+
+/* =====================================================
+   RESULTADO DA ETAPA
+   ===================================================== */
+
+.resultado-etapa {
+
+    margin-top: 12px;
+
+    padding-top: 10px;
+
+    border-top:
+        1px dashed #444;
+
+    text-align: right;
+
+    font-size: .8rem;
+
+    font-weight: 800;
+
+}
+
+
+.resultado-etapa strong {
+
+    font-size: 1rem;
+
+    margin-left: 5px;
+
+}
+
+
+.boa {
+
+    color: #00c853;
+
+}
+
+
+.atencao {
+
+    color: #ffab00;
+
+}
+
+
+.ruim {
+
+    color: #ff5252;
+
+}
+
+
+.previsao {
+
+    margin-top: 12px;
+
+    padding: 10px;
+
+    border-radius: 11px;
+
+    text-align: center;
+
+    color: #7c4dff;
+
+    background:
+        rgba(124,77,255,.08);
+
+    border:
+        1px dashed #7c4dff;
+
+    font-size: .75rem;
+
+    font-weight: 700;
+
+}
+
+
+.previsao strong {
+
+    font-size: .95rem;
+
+}
+
+
+.previsao.impossivel {
+
+    color: #ff5252;
+
+    border-color: #ff5252;
+
+    background:
+        rgba(255,82,82,.08);
+
+}
+
+
+.sem-notas {
+
+    padding: 10px;
+
+    color: #666;
+
+    text-align: center;
+
+    font-size: .75rem;
+
+}
+
+
+/* =====================================================
+   RESULTADO FINAL
+   ===================================================== */
+
+.resultado-final {
+
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top:
+        1px dashed #444;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.media-final {
+
+    text-align: center;
+
+}
+
+
+.media-final span {
+
+    display: block;
+
+    color: #888;
+
+    font-size: .7rem;
+
+    text-transform: uppercase;
+
+    font-weight: 800;
+
+}
+
+
+.media-final strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #00e5ff;
+
+    font-size: 1.6rem;
+
+}
+
+
+.status {
+
+    padding:
+        9px 18px;
+
+    border-radius: 12px;
+
+    font-size: .7rem;
+
+    font-weight: 900;
+
+    text-align: center;
+
+}
+
+
+.status.aprovado {
+
+    background: #00c853;
+
+    color: #000;
+
+}
+
+
+.status.recuperacao {
+
+    background: #ffab00;
+
+    color: #000;
+
+}
+
+
+.status.reprovado {
+
+    background: #ff5252;
+
+    color: #fff;
+
+}
+
+
+/* =====================================================
+   AF
+   ===================================================== */
+
+.af-box {
+
+    width: 100%;
+
+    padding: 11px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,171,0,.08);
+
+    border:
+        1px solid
+        rgba(255,171,0,.25);
+
+    color: #ffab00;
+
+    text-align: center;
+
+    font-size: .75rem;
+
+    font-weight: 800;
+
+}
+
+
+.af-box strong {
+
+    font-size: 1rem;
+
+}
+
+
+.af-box small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #aaa;
+
+    font-size: .65rem;
+
+}
+
+
+/* =====================================================
+   VAZIO
+   ===================================================== */
+
+.empty {
+
+    text-align: center;
+
+    padding: 50px 15px;
+
+    color: #666;
+
+}
+
+
+.empty-icon {
+
+    font-size: 3rem;
+
+}
+
+
+.empty h2 {
+
+    color: #888;
+
+    font-size: 1rem;
+
+}
+
+
+.empty p {
+
+    font-size: .8rem;
+
+}
+
+
+/* =====================================================
+   RODAPÉ
+   ===================================================== */
+
+.footer {
+
+    text-align: center;
+
+    padding:
+        15px 0 25px;
+
+    color: #555;
+
+    font-size: .65rem;
+
+}
+
+
+.footer strong {
+
+    color: #777;
+
+}
+
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
+
+@media (max-width: 500px) {
+
+    body {
+
+        padding: 8px;
+
+    }
+
+
+    .materia {
+
+        padding: 14px;
+
+        border-radius: 17px;
+
+    }
+
+
+    .materia-header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .materia-media {
+
+        min-width: 48px;
+
+        height: 48px;
+
+        font-size: .95rem;
+
+    }
+
+
+    .resumo {
+
+        gap: 6px;
+
+    }
+
+
+    .resumo-box {
+
+        padding:
+            11px 5px;
+
+    }
+
+
+    .nota {
+
+        padding:
+            9px 2px;
+
+    }
+
+
+    .nota-valor {
+
+        min-width: 55px;
+
+        padding:
+            6px;
+
+    }
+
+}
+
+
+@media (max-width: 350px) {
+
+    .materia-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .materia-media {
+
+        border-radius: 10px;
+
+        width: 100%;
+
+        height: auto;
+
+        padding: 6px;
+
+    }
+
+
+    .nota-valor {
+
+        min-width: 48px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <header class="header">
+
+        <h1>
+            📊 HISTÓRICO DE NOTAS
+        </h1>
+
+        <p>
+            UFC • Semestre ${escapeHTML(semestre)}
+        </p>
+
+    </header>
+
+
+    <section class="resumo">
+
+
+        <div class="resumo-box">
+
+            <span class="resumo-numero">
+                ${materias.length}
+            </span>
+
+            <span class="resumo-label">
+                Matérias
+            </span>
+
+        </div>
+
+
+        <div class="resumo-box">
+
+            <span
+                class="resumo-numero"
+                style="color:#00c853">
+
+                ${aprovadas}
+
+            </span>
+
+            <span class="resumo-label">
+                Aprovadas
+            </span>
+
+        </div>
+
+
+        <div class="resumo-box">
+
+            <span
+                class="resumo-numero"
+                style="color:#ffab00">
+
+                ${recuperacao + aguardando}
+
+            </span>
+
+            <span class="resumo-label">
+                Atenção
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <main>
+
+        ${materiasHTML}
+
+    </main>
+
+
+    <footer class="footer">
+
+        Relatório gerado pelo
+        <strong>Histórico de Notas UFC</strong>
+
+        <br>
+
+        Semestre:
+        ${escapeHTML(semestre)}
+
+    </footer>
+
+
+</div>
+
+</body>
+
+</html>
+
+`;
+
+
+    /* =====================================================
+       DOWNLOAD
+       ===================================================== */
 
     const blob =
         new Blob(
             [
-                '\ufeff' +
-                txt
+                '\ufeff',
+                html
             ],
             {
                 type:
-                    'text/plain;charset=utf-8'
+                    'text/html;charset=utf-8'
             }
         );
 
 
     const url =
-        URL.createObjectURL(
-            blob
-        );
+        URL.createObjectURL(blob);
 
 
     const link =
-        document.createElement(
-            'a'
-        );
+        document.createElement('a');
 
 
-    link.href =
-        url;
+    link.href = url;
 
 
     link.download =
-        `Notas_UFC_${
+        `Relatorio_Notas_UFC_${
             semestre
                 .replace(/\./g, '_')
                 .replace(/\s+/g, '_')
-        }.txt`;
+        }.html`;
 
 
-    document.body.appendChild(
-        link
-    );
+    document.body.appendChild(link);
 
 
     link.click();
@@ -3179,11 +4441,11 @@ function baixarHistorico() {
     link.remove();
 
 
-    URL.revokeObjectURL(
-        url
-    );
+    URL.revokeObjectURL(url);
 
 }
+
+</script>
 
 
 /* =========================================================
