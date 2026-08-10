@@ -19,11 +19,18 @@
 
 <style>
 
+/* =====================================================
+   VARIÁVEIS
+   ===================================================== */
+
 :root {
+
     --bg: #0d1117;
     --card: #151a22;
     --card-2: #1a1f29;
+
     --text: #eee;
+    --muted: #777;
 
     --primary: #7c4dff;
     --secondary: #00e5ff;
@@ -33,55 +40,107 @@
     --danger: #ff5252;
 
     --border: #2a2a2a;
+
 }
+
+
+/* =====================================================
+   RESET
+   ===================================================== */
 
 * {
+
     box-sizing: border-box;
+
 }
 
+
+html {
+
+    width: 100%;
+    min-height: 100%;
+
+}
+
+
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+
+    font-family:
+        'Segoe UI',
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
 
     background:
+
         radial-gradient(
             circle at top,
-            rgba(124, 77, 255, 0.08),
+            rgba(124,77,255,.10),
             transparent 35%
         ),
+
         var(--bg);
 
     color: var(--text);
 
     margin: 0;
-    padding: 10px;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding:
+        12px;
 
     min-height: 100vh;
+
 }
+
+
+/* =====================================================
+   CONTAINER
+   ===================================================== */
 
 .container {
+
     width: 100%;
-    max-width: 650px;
+
+    max-width: 700px;
+
+    margin: auto;
+
 }
 
+
+/* =====================================================
+   TÍTULO
+   ===================================================== */
+
 h1 {
-    color: var(--secondary);
 
-    text-align: center;
+    color:
+        var(--secondary);
 
-    margin: 15px 0 20px;
+    text-align:
+        center;
 
-    font-size: 1.65rem;
+    margin:
+        15px 0 20px;
 
-    letter-spacing: 2px;
+    font-size:
+        clamp(
+            1.25rem,
+            5vw,
+            1.7rem
+        );
 
-    font-weight: 900;
+    letter-spacing:
+        2px;
+
+    font-weight:
+        900;
 
     text-shadow:
-        0 0 10px rgba(0, 229, 255, 0.3);
+        0 0 10px
+        rgba(0,229,255,.3);
+
 }
 
 
@@ -90,64 +149,107 @@ h1 {
    ===================================================== */
 
 button {
-    background: #1c222d;
 
-    color: #eee;
+    background:
+        #1c222d;
 
-    border: 1px solid #333;
+    color:
+        #eee;
 
-    padding: 12px;
+    border:
+        1px solid #333;
 
-    border-radius: 12px;
+    padding:
+        12px;
 
-    font-weight: 800;
+    border-radius:
+        12px;
 
-    cursor: pointer;
+    font-weight:
+        800;
 
-    font-size: 0.78rem;
+    cursor:
+        pointer;
 
-    transition: 0.12s;
+    font-size:
+        .78rem;
 
-    box-shadow: 0 4px 0 #000;
+    transition:
+        .12s;
 
-    text-transform: uppercase;
+    box-shadow:
+        0 4px 0 #000;
+
+    text-transform:
+        uppercase;
+
 }
+
 
 button:hover {
-    filter: brightness(1.12);
+
+    filter:
+        brightness(1.12);
+
 }
+
 
 button:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #000;
+
+    transform:
+        translateY(3px);
+
+    box-shadow:
+        0 1px 0 #000;
+
 }
+
 
 .top-menu {
-    display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    display:
+        grid;
 
-    gap: 12px;
+    grid-template-columns:
+        1fr 1fr;
 
-    width: 100%;
+    gap:
+        10px;
 
-    margin-bottom: 20px;
+    width:
+        100%;
+
+    margin-bottom:
+        22px;
+
 }
 
+
 .btn-back {
-    border-color: var(--primary);
-    color: var(--primary);
+
+    border-color:
+        var(--primary);
+
+    color:
+        var(--primary);
 
     box-shadow:
         0 4px 0 #4a148c;
+
 }
 
+
 .btn-download {
-    border-color: var(--success);
-    color: var(--success);
+
+    border-color:
+        var(--success);
+
+    color:
+        var(--success);
 
     box-shadow:
         0 4px 0 #007a3d;
+
 }
 
 
@@ -156,50 +258,74 @@ button:active {
    ===================================================== */
 
 .semestre-area {
-    display: flex;
 
-    flex-direction: column;
+    display:
+        flex;
 
-    align-items: center;
+    flex-direction:
+        column;
 
-    margin-bottom: 25px;
+    align-items:
+        center;
+
+    margin-bottom:
+        25px;
+
 }
+
 
 .semestre-label {
-    color: #888;
 
-    font-size: 0.75rem;
+    color:
+        #888;
 
-    font-weight: 800;
+    font-size:
+        .75rem;
 
-    text-transform: uppercase;
+    font-weight:
+        800;
 
-    margin-bottom: 7px;
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        7px;
+
 }
 
+
 .semestre-input {
-    background: #000;
+
+    background:
+        #000;
 
     border:
-        2px solid
+        2px solid var(--primary);
+
+    border-radius:
+        15px;
+
+    color:
         var(--primary);
 
-    border-radius: 15px;
+    text-align:
+        center;
 
-    color: var(--primary);
+    font-weight:
+        900;
 
-    text-align: center;
+    width:
+        150px;
 
-    font-weight: 900;
+    padding:
+        10px;
 
-    width: 150px;
-
-    padding: 10px;
-
-    font-size: 1rem;
+    font-size:
+        1rem;
 
     box-shadow:
         0 4px 0 #4a148c;
+
 }
 
 
@@ -208,48 +334,73 @@ button:active {
    ===================================================== */
 
 .resumo {
-    display: grid;
+
+    display:
+        grid;
 
     grid-template-columns:
         repeat(3, 1fr);
 
-    gap: 8px;
+    gap:
+        8px;
 
-    margin-bottom: 25px;
+    margin-bottom:
+        25px;
+
 }
+
 
 .resumo-box {
-    background: var(--card);
+
+    background:
+        var(--card);
 
     border:
-        1px solid
-        var(--border);
+        1px solid var(--border);
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
-    padding: 12px 6px;
+    padding:
+        12px 6px;
 
-    text-align: center;
+    text-align:
+        center;
+
 }
+
 
 .resumo-numero {
-    display: block;
 
-    color: var(--secondary);
+    display:
+        block;
 
-    font-size: 1.35rem;
+    color:
+        var(--secondary);
 
-    font-weight: 900;
+    font-size:
+        1.35rem;
+
+    font-weight:
+        900;
+
 }
 
+
 .resumo-label {
-    color: #888;
 
-    font-size: 0.65rem;
+    color:
+        #888;
 
-    font-weight: 800;
+    font-size:
+        .65rem;
 
-    text-transform: uppercase;
+    font-weight:
+        800;
+
+    text-transform:
+        uppercase;
+
 }
 
 
@@ -258,78 +409,135 @@ button:active {
    ===================================================== */
 
 .materia-card {
+
     background:
+
         linear-gradient(
             145deg,
             #151a22,
             #11161d
         );
 
-    border-radius: 20px;
+    border-radius:
+        20px;
 
-    padding: 18px;
+    padding:
+        18px;
 
-    margin-bottom: 25px;
+    margin-bottom:
+        22px;
 
     border:
-        1px solid
-        var(--border);
+        1px solid var(--border);
 
-    width: 100%;
+    width:
+        100%;
 
     box-shadow:
         0 10px 25px
-        rgba(0,0,0,0.4);
+        rgba(0,0,0,.4);
+
+    overflow:
+        hidden;
+
 }
+
 
 .materia-header {
-    display: flex;
 
-    justify-content: space-between;
+    display:
+        flex;
 
-    align-items: center;
+    justify-content:
+        space-between;
 
-    gap: 10px;
+    align-items:
+        center;
+
+    gap:
+        10px;
 
     border-bottom:
-        2px solid
-        var(--border);
+        2px solid var(--border);
 
-    padding-bottom: 12px;
+    padding-bottom:
+        12px;
 
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
+
 }
+
+
+.materia-header > div:first-child {
+
+    min-width:
+        0;
+
+}
+
 
 .materia-title {
-    color: var(--secondary);
 
-    font-size: 1.25rem;
+    color:
+        var(--secondary);
 
-    font-weight: 900;
+    font-size:
+        clamp(
+            1rem,
+            4vw,
+            1.25rem
+        );
 
-    margin: 0;
+    font-weight:
+        900;
 
-    overflow-wrap: anywhere;
+    margin:
+        0;
+
+    overflow-wrap:
+        anywhere;
+
 }
+
 
 .materia-id {
-    color: #555;
 
-    font-size: 0.6rem;
+    color:
+        #555;
+
+    font-size:
+        .6rem;
+
+    overflow-wrap:
+        anywhere;
+
 }
 
+
 .btn-delete-materia {
-    background: transparent;
 
-    color: var(--danger);
+    background:
+        transparent;
 
-    border: none;
+    color:
+        var(--danger);
 
-    box-shadow: none;
+    border:
+        none;
 
-    padding: 5px;
+    box-shadow:
+        none;
 
-    font-size: 1.1rem;
+    padding:
+        5px;
+
+    font-size:
+        1.1rem;
+
+    flex-shrink:
+        0;
+
 }
 
 
@@ -338,131 +546,194 @@ button:active {
    ===================================================== */
 
 .np-box {
+
     background:
-        rgba(0,0,0,0.2);
+        rgba(0,0,0,.2);
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
-    padding: 14px;
+    padding:
+        14px;
 
-    margin-bottom: 15px;
+    margin-bottom:
+        15px;
 
     border:
-        1px solid
-        #333;
+        1px solid #333;
 
     border-left:
-        5px solid
-        var(--primary);
+        5px solid var(--primary);
+
+    overflow:
+        hidden;
+
 }
+
 
 .np-header {
-    display: flex;
 
-    justify-content: space-between;
+    display:
+        flex;
 
-    align-items: center;
+    justify-content:
+        space-between;
 
-    gap: 10px;
+    align-items:
+        center;
 
-    margin-bottom: 12px;
+    gap:
+        8px;
 
-    color: var(--primary);
+    margin-bottom:
+        12px;
 
-    font-weight: 900;
+    color:
+        var(--primary);
+
+    font-weight:
+        900;
+
 }
+
 
 .np-title {
-    flex: 1;
 
-    background: transparent;
+    flex:
+        1;
 
-    border: none;
+    min-width:
+        0;
+
+    background:
+        transparent;
+
+    border:
+        none;
 
     border-bottom:
-        1px solid
-        #444;
+        1px solid #444;
 
-    border-radius: 0;
+    border-radius:
+        0;
 
-    color: var(--primary);
+    color:
+        var(--primary);
 
-    font-weight: 900;
+    font-weight:
+        900;
 
-    padding: 5px;
+    padding:
+        5px;
+
 }
 
+
 .np-title:focus {
-    outline: none;
+
+    outline:
+        none;
 
     border-color:
         var(--secondary);
+
 }
 
 
 /* =====================================================
-   NOTAS
+   INPUTS
    ===================================================== */
 
-.nota-row {
-    display: grid;
-
-    grid-template-columns:
-        minmax(100px, 1.5fr)
-        70px
-        75px
-        35px;
-
-    gap: 7px;
-
-    margin-bottom: 8px;
-
-    align-items: center;
-}
-
 input {
-    background: #000;
 
-    color: #fff;
+    background:
+        #000;
+
+    color:
+        #fff;
 
     border:
-        1px solid
-        #444;
+        1px solid #444;
 
-    padding: 9px;
+    padding:
+        9px;
 
-    border-radius: 9px;
+    border-radius:
+        9px;
 
-    font-size: 0.82rem;
+    font-size:
+        .82rem;
 
-    width: 100%;
+    width:
+        100%;
 
-    box-sizing: border-box;
+    font-weight:
+        600;
 
-    font-weight: 600;
 }
 
+
 input:focus {
+
     border-color:
         var(--secondary);
 
-    outline: none;
+    outline:
+        none;
+
 }
 
+
+/* =====================================================
+   LINHA DE NOTA
+   ===================================================== */
+
+.nota-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        65px
+        65px
+        32px;
+
+    gap:
+        6px;
+
+    margin-bottom:
+        8px;
+
+    align-items:
+        center;
+
+}
+
+
 .btn-del-small {
-    background: none;
 
-    border: none;
+    background:
+        none;
 
-    color: var(--danger);
+    border:
+        none;
 
-    cursor: pointer;
+    color:
+        var(--danger);
 
-    font-size: 1.1rem;
+    cursor:
+        pointer;
 
-    box-shadow: none;
+    font-size:
+        1.1rem;
 
-    padding: 2px;
+    box-shadow:
+        none;
+
+    padding:
+        2px;
+
 }
 
 
@@ -471,96 +742,146 @@ input:focus {
    ===================================================== */
 
 .media-etapa {
-    text-align: right;
 
-    font-size: 0.85rem;
+    text-align:
+        right;
 
-    margin-top: 10px;
+    font-size:
+        .85rem;
 
-    font-weight: 900;
+    margin-top:
+        10px;
+
+    font-weight:
+        900;
+
 }
+
 
 .media-boa {
-    color: var(--success);
+
+    color:
+        var(--success);
+
 }
+
 
 .media-baixa {
-    color: var(--warning);
+
+    color:
+        var(--warning);
+
 }
+
 
 .media-ruim {
-    color: var(--danger);
+
+    color:
+        var(--danger);
+
 }
 
+
+/* =====================================================
+   PREVISÃO
+   ===================================================== */
+
 .previsao-tag {
+
     background:
-        rgba(124, 77, 255, 0.1);
+        rgba(124,77,255,.1);
 
     color:
         var(--primary);
 
     border:
-        1px dashed
-        var(--primary);
+        1px dashed var(--primary);
 
-    padding: 10px;
+    padding:
+        10px;
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
-    font-size: 0.8rem;
+    font-size:
+        .8rem;
 
-    margin-top: 10px;
+    margin-top:
+        10px;
 
-    font-weight: 800;
+    font-weight:
+        800;
 
-    text-align: center;
+    text-align:
+        center;
+
 }
 
+
 .previsao-impossivel {
-    color: var(--danger);
+
+    color:
+        var(--danger);
 
     border-color:
         var(--danger);
 
     background:
-        rgba(255,82,82,0.08);
+        rgba(255,82,82,.08);
+
 }
 
 
 /* =====================================================
-   BOTÕES DAS ETAPAS
+   BOTÕES ETAPAS
    ===================================================== */
 
 .btn-add-nota {
-    width: 100%;
 
-    font-size: 0.7rem;
+    width:
+        100%;
 
-    margin-top: 10px;
+    font-size:
+        .7rem;
 
-    padding: 9px;
+    margin-top:
+        10px;
 
-    border-style: dashed;
+    padding:
+        9px;
 
-    box-shadow: none;
+    border-style:
+        dashed;
+
+    box-shadow:
+        none;
+
 }
 
+
 .btn-add-np {
+
     background:
         var(--primary);
 
-    color: #fff;
+    color:
+        #fff;
 
-    border: none;
+    border:
+        none;
 
-    margin-top: 2px;
+    margin-top:
+        2px;
 
-    width: 100%;
+    width:
+        100%;
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
     box-shadow:
         0 4px 0 #4a148c;
+
 }
 
 
@@ -569,98 +890,148 @@ input:focus {
    ===================================================== */
 
 .media-final-area {
-    display: flex;
 
-    flex-direction: column;
+    display:
+        flex;
 
-    align-items: center;
+    flex-direction:
+        column;
 
-    margin-top: 18px;
+    align-items:
+        center;
 
-    padding-top: 15px;
+    margin-top:
+        18px;
+
+    padding-top:
+        15px;
 
     border-top:
-        1px dashed
-        #444;
+        1px dashed #444;
 
-    gap: 10px;
+    gap:
+        10px;
+
 }
+
 
 .media-final {
-    font-size: 1.2rem;
 
-    font-weight: 900;
+    font-size:
+        1.2rem;
+
+    font-weight:
+        900;
+
+    text-align:
+        center;
+
 }
+
 
 .media-final span {
-    color: var(--secondary);
 
-    font-size: 1.5rem;
+    color:
+        var(--secondary);
+
+    font-size:
+        1.5rem;
+
 }
 
+
 .status-badge {
+
     padding:
         9px 20px;
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
-    font-size: 0.75rem;
+    font-size:
+        .75rem;
 
-    font-weight: 900;
+    font-weight:
+        900;
 
-    letter-spacing: 1px;
+    letter-spacing:
+        1px;
 
-    color: #000;
+    color:
+        #000;
+
+    text-align:
+        center;
+
 }
 
+
 .aprovado {
+
     background:
         var(--success);
 
     box-shadow:
         0 4px 0 #007a3d;
+
 }
 
+
 .recuperacao {
+
     background:
         var(--warning);
 
     box-shadow:
         0 4px 0 #916200;
+
 }
 
+
 .reprovado {
+
     background:
         var(--danger);
 
-    color: #fff;
+    color:
+        #fff;
 
     box-shadow:
         0 4px 0 #7e1d1d;
+
 }
 
+
 .info-af {
-    width: 100%;
+
+    width:
+        100%;
 
     background:
-        rgba(255,171,0,0.08);
+        rgba(255,171,0,.08);
 
     border:
         1px solid
-        rgba(255,171,0,0.25);
+        rgba(255,171,0,.25);
 
     color:
         var(--warning);
 
-    border-radius: 12px;
+    border-radius:
+        12px;
 
-    padding: 10px;
+    padding:
+        10px;
 
-    font-size: 0.78rem;
+    font-size:
+        .78rem;
 
-    text-align: center;
+    text-align:
+        center;
 
-    font-weight: 800;
+    font-weight:
+        800;
+
 }
 
 
@@ -669,86 +1040,128 @@ input:focus {
    ===================================================== */
 
 .empty {
-    text-align: center;
 
-    padding: 35px 15px;
+    text-align:
+        center;
 
-    color: #666;
+    padding:
+        35px 15px;
+
+    color:
+        #666;
+
 }
+
 
 .empty-icon {
-    font-size: 2.5rem;
 
-    margin-bottom: 10px;
+    font-size:
+        2.5rem;
+
+    margin-bottom:
+        10px;
+
 }
 
+
 .empty-text {
-    font-size: 0.85rem;
+
+    font-size:
+        .85rem;
+
 }
 
 
 /* =====================================================
-   MATÉRIAS REMOVIDAS
+   REMOVIDAS
    ===================================================== */
 
 .removed-area {
-    margin-top: 30px;
+
+    margin-top:
+        30px;
 
     background:
-        rgba(255,255,255,0.025);
+        rgba(255,255,255,.025);
 
     border:
-        1px solid
-        #252525;
+        1px solid #252525;
 
-    border-radius: 15px;
+    border-radius:
+        15px;
 
-    padding: 15px;
+    padding:
+        15px;
+
 }
+
 
 .removed-title {
-    color: #777;
 
-    font-size: 0.75rem;
+    color:
+        #777;
 
-    font-weight: 900;
+    font-size:
+        .75rem;
 
-    text-transform: uppercase;
+    font-weight:
+        900;
 
-    margin-bottom: 10px;
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        10px;
+
 }
+
 
 .removed-item {
-    display: flex;
 
-    justify-content: space-between;
+    display:
+        flex;
 
-    align-items: center;
+    justify-content:
+        space-between;
 
-    gap: 10px;
+    align-items:
+        center;
 
-    padding: 8px 0;
+    gap:
+        10px;
+
+    padding:
+        8px 0;
 
     border-bottom:
-        1px solid
-        #222;
+        1px solid #222;
 
-    font-size: 0.8rem;
+    font-size:
+        .8rem;
 
-    color: #777;
+    color:
+        #777;
+
 }
 
+
 .btn-restore {
-    color: var(--secondary);
+
+    color:
+        var(--secondary);
 
     border-color:
         var(--secondary);
 
-    box-shadow: none;
+    box-shadow:
+        none;
 
-    padding: 6px 10px;
+    padding:
+        6px 10px;
 
-    font-size: 0.65rem;
+    font-size:
+        .65rem;
+
 }
 
 
@@ -758,27 +1171,192 @@ input:focus {
 
 @media (max-width: 480px) {
 
-    .top-menu {
-        gap: 8px;
+    body {
+
+        padding:
+            8px;
+
     }
+
+
+    .top-menu {
+
+        gap:
+            7px;
+
+    }
+
 
     button {
-        font-size: 0.68rem;
+
+        font-size:
+            .65rem;
+
     }
+
 
     .nota-row {
+
         grid-template-columns:
-            1fr 60px 65px 30px;
+            minmax(0,1fr)
+            52px
+            58px
+            28px;
+
+        gap:
+            4px;
+
     }
+
+
+    .nota-row input {
+
+        padding:
+            8px 5px;
+
+        font-size:
+            .72rem;
+
+    }
+
 
     .materia-card {
-        padding: 14px;
+
+        padding:
+            14px;
+
     }
 
-    .resumo-numero {
-        font-size: 1.15rem;
+
+    .np-box {
+
+        padding:
+            11px;
+
     }
+
+
+    .resumo-numero {
+
+        font-size:
+            1.15rem;
+
+    }
+
+
+    .status-badge {
+
+        font-size:
+            .65rem;
+
+        padding:
+            8px 12px;
+
+    }
+
 }
+
+
+/* =====================================================
+   TELAS MUITO PEQUENAS
+   ===================================================== */
+
+@media (max-width: 360px) {
+
+    .nota-row {
+
+        grid-template-columns:
+            1fr 48px 52px 24px;
+
+    }
+
+
+    .nota-row input {
+
+        font-size:
+            .68rem;
+
+    }
+
+
+    .top-menu {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+/* =====================================================
+   RELATÓRIO
+   ===================================================== */
+
+.relatorio-preview {
+
+    margin-top:
+        25px;
+
+}
+
+
+/* =====================================================
+   IMPRESSÃO
+   ===================================================== */
+
+@media print {
+
+    body {
+
+        background:
+            white !important;
+
+        color:
+            #111 !important;
+
+    }
+
+
+    .top-menu,
+    .semestre-area,
+    #removed-container,
+    .btn-delete-materia,
+    .btn-add-np,
+    .btn-add-nota,
+    .btn-del-small {
+
+        display:
+            none !important;
+
+    }
+
+
+    .materia-card {
+
+        background:
+            white !important;
+
+        color:
+            #111 !important;
+
+        box-shadow:
+            none;
+
+        border:
+            1px solid #ccc;
+
+        break-inside:
+            avoid;
+
+    }
+
+}
+
+
+/* =====================================================
+   FIM CSS
+   ===================================================== */
 
 </style>
 
@@ -789,77 +1367,75 @@ input:focus {
 
 <div class="container">
 
-    <h1>📊 HISTÓRICO DE NOTAS</h1>
+<h1>
+    📊 HISTÓRICO DE NOTAS
+</h1>
 
 
-    <!-- MENU -->
+<div class="top-menu">
 
-    <div class="top-menu">
+    <button
+        class="btn-back"
+        onclick="window.location.href='index.html'">
 
-        <button
-            class="btn-back"
-            onclick="window.location.href='index.html'">
-            ⬅️ VOLTAR AO PLANNER
-        </button>
+        ⬅️ VOLTAR AO PLANNER
 
-        <button
-            class="btn-download"
-            onclick="baixarHistorico()">
-            📥 SALVAR RELATÓRIO
-        </button>
-
-    </div>
+    </button>
 
 
-    <!-- SEMESTRE -->
+    <button
+        class="btn-download"
+        onclick="baixarHistorico()">
 
-    <div class="semestre-area">
+        📥 SALVAR RELATÓRIO
 
-        <span class="semestre-label">
-            Semestre atual
-        </span>
+    </button>
 
-        <input
-            type="text"
-            id="input-semestre"
-            class="semestre-input"
-            value="2026.1"
-            placeholder="2026.1"
-            maxlength="15"
-        >
-
-    </div>
+</div>
 
 
-    <!-- RESUMO -->
+<div class="semestre-area">
 
-    <div
-        id="resumo"
-        class="resumo">
-    </div>
-
-
-    <!-- MATÉRIAS -->
-
-    <div
-        id="materias-container">
-    </div>
+    <span class="semestre-label">
+        Semestre atual
+    </span>
 
 
-    <!-- MATÉRIAS REMOVIDAS -->
+    <input
+        type="text"
+        id="input-semestre"
+        class="semestre-input"
+        value="2026.1"
+        placeholder="2026.1"
+        maxlength="15"
+    >
 
-    <div
-        id="removed-container">
-    </div>
+</div>
+
+
+<div
+    id="resumo"
+    class="resumo">
+</div>
+
+
+<div
+    id="materias-container">
+</div>
+
+
+<div
+    id="removed-container">
+</div>
 
 </div>
 
 
 <script>
 
-/* =========================================================
-   UFC NOTAS V2
-   ========================================================= */
+/* =====================================================
+   CONFIGURAÇÃO
+   ===================================================== */
 
 const STORAGE_KEY =
     'ufc_sistema_notas_v2';
@@ -871,26 +1447,30 @@ const OLD_STORAGE_KEY =
     'ufc_sistema_notas_v1';
 
 
-/* =========================================================
-   ESTRUTURA
-   ========================================================= */
+/* =====================================================
+   ESTRUTURA INICIAL
+   ===================================================== */
 
 const estruturaInicial = {
 
-    version: 2,
+    version:
+        2,
 
-    semestre: '2026.1',
+    semestre:
+        '2026.1',
 
-    materias: {},
+    materias:
+        {},
 
-    removidas: {}
+    removidas:
+        {}
 
 };
 
 
-/* =========================================================
+/* =====================================================
    UTILITÁRIOS
-   ========================================================= */
+   ===================================================== */
 
 function gerarId(prefixo = 'id') {
 
@@ -903,20 +1483,25 @@ function gerarId(prefixo = 'id') {
 
     }
 
-    return `${prefixo}-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 10)}`;
+
+    return `${prefixo}-${Date.now()}-${
+        Math.random()
+            .toString(36)
+            .substring(2,10)
+    }`;
+
 }
 
 
 function escapeHTML(valor) {
 
     return String(valor ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
 
 }
 
@@ -928,168 +1513,101 @@ function numero(valor) {
         valor === null ||
         valor === undefined
     ) {
+
         return null;
+
     }
+
 
     const n =
         parseFloat(
-            String(valor).replace(',', '.')
+            String(valor)
+                .replace(',','.')
         );
+
 
     return Number.isFinite(n)
         ? n
         : null;
+
 }
 
 
 function limitarNota(valor) {
 
-    const n = numero(valor);
+    const n =
+        numero(valor);
 
-    if (n === null) {
+
+    if (
+        n === null
+    ) {
+
         return '';
+
     }
+
 
     return Math.max(
         0,
-        Math.min(10, n)
+        Math.min(10,n)
     );
 
 }
 
 
-/* =========================================================
-   CARREGAMENTO
-   ========================================================= */
+/* =====================================================
+   NORMALIZAÇÃO
+   ===================================================== */
 
-function carregarDados() {
+function normalizarParcial(parcial) {
 
-    try {
+    return {
 
-        const salvo =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
+        id:
+            parcial?.id ||
+            gerarId('np'),
 
-        if (salvo) {
-
-            const dados =
-                JSON.parse(salvo);
-
-            return normalizarDados(
-                dados
-            );
-        }
-
-
-        /*
-         * Tenta migrar a versão antiga.
-         */
-
-        const antigo =
-            localStorage.getItem(
-                OLD_STORAGE_KEY
-            );
-
-        if (antigo) {
-
-            const dadosAntigos =
-                JSON.parse(antigo);
-
-            const migrado =
-                migrarVersaoAntiga(
-                    dadosAntigos
-                );
-
-            salvar();
-
-            return migrado;
-        }
-
-
-    } catch (erro) {
-
-        console.error(
-            'Erro ao carregar notas:',
-            erro
-        );
-
-    }
-
-
-    return structuredClone(
-        estruturaInicial
-    );
-}
-
-
-function normalizarDados(dados) {
-
-    const resultado = {
-
-        version: 2,
-
-        semestre:
+        nome:
             String(
-                dados.semestre ||
-                '2026.1'
+                parcial?.nome ||
+                'Nova Etapa'
             ),
 
-        materias: {},
+        notas:
+            Array.isArray(
+                parcial?.notas
+            )
+                ? parcial.notas.map(
+                    nota => ({
 
-        removidas: {}
+                        id:
+                            nota?.id ||
+                            gerarId('nota'),
+
+                        tipo:
+                            String(
+                                nota?.tipo || ''
+                            ),
+
+                        peso:
+                            nota?.peso ??
+                            1,
+
+                        valor:
+                            nota?.valor ??
+                            ''
+
+                    })
+                )
+                : [],
+
+        af:
+            parcial?.af ??
+            ''
 
     };
 
-
-    if (
-        dados.materias &&
-        typeof dados.materias === 'object'
-    ) {
-
-        Object.entries(
-            dados.materias
-        ).forEach(
-            ([id, materia]) => {
-
-                resultado.materias[id] =
-                    normalizarMateria(
-                        materia,
-                        id
-                    );
-
-            }
-        );
-    }
-
-
-    if (
-        dados.removidas &&
-        typeof dados.removidas === 'object'
-    ) {
-
-        Object.entries(
-            dados.removidas
-        ).forEach(
-            ([id, materia]) => {
-
-                resultado.removidas[id] = {
-
-                    id,
-
-                    nome:
-                        String(
-                            materia.nome || ''
-                        )
-
-                };
-
-            }
-        );
-    }
-
-
-    return resultado;
 }
 
 
@@ -1118,67 +1636,91 @@ function normalizarMateria(
                 : []
 
     };
+
 }
 
 
-function normalizarParcial(
-    parcial
-) {
+function normalizarDados(dados) {
 
-    return {
+    const resultado = {
 
-        id:
-            parcial.id ||
-            gerarId('np'),
+        version:
+            2,
 
-        nome:
+        semestre:
             String(
-                parcial.nome ||
-                'Nova Etapa'
+                dados?.semestre ||
+                '2026.1'
             ),
 
-        notas:
-            Array.isArray(
-                parcial.notas
-            )
-                ? parcial.notas.map(
-                    nota => ({
+        materias:
+            {},
 
-                        id:
-                            nota.id ||
-                            gerarId('nota'),
-
-                        tipo:
-                            String(
-                                nota.tipo || ''
-                            ),
-
-                        peso:
-                            nota.peso ??
-                            1,
-
-                        valor:
-                            nota.valor ??
-                            ''
-
-                    })
-                )
-                : [],
-
-        af:
-            parcial.af ?? ''
+        removidas:
+            {}
 
     };
+
+
+    if (
+        dados?.materias &&
+        typeof dados.materias === 'object'
+    ) {
+
+        Object.entries(
+            dados.materias
+        ).forEach(
+            ([id,materia]) => {
+
+                resultado.materias[id] =
+                    normalizarMateria(
+                        materia,
+                        id
+                    );
+
+            }
+        );
+
+    }
+
+
+    if (
+        dados?.removidas &&
+        typeof dados.removidas === 'object'
+    ) {
+
+        Object.entries(
+            dados.removidas
+        ).forEach(
+            ([id,materia]) => {
+
+                resultado.removidas[id] = {
+
+                    id,
+
+                    nome:
+                        String(
+                            materia?.nome || ''
+                        )
+
+                };
+
+            }
+        );
+
+    }
+
+
+    return resultado;
+
 }
 
 
-/* =========================================================
-   MIGRAÇÃO V1 → V2
-   ========================================================= */
+/* =====================================================
+   MIGRAÇÃO
+   ===================================================== */
 
-function migrarVersaoAntiga(
-    antigo
-) {
+function migrarVersaoAntiga(antigo) {
 
     const novo =
         structuredClone(
@@ -1186,29 +1728,19 @@ function migrarVersaoAntiga(
         );
 
 
-    /*
-     * Recupera o semestre antigo.
-     */
-
     const semestre =
         localStorage.getItem(
             'ufc_semestre'
         );
 
+
     if (semestre) {
-        novo.semestre = semestre;
+
+        novo.semestre =
+            semestre;
+
     }
 
-
-    /*
-     * A versão antiga usava:
-     *
-     * {
-     *   "Cálculo": {
-     *      parciais: [...]
-     *   }
-     * }
-     */
 
     if (
         antigo &&
@@ -1218,7 +1750,7 @@ function migrarVersaoAntiga(
         Object.entries(
             antigo
         ).forEach(
-            ([nome, materia]) => {
+            ([nome,materia]) => {
 
                 const id =
                     gerarId('mat');
@@ -1243,51 +1775,106 @@ function migrarVersaoAntiga(
 
             }
         );
+
     }
 
 
     return novo;
+
 }
 
 
-/* =========================================================
-   DADOS
-   ========================================================= */
+/* =====================================================
+   CARREGAR
+   ===================================================== */
+
+function carregarDados() {
+
+    try {
+
+        const salvo =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if (salvo) {
+
+            return normalizarDados(
+                JSON.parse(salvo)
+            );
+
+        }
+
+
+        const antigo =
+            localStorage.getItem(
+                OLD_STORAGE_KEY
+            );
+
+
+        if (antigo) {
+
+            const migrado =
+                migrarVersaoAntiga(
+                    JSON.parse(antigo)
+                );
+
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(migrado)
+            );
+
+
+            return migrado;
+
+        }
+
+    } catch(erro) {
+
+        console.error(
+            'Erro ao carregar notas:',
+            erro
+        );
+
+    }
+
+
+    return structuredClone(
+        estruturaInicial
+    );
+
+}
+
 
 let dados =
     carregarDados();
 
 
-/* =========================================================
+/* =====================================================
    SALVAR
-   ========================================================= */
+   ===================================================== */
 
 function salvar() {
 
     localStorage.setItem(
-
         STORAGE_KEY,
-
         JSON.stringify(dados)
-
     );
 
-
-    /*
-     * Mantém o semestre também em uma
-     * chave simples para compatibilidade.
-     */
 
     localStorage.setItem(
         'ufc_semestre',
         dados.semestre
     );
+
 }
 
 
-/* =========================================================
-   SINCRONIZAÇÃO COM PLANNER
-   ========================================================= */
+/* =====================================================
+   PLANNER
+   ===================================================== */
 
 function obterMateriasPlanner() {
 
@@ -1298,78 +1885,82 @@ function obterMateriasPlanner() {
                 TRANSPORTE_KEY
             );
 
+
         if (!salvo) {
+
             return [];
+
         }
+
 
         const lista =
             JSON.parse(salvo);
 
 
-        /*
-         * Compatibilidade com a versão antiga:
-         *
-         * ["Cálculo", "Programação"]
-         */
-
         if (
-            Array.isArray(lista)
+            !Array.isArray(lista)
         ) {
 
-            return lista.map(
-                item => {
+            return [];
 
-                    if (
-                        typeof item === 'string'
-                    ) {
+        }
 
-                        return {
-                            id:
-                                'legacy-' +
-                                item,
 
-                            nome:
-                                item
-                        };
+        return lista.map(
+            item => {
 
-                    }
+                if (
+                    typeof item === 'string'
+                ) {
 
                     return {
 
                         id:
-                            item.id ||
                             'legacy-' +
-                            item.nome,
+                            item,
 
                         nome:
-                            String(
-                                item.nome || ''
-                            )
+                            item
 
                     };
 
                 }
-            );
-        }
 
 
-    } catch (erro) {
+                return {
+
+                    id:
+                        item?.id ||
+                        'legacy-' +
+                        item?.nome,
+
+                    nome:
+                        String(
+                            item?.nome || ''
+                        )
+
+                };
+
+            }
+        );
+
+    } catch(erro) {
 
         console.error(
-            'Erro ao sincronizar Planner:',
+            'Erro no Planner:',
             erro
         );
 
+        return [];
+
     }
 
-
-    return [];
 }
 
 
 function sincronizar() {
 
-    const materiasPlanner =
+    const materias =
         obterMateriasPlanner();
 
 
@@ -1377,32 +1968,29 @@ function sincronizar() {
         false;
 
 
-    materiasPlanner.forEach(
+    materias.forEach(
         materia => {
 
             if (
                 !materia.id ||
                 !materia.nome.trim()
             ) {
+
                 return;
+
             }
 
-
-            /*
-             * Se o usuário apagou essa matéria
-             * das notas, NÃO recriamos automaticamente.
-             */
 
             if (
-                dados.removidas[materia.id]
+                dados.removidas[
+                    materia.id
+                ]
             ) {
+
                 return;
+
             }
 
-
-            /*
-             * Só cria se for realmente nova.
-             */
 
             if (
                 !dados.materias[
@@ -1420,18 +2008,16 @@ function sincronizar() {
                     nome:
                         materia.nome,
 
-                    parciais: []
+                    parciais:
+                        []
 
                 };
 
-                alterou = true;
+
+                alterou =
+                    true;
 
             } else {
-
-                /*
-                 * Atualiza o nome vindo do Planner,
-                 * mas preserva todas as notas.
-                 */
 
                 if (
                     dados.materias[
@@ -1445,8 +2031,12 @@ function sincronizar() {
                     ].nome =
                         materia.nome;
 
-                    alterou = true;
+
+                    alterou =
+                        true;
+
                 }
+
             }
 
         }
@@ -1454,14 +2044,17 @@ function sincronizar() {
 
 
     if (alterou) {
+
         salvar();
+
     }
+
 }
 
 
-/* =========================================================
-   CÁLCULOS
-   ========================================================= */
+/* =====================================================
+   CÁLCULO DA ETAPA
+   ===================================================== */
 
 function calcularEtapa(parcial) {
 
@@ -1471,14 +2064,18 @@ function calcularEtapa(parcial) {
     let pesos =
         0;
 
-    const faltantes = [];
+
+    const faltantes =
+        [];
 
 
     parcial.notas.forEach(
         nota => {
 
             const peso =
-                numero(nota.peso) || 0;
+                numero(nota.peso) ||
+                0;
+
 
             const valor =
                 numero(nota.valor);
@@ -1487,7 +2084,9 @@ function calcularEtapa(parcial) {
             if (
                 peso <= 0
             ) {
+
                 return;
+
             }
 
 
@@ -1524,7 +2123,7 @@ function calcularEtapa(parcial) {
 
     const pesosFaltantes =
         faltantes.reduce(
-            (total, item) =>
+            (total,item) =>
                 total + item.peso,
             0
         );
@@ -1535,28 +2134,19 @@ function calcularEtapa(parcial) {
         pesosFaltantes;
 
 
-    /*
-     * Média já conhecida.
-     */
-
     const mediaAtual =
         pesos > 0
             ? soma / pesos
             : null;
 
 
-    /*
-     * Se existem notas faltantes,
-     * calcula a média necessária
-     * nas notas restantes para chegar a 7.
-     */
-
     let meta =
         null;
 
 
     if (
-        pesosFaltantes > 0
+        pesosFaltantes > 0 &&
+        pesoTotal > 0
     ) {
 
         meta =
@@ -1568,11 +2158,6 @@ function calcularEtapa(parcial) {
 
     }
 
-
-    /*
-     * Se não existem faltantes,
-     * calcula a média final da etapa.
-     */
 
     let mediaFinal =
         null;
@@ -1608,15 +2193,13 @@ function calcularEtapa(parcial) {
         meta
 
     };
+
 }
 
 
-/*
- * Média das APs:
- *
- * A UFC utiliza a média aritmética
- * das avaliações progressivas.
- */
+/* =====================================================
+   MÉDIA DAS APs
+   ===================================================== */
 
 function calcularMediaAPs(materia) {
 
@@ -1624,8 +2207,8 @@ function calcularMediaAPs(materia) {
         materia.parciais
             .map(calcularEtapa)
             .filter(
-                resultado =>
-                    resultado.mediaFinal !== null
+                etapa =>
+                    etapa.mediaFinal !== null
             );
 
 
@@ -1640,7 +2223,7 @@ function calcularMediaAPs(materia) {
 
     const soma =
         etapas.reduce(
-            (total, etapa) =>
+            (total,etapa) =>
                 total +
                 etapa.mediaFinal,
             0
@@ -1649,33 +2232,31 @@ function calcularMediaAPs(materia) {
 
     return soma /
         etapas.length;
+
 }
 
 
-/*
- * Calcula quanto seria necessário
- * na AF para média final >= 5.
- *
- * MF = (AF + Média AP) / 2
- *
- * AF necessária = 10 - Média AP
- */
+/* =====================================================
+   AF
+   ===================================================== */
 
-function calcularAFnecessaria(
-    mediaAP
-) {
+function calcularAFnecessaria(mediaAP) {
 
     if (
         mediaAP === null
     ) {
+
         return null;
+
     }
 
 
     if (
         mediaAP < 4
     ) {
+
         return null;
+
     }
 
 
@@ -1683,24 +2264,28 @@ function calcularAFnecessaria(
         4,
         10 - mediaAP
     );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    STATUS
-   ========================================================= */
+   ===================================================== */
 
-function obterStatus(
-    mediaAP
-) {
+function obterStatus(mediaAP) {
 
     if (
         mediaAP === null
     ) {
 
         return {
-            classe: 'recuperacao',
-            texto: 'AGUARDANDO NOTAS'
+
+            classe:
+                'recuperacao',
+
+            texto:
+                'AGUARDANDO NOTAS'
+
         };
 
     }
@@ -1711,8 +2296,13 @@ function obterStatus(
     ) {
 
         return {
-            classe: 'aprovado',
-            texto: 'APROVADO POR MÉDIA 🏆'
+
+            classe:
+                'aprovado',
+
+            texto:
+                'APROVADO POR MÉDIA 🏆'
+
         };
 
     }
@@ -1723,8 +2313,13 @@ function obterStatus(
     ) {
 
         return {
-            classe: 'recuperacao',
-            texto: 'POSSÍVEL AVALIAÇÃO FINAL'
+
+            classe:
+                'recuperacao',
+
+            texto:
+                'POSSÍVEL AVALIAÇÃO FINAL'
+
         };
 
     }
@@ -1739,12 +2334,13 @@ function obterStatus(
             'ABAIXO DE 4,0'
 
     };
+
 }
 
 
-/* =========================================================
-   RENDER
-   ========================================================= */
+/* =====================================================
+   RENDER PRINCIPAL
+   ===================================================== */
 
 function renderizar() {
 
@@ -1766,19 +2362,11 @@ function renderizar() {
         );
 
 
-    /*
-     * Atualiza semestre.
-     */
-
     document.getElementById(
         'input-semestre'
     ).value =
         dados.semestre;
 
-
-    /*
-     * Resumo.
-     */
 
     let aprovadas =
         0;
@@ -1843,7 +2431,9 @@ function renderizar() {
             <span
                 class="resumo-numero"
                 style="color:var(--success)">
+
                 ${aprovadas}
+
             </span>
 
             <span class="resumo-label">
@@ -1858,7 +2448,9 @@ function renderizar() {
             <span
                 class="resumo-numero"
                 style="color:var(--warning)">
+
                 ${recuperacao}
+
             </span>
 
             <span class="resumo-label">
@@ -1869,10 +2461,6 @@ function renderizar() {
 
     `;
 
-
-    /*
-     * Nenhuma matéria.
-     */
 
     if (
         lista.length === 0
@@ -1887,10 +2475,14 @@ function renderizar() {
                 </div>
 
                 <div class="empty-text">
+
                     Nenhuma matéria cadastrada.
+
                     <br><br>
+
                     Adicione matérias pelo Planner
                     ou restaure uma matéria removida.
+
                 </div>
 
             </div>
@@ -1908,16 +2500,15 @@ function renderizar() {
 
 
     renderizarRemovidas();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER MATÉRIA
-   ========================================================= */
+   ===================================================== */
 
-function renderizarMateria(
-    materia
-) {
+function renderizarMateria(materia) {
 
     const mediaAP =
         calcularMediaAPs(
@@ -1942,45 +2533,17 @@ function renderizarMateria(
 
 
     materia.parciais.forEach(
-        (parcial, pIdx) => {
+        (parcial,index) => {
 
             etapasHTML +=
                 renderizarParcial(
                     materia,
                     parcial,
-                    pIdx
+                    index
                 );
 
         }
     );
-
-
-    /*
-     * Média final considerando AF.
-     */
-
-    let mediaFinal =
-        null;
-
-
-    const af =
-        numero(
-            materia.af
-        );
-
-
-    if (
-        mediaAP !== null &&
-        af !== null
-    ) {
-
-        mediaFinal =
-            (
-                mediaAP +
-                af
-            ) / 2;
-
-    }
 
 
     let afHTML =
@@ -1993,11 +2556,24 @@ function renderizarMateria(
         mediaAP < 7
     ) {
 
+        const af =
+            numero(
+                materia.af
+            );
+
+
         if (
             af !== null
         ) {
 
-            const passouAF =
+            const mediaFinal =
+                (
+                    mediaAP +
+                    af
+                ) / 2;
+
+
+            const passou =
                 af >= 4 &&
                 mediaFinal >= 5;
 
@@ -2009,17 +2585,15 @@ function renderizarMateria(
                     AF registrada:
                     <b>${af.toFixed(1)}</b>
 
-                    &nbsp; |
+                    &nbsp; | &nbsp;
 
                     Média final:
-                    <b>
-                        ${mediaFinal.toFixed(1)}
-                    </b>
+                    <b>${mediaFinal.toFixed(1)}</b>
 
-                    &nbsp; |
+                    &nbsp; | &nbsp;
 
                     ${
-                        passouAF
+                        passou
                             ? '✅ APROVADO'
                             : '❌ REPROVADO'
                     }
@@ -2035,6 +2609,7 @@ function renderizarMateria(
                 <div class="info-af">
 
                     🎯 Nota mínima na AF:
+
                     <b>
                         ${afNecessaria.toFixed(1)}
                     </b>
@@ -2065,15 +2640,20 @@ function renderizarMateria(
                 <div>
 
                     <h3 class="materia-title">
+
                         ${escapeHTML(
                             materia.nome
                         )}
+
                     </h3>
 
+
                     <div class="materia-id">
+
                         ${escapeHTML(
                             materia.id
                         )}
+
                     </div>
 
                 </div>
@@ -2084,7 +2664,7 @@ function renderizarMateria(
                     onclick="apagarMateria(
                         '${escapeHTML(materia.id)}'
                     )"
-                    title="Apagar matéria completamente">
+                    title="Apagar matéria">
 
                     🗑️
 
@@ -2109,6 +2689,7 @@ function renderizarMateria(
 
             ${
                 mediaAP !== null
+
                     ? `
 
                         <div class="media-final-area">
@@ -2125,8 +2706,10 @@ function renderizarMateria(
 
 
                             <span
-                                class="status-badge
-                                ${status.classe}">
+                                class="
+                                    status-badge
+                                    ${status.classe}
+                                ">
 
                                 ${status.texto}
 
@@ -2138,35 +2721,40 @@ function renderizarMateria(
                         </div>
 
                     `
+
                     : `
+
                         <div class="media-final-area">
 
                             <span
-                                class="status-badge
-                                recuperacao">
+                                class="
+                                    status-badge
+                                    recuperacao
+                                ">
 
                                 AGUARDANDO NOTAS
 
                             </span>
 
                         </div>
+
                     `
             }
 
         </div>
 
     `;
+
 }
 
 
-/* =========================================================
-   RENDER PARCIAL
-   ========================================================= */
+/* =====================================================
+   RENDER ETAPA
+   ===================================================== */
 
 function renderizarParcial(
     materia,
-    parcial,
-    pIdx
+    parcial
 ) {
 
     const calculo =
@@ -2260,10 +2848,6 @@ function renderizarParcial(
     );
 
 
-    /*
-     * Resultado da etapa.
-     */
-
     let resultadoHTML =
         '';
 
@@ -2289,10 +2873,13 @@ function renderizarParcial(
                     com <b>7,0</b>:
 
                     média de
-                    <b>${Math.max(
-                        0,
-                        meta
-                    ).toFixed(1)}</b>
+
+                    <b>
+                        ${Math.max(
+                            0,
+                            meta
+                        ).toFixed(1)}
+                    </b>
 
                     nas próximas notas.
 
@@ -2354,6 +2941,7 @@ function renderizarParcial(
                 ">
 
                 Média da etapa:
+
                 ${calculo.mediaFinal.toFixed(1)}
 
             </div>
@@ -2399,8 +2987,11 @@ function renderizarParcial(
 
             ${
                 notasHTML ||
+
                 `
-                    <div class="empty-text"
+
+                    <div
+                        class="empty-text"
                         style="
                             color:#666;
                             text-align:center;
@@ -2410,6 +3001,7 @@ function renderizarParcial(
                         Nenhuma avaliação cadastrada.
 
                     </div>
+
                 `
             }
 
@@ -2431,24 +3023,26 @@ function renderizarParcial(
         </div>
 
     `;
+
 }
 
 
-/* =========================================================
-   ADICIONAR ETAPA
-   ========================================================= */
+/* =====================================================
+   ADICIONAR NP
+   ===================================================== */
 
-function adicionarNP(
-    materiaId
-) {
+function adicionarNP(materiaId) {
 
     const materia =
         dados.materias[
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
@@ -2458,13 +3052,13 @@ function adicionarNP(
             gerarId('np'),
 
         nome:
-            `NP${
-                materia.parciais.length + 1
-            }`,
+            `NP${materia.parciais.length + 1}`,
 
-        notas: [],
+        notas:
+            [],
 
-        af: ''
+        af:
+            ''
 
     });
 
@@ -2472,12 +3066,13 @@ function adicionarNP(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
-   REMOVER ETAPA
-   ========================================================= */
+/* =====================================================
+   REMOVER NP
+   ===================================================== */
 
 function removerNP(
     materiaId,
@@ -2489,19 +3084,25 @@ function removerNP(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
     const parcial =
         materia.parciais.find(
-            p => p.id === parcialId
+            p =>
+                p.id === parcialId
         );
 
 
     if (!parcial) {
+
         return;
+
     }
 
 
@@ -2512,24 +3113,27 @@ function removerNP(
     ) {
 
         return;
+
     }
 
 
     materia.parciais =
         materia.parciais.filter(
-            p => p.id !== parcialId
+            p =>
+                p.id !== parcialId
         );
 
 
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
-   NOME DA ETAPA
-   ========================================================= */
+/* =====================================================
+   NOME DA NP
+   ===================================================== */
 
 function atualizarParcialNome(
     materiaId,
@@ -2542,18 +3146,25 @@ function atualizarParcialNome(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
     const parcial =
         materia.parciais.find(
-            p => p.id === parcialId
+            p =>
+                p.id === parcialId
         );
 
+
     if (!parcial) {
+
         return;
+
     }
 
 
@@ -2565,12 +3176,13 @@ function atualizarParcialNome(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    ADICIONAR NOTA
-   ========================================================= */
+   ===================================================== */
 
 function adicionarNota(
     materiaId,
@@ -2582,18 +3194,25 @@ function adicionarNota(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
     const parcial =
         materia.parciais.find(
-            p => p.id === parcialId
+            p =>
+                p.id === parcialId
         );
 
+
     if (!parcial) {
+
         return;
+
     }
 
 
@@ -2617,12 +3236,13 @@ function adicionarNota(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    REMOVER NOTA
-   ========================================================= */
+   ===================================================== */
 
 function removerNota(
     materiaId,
@@ -2635,36 +3255,45 @@ function removerNota(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
     const parcial =
         materia.parciais.find(
-            p => p.id === parcialId
+            p =>
+                p.id === parcialId
         );
 
+
     if (!parcial) {
+
         return;
+
     }
 
 
     parcial.notas =
         parcial.notas.filter(
-            n => n.id !== notaId
+            n =>
+                n.id !== notaId
         );
 
 
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    ATUALIZAR NOTA
-   ========================================================= */
+   ===================================================== */
 
 function atualizarNota(
     materiaId,
@@ -2679,28 +3308,39 @@ function atualizarNota(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
     const parcial =
         materia.parciais.find(
-            p => p.id === parcialId
+            p =>
+                p.id === parcialId
         );
 
+
     if (!parcial) {
+
         return;
+
     }
 
 
     const nota =
         parcial.notas.find(
-            n => n.id === notaId
+            n =>
+                n.id === notaId
         );
 
+
     if (!nota) {
+
         return;
+
     }
 
 
@@ -2719,6 +3359,7 @@ function atualizarNota(
 
         const peso =
             numero(valor);
+
 
         nota.peso =
             peso === null
@@ -2739,12 +3380,13 @@ function atualizarNota(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    APAGAR MATÉRIA
-   ========================================================= */
+   ===================================================== */
 
 function apagarMateria(
     materiaId
@@ -2755,8 +3397,11 @@ function apagarMateria(
             materiaId
         ];
 
+
     if (!materia) {
+
         return;
+
     }
 
 
@@ -2765,31 +3410,22 @@ function apagarMateria(
             `APAGAR COMPLETAMENTE?\n\n` +
             `${materia.nome}\n\n` +
             `Todas as NP, notas e dados dessa matéria ` +
-            `serão removidos das notas.\n\n` +
-            `Ela não será recriada automaticamente pelo Planner.`
+            `serão removidos.\n\n` +
+            `Ela poderá ser restaurada depois.`
         );
 
 
     if (!confirmou) {
+
         return;
+
     }
 
-
-    /*
-     * Remove da lista ativa.
-     */
 
     delete dados.materias[
         materiaId
     ];
 
-
-    /*
-     * Guarda apenas o ID/nome para impedir
-     * que a sincronização automática recrie.
-     *
-     * Não guarda as notas.
-     */
 
     dados.removidas[
         materiaId
@@ -2807,12 +3443,13 @@ function apagarMateria(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
-   RESTAURAR MATÉRIA
-   ========================================================= */
+/* =====================================================
+   RESTAURAR
+   ===================================================== */
 
 function restaurarMateria(
     materiaId
@@ -2825,25 +3462,16 @@ function restaurarMateria(
 
 
     if (!removida) {
+
         return;
+
     }
 
-
-    /*
-     * Remove da lista de bloqueio.
-     */
 
     delete dados.removidas[
         materiaId
     ];
 
-
-    /*
-     * Cria uma matéria nova.
-     *
-     * As notas antigas NÃO voltam,
-     * porque o usuário escolheu apagar completamente.
-     */
 
     dados.materias[
         materiaId
@@ -2855,7 +3483,8 @@ function restaurarMateria(
         nome:
             removida.nome,
 
-        parciais: []
+        parciais:
+            []
 
     };
 
@@ -2863,12 +3492,13 @@ function restaurarMateria(
     salvar();
 
     renderizar();
+
 }
 
 
-/* =========================================================
-   MATÉRIAS REMOVIDAS
-   ========================================================= */
+/* =====================================================
+   REMOVIDAS
+   ===================================================== */
 
 function renderizarRemovidas() {
 
@@ -2892,6 +3522,7 @@ function renderizarRemovidas() {
             '';
 
         return;
+
     }
 
 
@@ -2938,12 +3569,13 @@ function renderizarRemovidas() {
         </div>
 
     `;
+
 }
 
 
-/* =========================================================
+/* =====================================================
    SEMESTRE
-   ========================================================= */
+   ===================================================== */
 
 document
     .getElementById(
@@ -2957,47 +3589,88 @@ document
                 this.value.trim() ||
                 '2026.1';
 
+
             salvar();
 
         }
     );
 
 
-/* =========================================================
-   RELATÓRIO
-   ========================================================= */
-
-<script>
+/* =====================================================
+   RELATÓRIO HTML
+   ===================================================== */
 
 function baixarHistorico() {
 
-    const semestre = dados.semestre;
+    const semestre =
+        escapeHTML(
+            dados.semestre
+        );
+
 
     const materias =
-        Object.values(dados.materias);
+        Object.values(
+            dados.materias
+        );
 
 
-    /* =====================================================
-       GERAÇÃO DAS MATÉRIAS
-       ===================================================== */
+    let total =
+        materias.length;
 
-    let materiasHTML = '';
+    let aprovadas =
+        0;
+
+    let atencao =
+        0;
+
+    let aguardando =
+        0;
 
 
-    if (materias.length === 0) {
+    materias.forEach(
+        materia => {
+
+            const media =
+                calcularMediaAPs(
+                    materia
+                );
+
+
+            if (
+                media === null
+            ) {
+
+                aguardando++;
+
+            } else if (
+                media >= 7
+            ) {
+
+                aprovadas++;
+
+            } else {
+
+                atencao++;
+
+            }
+
+        }
+    );
+
+
+    let materiasHTML =
+        '';
+
+
+    if (
+        materias.length === 0
+    ) {
 
         materiasHTML = `
 
             <div class="empty">
 
-                <div class="empty-icon">📚</div>
-
-                <h2>Nenhuma matéria cadastrada</h2>
-
-                <p>
-                    Não existem notas cadastradas
-                    neste histórico.
-                </p>
+                📚 Nenhuma matéria cadastrada.
 
             </div>
 
@@ -3005,391 +3678,15 @@ function baixarHistorico() {
 
     } else {
 
-        materiasHTML = materias.map(
-            materia => {
-
-                const mediaAP =
-                    calcularMediaAPs(materia);
-
-                const status =
-                    obterStatus(mediaAP);
-
-                const afNecessaria =
-                    calcularAFnecessaria(mediaAP);
-
-
-                let etapasHTML = '';
-
-
-                /* =========================================
-                   ETAPAS
-                   ========================================= */
-
-                materia.parciais.forEach(
-                    parcial => {
-
-                        const calculo =
-                            calcularEtapa(parcial);
-
-
-                        let notasHTML = '';
-
-
-                        parcial.notas.forEach(
-                            nota => {
-
-                                const valor =
-                                    nota.valor === ''
-                                        ? 'Pendente'
-                                        : numero(nota.valor)
-                                            .toFixed(1);
-
-
-                                notasHTML += `
-
-                                    <div class="nota">
-
-                                        <div class="nota-info">
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    nota.tipo ||
-                                                    'Avaliação'
-                                                )}
-                                            </strong>
-
-                                            <span>
-                                                Peso:
-                                                ${escapeHTML(
-                                                    nota.peso
-                                                )}
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="nota-valor">
-
-                                            ${valor}
-
-                                        </div>
-
-                                    </div>
-
-                                `;
-
-                            }
-                        );
-
-
-                        let resultadoHTML = '';
-
-
-                        if (
-                            calculo.mediaFinal !== null
-                        ) {
-
-                            let classe =
-                                'boa';
-
-                            if (
-                                calculo.mediaFinal < 4
-                            ) {
-
-                                classe = 'ruim';
-
-                            } else if (
-                                calculo.mediaFinal < 7
-                            ) {
-
-                                classe = 'atencao';
-
-                            }
-
-
-                            resultadoHTML = `
-
-                                <div class="
-                                    resultado-etapa
-                                    ${classe}
-                                ">
-
-                                    Média da etapa:
-
-                                    <strong>
-                                        ${calculo.mediaFinal.toFixed(1)}
-                                    </strong>
-
-                                </div>
-
-                            `;
-
-                        } else if (
-                            calculo.meta !== null
-                        ) {
-
-                            if (
-                                calculo.meta <= 10
-                            ) {
-
-                                resultadoHTML = `
-
-                                    <div class="previsao">
-
-                                        🎯 Média necessária
-                                        nas próximas notas
-                                        para chegar a 7,0:
-
-                                        <strong>
-                                            ${Math.max(
-                                                0,
-                                                calculo.meta
-                                            ).toFixed(1)}
-                                        </strong>
-
-                                    </div>
-
-                                `;
-
-                            } else {
-
-                                resultadoHTML = `
-
-                                    <div class="
-                                        previsao
-                                        impossivel
-                                    ">
-
-                                        ⚠️ Não é mais possível
-                                        atingir 7,0 nesta etapa
-                                        apenas com as notas restantes.
-
-                                    </div>
-
-                                `;
-
-                            }
-
-                        }
-
-
-                        etapasHTML += `
-
-                            <section class="etapa">
-
-                                <div class="etapa-header">
-
-                                    <h3>
-                                        ${escapeHTML(
-                                            parcial.nome
-                                        )}
-                                    </h3>
-
-                                </div>
-
-
-                                ${
-                                    notasHTML ||
-
-                                    `
-
-                                    <div class="sem-notas">
-
-                                        Nenhuma avaliação
-                                        cadastrada.
-
-                                    </div>
-
-                                    `
-                                }
-
-
-                                ${resultadoHTML}
-
-                            </section>
-
-                        `;
-
-                    }
-                );
-
-
-                /* =========================================
-                   AF
-                   ========================================= */
-
-                let afHTML = '';
-
-
-                if (
-                    mediaAP !== null &&
-                    mediaAP >= 4 &&
-                    mediaAP < 7
-                ) {
-
-                    afHTML = `
-
-                        <div class="af-box">
-
-                            🎯 Nota mínima na AF:
-
-                            <strong>
-                                ${afNecessaria.toFixed(1)}
-                            </strong>
-
-                            <small>
-                                A AF precisa ser ≥ 4,0
-                                e a média final ≥ 5,0.
-                            </small>
-
-                        </div>
-
-                    `;
-
-                }
-
-
-                /* =========================================
-                   CARD DA MATÉRIA
-                   ========================================= */
-
-                return `
-
-                    <article class="materia">
-
-                        <header class="materia-header">
-
-                            <div>
-
-                                <h2>
-                                    📚
-                                    ${escapeHTML(
-                                        materia.nome
-                                    )}
-                                </h2>
-
-                                <span class="materia-id">
-                                    ${escapeHTML(
-                                        materia.id
-                                    )}
-                                </span>
-
-                            </div>
-
-
-                            <div class="
-                                materia-media
-                                ${
-                                    mediaAP === null
-                                        ? ''
-                                        : mediaAP >= 7
-                                            ? 'media-aprovado'
-                                            : mediaAP >= 4
-                                                ? 'media-atencao'
-                                                : 'media-reprovado'
-                                }
-                            ">
-
-                                ${
-                                    mediaAP === null
-                                        ? '--'
-                                        : mediaAP.toFixed(1)
-                                }
-
-                            </div>
-
-                        </header>
-
-
-                        <div class="etapas">
-
-                            ${etapasHTML}
-
-                        </div>
-
-
-                        <div class="resultado-final">
-
-                            <div class="media-final">
-
-                                <span>
-                                    Média das APs
-                                </span>
-
-                                <strong>
-                                    ${
-                                        mediaAP === null
-                                            ? 'Pendente'
-                                            : mediaAP.toFixed(1)
-                                    }
-                                </strong>
-
-                            </div>
-
-
-                            <div class="
-                                status
-                                ${status.classe}
-                            ">
-
-                                ${status.texto}
-
-                            </div>
-
-
-                            ${afHTML}
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            }
-        ).join('');
+        materiasHTML =
+            materias.map(
+                gerarMateriaRelatorio
+            ).join('');
 
     }
 
 
-    /* =====================================================
-       RESUMO
-       ===================================================== */
-
-    let aprovadas = 0;
-    let recuperacao = 0;
-    let aguardando = 0;
-
-
-    materias.forEach(
-        materia => {
-
-            const media =
-                calcularMediaAPs(materia);
-
-
-            if (media === null) {
-
-                aguardando++;
-
-            } else if (media >= 7) {
-
-                aprovadas++;
-
-            } else if (media >= 4) {
-
-                recuperacao++;
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       HTML COMPLETO DO RELATÓRIO
-       ===================================================== */
-
-    const html = `
+    const relatorio = `
 
 <!DOCTYPE html>
 
@@ -3401,203 +3698,68 @@ function baixarHistorico() {
 
 <meta
     name="viewport"
-    content="width=device-width,
-             initial-scale=1.0"
+    content="width=device-width, initial-scale=1.0"
 >
 
-<meta
-    name="theme-color"
-    content="#0d1117"
->
 
 <title>
-    Relatório de Notas - UFC ${escapeHTML(semestre)}
+    Histórico de Notas - UFC
 </title>
 
 
 <style>
 
-/* =====================================================
-   BASE
-   ===================================================== */
-
 * {
-    box-sizing: border-box;
-}
 
+    box-sizing:
+        border-box;
 
-html {
-    width: 100%;
 }
 
 
 body {
 
-    margin: 0;
+    margin:
+        0;
 
-    padding: 15px;
-
-    width: 100%;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at top,
-            rgba(124,77,255,.10),
-            transparent 35%
-        ),
-        #0d1117;
-
-    color: #eee;
+    padding:
+        20px;
 
     font-family:
-        'Segoe UI',
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
+        Arial,
+        Helvetica,
         sans-serif;
 
-    overflow-x: hidden;
+    background:
+        #0d1117;
+
+    color:
+        #eee;
 
 }
 
 
 .container {
 
-    width: 100%;
+    width:
+        100%;
 
-    max-width: 850px;
+    max-width:
+        850px;
 
-    margin: auto;
+    margin:
+        auto;
 
 }
 
-
-/* =====================================================
-   CABEÇALHO
-   ===================================================== */
 
 .header {
 
-    text-align: center;
-
-    padding: 15px 0 25px;
-
-}
-
-
-.header h1 {
-
-    margin: 0;
-
-    color: #00e5ff;
-
-    font-size:
-        clamp(
-            1.35rem,
-            5vw,
-            2rem
-        );
-
-    letter-spacing: 2px;
-
-    font-weight: 900;
-
-    text-shadow:
-        0 0 12px
-        rgba(0,229,255,.3);
-
-}
-
-
-.header p {
-
-    margin:
-        8px 0 0;
-
-    color: #888;
-
-    font-size: .85rem;
-
-}
-
-
-/* =====================================================
-   RESUMO
-   ===================================================== */
-
-.resumo {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 10px;
-
-    margin-bottom: 25px;
-
-}
-
-
-.resumo-box {
-
-    background: #151a22;
-
-    border:
-        1px solid #2a2a2a;
-
-    border-radius: 15px;
+    text-align:
+        center;
 
     padding:
-        14px 8px;
-
-    text-align: center;
-
-}
-
-
-.resumo-numero {
-
-    display: block;
-
-    font-size:
-        clamp(
-            1.25rem,
-            5vw,
-            1.6rem
-        );
-
-    font-weight: 900;
-
-    color: #00e5ff;
-
-}
-
-
-.resumo-label {
-
-    display: block;
-
-    margin-top: 3px;
-
-    color: #888;
-
-    font-size: .65rem;
-
-    font-weight: 800;
-
-    text-transform: uppercase;
-
-}
-
-
-/* =====================================================
-   MATÉRIA
-   ===================================================== */
-
-.materia {
+        30px 15px;
 
     background:
         linear-gradient(
@@ -3607,685 +3769,533 @@ body {
         );
 
     border:
-        1px solid #2a2a2a;
+        1px solid #292929;
 
-    border-radius: 20px;
+    border-radius:
+        20px;
 
-    padding: 20px;
-
-    margin-bottom: 22px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(0,0,0,.35);
-
-    width: 100%;
-
-    overflow: hidden;
+    margin-bottom:
+        20px;
 
 }
 
 
-.materia-header {
+.header h1 {
 
-    display: flex;
+    margin:
+        0 0 8px;
 
-    justify-content:
-        space-between;
-
-    align-items: center;
-
-    gap: 15px;
-
-    padding-bottom: 15px;
-
-    margin-bottom: 15px;
-
-    border-bottom:
-        2px solid #292d35;
-
-}
-
-
-.materia-header h2 {
-
-    margin: 0;
-
-    color: #00e5ff;
+    color:
+        #00e5ff;
 
     font-size:
         clamp(
-            1rem,
-            4vw,
-            1.35rem
+            1.4rem,
+            5vw,
+            2rem
         );
 
-    font-weight: 900;
+}
 
-    overflow-wrap: anywhere;
+
+.header p {
+
+    margin:
+        5px;
+
+    color:
+        #888;
+
+}
+
+
+.semestre {
+
+    display:
+        inline-block;
+
+    margin-top:
+        10px;
+
+    padding:
+        8px 15px;
+
+    border:
+        1px solid #7c4dff;
+
+    border-radius:
+        10px;
+
+    color:
+        #7c4dff;
+
+    font-weight:
+        bold;
+
+}
+
+
+.resumo {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            1fr
+        );
+
+    gap:
+        10px;
+
+    margin-bottom:
+        20px;
+
+}
+
+
+.box {
+
+    background:
+        #151a22;
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        15px;
+
+    padding:
+        15px 8px;
+
+    text-align:
+        center;
+
+}
+
+
+.box strong {
+
+    display:
+        block;
+
+    font-size:
+        1.5rem;
+
+    color:
+        #00e5ff;
+
+}
+
+
+.box span {
+
+    color:
+        #777;
+
+    font-size:
+        .7rem;
+
+    text-transform:
+        uppercase;
+
+    font-weight:
+        bold;
+
+}
+
+
+.materia {
+
+    background:
+        #151a22;
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        18px;
+
+    padding:
+        20px;
+
+    margin-bottom:
+        18px;
+
+    page-break-inside:
+        avoid;
+
+}
+
+
+.materia h2 {
+
+    margin:
+        0;
+
+    color:
+        #00e5ff;
+
+    font-size:
+        1.2rem;
+
+    overflow-wrap:
+        anywhere;
 
 }
 
 
 .materia-id {
 
-    display: block;
+    color:
+        #555;
 
-    color: #555;
+    font-size:
+        .65rem;
 
-    font-size: .6rem;
-
-    margin-top: 4px;
-
-    overflow-wrap: anywhere;
-
-}
-
-
-.materia-media {
-
-    min-width: 55px;
-
-    height: 55px;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #000;
-
-    border: 2px solid #444;
-
-    font-size: 1.1rem;
-
-    font-weight: 900;
+    margin-top:
+        4px;
 
 }
 
-
-.media-aprovado {
-
-    color: #00c853;
-
-    border-color: #00c853;
-
-}
-
-
-.media-atencao {
-
-    color: #ffab00;
-
-    border-color: #ffab00;
-
-}
-
-
-.media-reprovado {
-
-    color: #ff5252;
-
-    border-color: #ff5252;
-
-}
-
-
-/* =====================================================
-   ETAPA
-   ===================================================== */
 
 .etapa {
 
+    margin-top:
+        15px;
+
     background:
-        rgba(0,0,0,.20);
+        #10151c;
 
     border:
-        1px solid #333;
+        1px solid #292929;
 
     border-left:
         4px solid #7c4dff;
 
-    border-radius: 14px;
-
-    padding: 14px;
-
-    margin-bottom: 12px;
-
-}
-
-
-.etapa-header h3 {
-
-    margin:
-        0 0 12px;
-
-    color: #7c4dff;
-
-    font-size: .95rem;
-
-    font-weight: 900;
-
-}
-
-
-/* =====================================================
-   NOTAS
-   ===================================================== */
-
-.nota {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    background:
-        rgba(255,255,255,.025);
-
-    border-bottom:
-        1px solid #242424;
+    border-radius:
+        12px;
 
     padding:
-        10px 5px;
+        14px;
 
 }
 
 
-.nota:last-child {
+.etapa h3 {
 
-    border-bottom: none;
+    margin:
+        0 0 10px;
 
-}
+    color:
+        #7c4dff;
 
-
-.nota-info {
-
-    min-width: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 3px;
+    font-size:
+        1rem;
 
 }
 
 
-.nota-info strong {
+.tabela {
 
-    font-size: .82rem;
+    width:
+        100%;
 
-    overflow-wrap: anywhere;
-
-}
-
-
-.nota-info span {
-
-    color: #777;
-
-    font-size: .68rem;
+    border-collapse:
+        collapse;
 
 }
 
 
-.nota-valor {
+.tabela th,
+.tabela td {
 
-    flex-shrink: 0;
+    padding:
+        8px;
 
-    min-width: 65px;
+    border-bottom:
+        1px solid #292929;
 
-    text-align: center;
+    text-align:
+        left;
 
-    padding: 7px 9px;
-
-    border-radius: 9px;
-
-    background: #000;
-
-    color: #fff;
-
-    font-weight: 900;
-
-    font-size: .8rem;
+    font-size:
+        .8rem;
 
 }
 
 
-/* =====================================================
-   RESULTADO DA ETAPA
-   ===================================================== */
+.tabela th {
 
-.resultado-etapa {
+    color:
+        #777;
 
-    margin-top: 12px;
+    font-size:
+        .65rem;
 
-    padding-top: 10px;
+    text-transform:
+        uppercase;
+
+}
+
+
+.media-etapa {
+
+    text-align:
+        right;
+
+    margin-top:
+        10px;
+
+    font-weight:
+        bold;
+
+}
+
+
+.media {
+
+    margin-top:
+        18px;
+
+    padding-top:
+        15px;
 
     border-top:
         1px dashed #444;
 
-    text-align: right;
-
-    font-size: .8rem;
-
-    font-weight: 800;
+    text-align:
+        center;
 
 }
 
 
-.resultado-etapa strong {
+.media-numero {
 
-    font-size: 1rem;
+    color:
+        #00e5ff;
 
-    margin-left: 5px;
+    font-size:
+        1.8rem;
 
-}
-
-
-.boa {
-
-    color: #00c853;
-
-}
-
-
-.atencao {
-
-    color: #ffab00;
-
-}
-
-
-.ruim {
-
-    color: #ff5252;
-
-}
-
-
-.previsao {
-
-    margin-top: 12px;
-
-    padding: 10px;
-
-    border-radius: 11px;
-
-    text-align: center;
-
-    color: #7c4dff;
-
-    background:
-        rgba(124,77,255,.08);
-
-    border:
-        1px dashed #7c4dff;
-
-    font-size: .75rem;
-
-    font-weight: 700;
-
-}
-
-
-.previsao strong {
-
-    font-size: .95rem;
-
-}
-
-
-.previsao.impossivel {
-
-    color: #ff5252;
-
-    border-color: #ff5252;
-
-    background:
-        rgba(255,82,82,.08);
-
-}
-
-
-.sem-notas {
-
-    padding: 10px;
-
-    color: #666;
-
-    text-align: center;
-
-    font-size: .75rem;
-
-}
-
-
-/* =====================================================
-   RESULTADO FINAL
-   ===================================================== */
-
-.resultado-final {
-
-    margin-top: 18px;
-
-    padding-top: 15px;
-
-    border-top:
-        1px dashed #444;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 10px;
-
-}
-
-
-.media-final {
-
-    text-align: center;
-
-}
-
-
-.media-final span {
-
-    display: block;
-
-    color: #888;
-
-    font-size: .7rem;
-
-    text-transform: uppercase;
-
-    font-weight: 800;
-
-}
-
-
-.media-final strong {
-
-    display: block;
-
-    margin-top: 3px;
-
-    color: #00e5ff;
-
-    font-size: 1.6rem;
+    font-weight:
+        900;
 
 }
 
 
 .status {
 
+    display:
+        inline-block;
+
+    margin-top:
+        10px;
+
     padding:
-        9px 18px;
+        9px 15px;
 
-    border-radius: 12px;
+    border-radius:
+        10px;
 
-    font-size: .7rem;
+    font-size:
+        .7rem;
 
-    font-weight: 900;
-
-    text-align: center;
-
-}
-
-
-.status.aprovado {
-
-    background: #00c853;
-
-    color: #000;
+    font-weight:
+        900;
 
 }
 
 
-.status.recuperacao {
-
-    background: #ffab00;
-
-    color: #000;
-
-}
-
-
-.status.reprovado {
-
-    background: #ff5252;
-
-    color: #fff;
-
-}
-
-
-/* =====================================================
-   AF
-   ===================================================== */
-
-.af-box {
-
-    width: 100%;
-
-    padding: 11px;
-
-    border-radius: 12px;
+.aprovado {
 
     background:
-        rgba(255,171,0,.08);
+        #00c853;
+
+    color:
+        #000;
+
+}
+
+
+.atencao {
+
+    background:
+        #ffab00;
+
+    color:
+        #000;
+
+}
+
+
+.reprovado {
+
+    background:
+        #ff5252;
+
+    color:
+        #fff;
+
+}
+
+
+.aguardando {
+
+    background:
+        #7c4dff;
+
+    color:
+        #fff;
+
+}
+
+
+.af {
+
+    margin-top:
+        12px;
+
+    padding:
+        10px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(
+            255,
+            171,
+            0,
+            .08
+        );
 
     border:
         1px solid
-        rgba(255,171,0,.25);
+        rgba(
+            255,
+            171,
+            0,
+            .25
+        );
 
-    color: #ffab00;
+    color:
+        #ffab00;
 
-    text-align: center;
+    text-align:
+        center;
 
-    font-size: .75rem;
+    font-size:
+        .78rem;
 
-    font-weight: 800;
-
-}
-
-
-.af-box strong {
-
-    font-size: 1rem;
-
-}
-
-
-.af-box small {
-
-    display: block;
-
-    margin-top: 5px;
-
-    color: #aaa;
-
-    font-size: .65rem;
+    font-weight:
+        bold;
 
 }
 
-
-/* =====================================================
-   VAZIO
-   ===================================================== */
-
-.empty {
-
-    text-align: center;
-
-    padding: 50px 15px;
-
-    color: #666;
-
-}
-
-
-.empty-icon {
-
-    font-size: 3rem;
-
-}
-
-
-.empty h2 {
-
-    color: #888;
-
-    font-size: 1rem;
-
-}
-
-
-.empty p {
-
-    font-size: .8rem;
-
-}
-
-
-/* =====================================================
-   RODAPÉ
-   ===================================================== */
 
 .footer {
 
-    text-align: center;
+    text-align:
+        center;
+
+    color:
+        #555;
+
+    font-size:
+        .7rem;
 
     padding:
-        15px 0 25px;
-
-    color: #555;
-
-    font-size: .65rem;
+        20px;
 
 }
 
 
-.footer strong {
-
-    color: #777;
-
-}
-
-
-/* =====================================================
-   CELULAR
-   ===================================================== */
-
-@media (max-width: 500px) {
+@media(max-width:600px) {
 
     body {
 
-        padding: 8px;
-
-    }
-
-
-    .materia {
-
-        padding: 14px;
-
-        border-radius: 17px;
-
-    }
-
-
-    .materia-header {
-
-        align-items: flex-start;
-
-    }
-
-
-    .materia-media {
-
-        min-width: 48px;
-
-        height: 48px;
-
-        font-size: .95rem;
+        padding:
+            8px;
 
     }
 
 
     .resumo {
 
-        gap: 6px;
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
 
     }
 
 
-    .resumo-box {
+    .materia {
 
         padding:
-            11px 5px;
+            14px;
 
     }
 
 
-    .nota {
+    .tabela th,
+    .tabela td {
 
         padding:
-            9px 2px;
+            7px 4px;
 
-    }
-
-
-    .nota-valor {
-
-        min-width: 55px;
-
-        padding:
-            6px;
+        font-size:
+            .7rem;
 
     }
 
 }
 
 
-@media (max-width: 350px) {
+@media print {
 
-    .materia-header {
+    body {
 
-        flex-direction: column;
+        background:
+            white;
 
-        align-items: flex-start;
-
-    }
-
-
-    .materia-media {
-
-        border-radius: 10px;
-
-        width: 100%;
-
-        height: auto;
-
-        padding: 6px;
+        color:
+            #111;
 
     }
 
 
-    .nota-valor {
+    .header,
+    .materia,
+    .box {
 
-        min-width: 48px;
+        background:
+            white;
+
+        color:
+            #111;
+
+        border:
+            1px solid #ccc;
+
+    }
+
+
+    .materia h2 {
+
+        color:
+            #111;
+
+    }
+
+
+    .header h1 {
+
+        color:
+            #111;
 
     }
 
@@ -4301,90 +4311,99 @@ body {
 <div class="container">
 
 
-    <header class="header">
+<header class="header">
 
-        <h1>
-            📊 HISTÓRICO DE NOTAS
-        </h1>
-
-        <p>
-            UFC • Semestre ${escapeHTML(semestre)}
-        </p>
-
-    </header>
+    <h1>
+        📊 HISTÓRICO DE NOTAS
+    </h1>
 
 
-    <section class="resumo">
+    <p>
+        Universidade Federal do Ceará
+    </p>
 
 
-        <div class="resumo-box">
+    <div class="semestre">
 
-            <span class="resumo-numero">
-                ${materias.length}
-            </span>
+        Semestre ${semestre}
 
-            <span class="resumo-label">
-                Matérias
-            </span>
+    </div>
 
-        </div>
+</header>
 
 
-        <div class="resumo-box">
-
-            <span
-                class="resumo-numero"
-                style="color:#00c853">
-
-                ${aprovadas}
-
-            </span>
-
-            <span class="resumo-label">
-                Aprovadas
-            </span>
-
-        </div>
+<div class="resumo">
 
 
-        <div class="resumo-box">
+    <div class="box">
 
-            <span
-                class="resumo-numero"
-                style="color:#ffab00">
+        <strong>
+            ${total}
+        </strong>
 
-                ${recuperacao + aguardando}
+        <span>
+            Matérias
+        </span>
 
-            </span>
-
-            <span class="resumo-label">
-                Atenção
-            </span>
-
-        </div>
+    </div>
 
 
-    </section>
+    <div class="box">
+
+        <strong style="color:#00c853">
+
+            ${aprovadas}
+
+        </strong>
+
+        <span>
+            Aprovadas
+        </span>
+
+    </div>
 
 
-    <main>
+    <div class="box">
 
-        ${materiasHTML}
+        <strong style="color:#ffab00">
 
-    </main>
+            ${atencao}
+
+        </strong>
+
+        <span>
+            Atenção
+        </span>
+
+    </div>
 
 
-    <footer class="footer">
+    <div class="box">
 
-        Relatório gerado pelo
-        <strong>Histórico de Notas UFC</strong>
+        <strong style="color:#7c4dff">
 
-        <br>
+            ${aguardando}
 
-        Semestre:
-        ${escapeHTML(semestre)}
+        </strong>
 
-    </footer>
+        <span>
+            Aguardando
+        </span>
+
+    </div>
+
+
+</div>
+
+
+${materiasHTML}
+
+
+<footer class="footer">
+
+    Relatório gerado pelo Histórico de Notas UFC
+
+</footer>
 
 
 </div>
@@ -4396,15 +4415,11 @@ body {
 `;
 
 
-    /* =====================================================
-       DOWNLOAD
-       ===================================================== */
-
     const blob =
         new Blob(
             [
                 '\ufeff',
-                html
+                relatorio
             ],
             {
                 type:
@@ -4414,25 +4429,32 @@ body {
 
 
     const url =
-        URL.createObjectURL(blob);
+        URL.createObjectURL(
+            blob
+        );
 
 
     const link =
-        document.createElement('a');
+        document.createElement(
+            'a'
+        );
 
 
-    link.href = url;
+    link.href =
+        url;
 
 
     link.download =
-        `Relatorio_Notas_UFC_${
-            semestre
-                .replace(/\./g, '_')
-                .replace(/\s+/g, '_')
+        `Notas_UFC_${
+            dados.semestre
+                .replace(/\./g,'_')
+                .replace(/\s+/g,'_')
         }.html`;
 
 
-    document.body.appendChild(link);
+    document.body.appendChild(
+        link
+    );
 
 
     link.click();
@@ -4441,16 +4463,359 @@ body {
     link.remove();
 
 
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(
+        url
+    );
 
 }
 
-</script>
+
+/* =====================================================
+   GERAR MATÉRIA DO RELATÓRIO
+   ===================================================== */
+
+function gerarMateriaRelatorio(
+    materia
+) {
+
+    const mediaAP =
+        calcularMediaAPs(
+            materia
+        );
 
 
-/* =========================================================
+    let statusClasse =
+        'aguardando';
+
+
+    let statusTexto =
+        'AGUARDANDO NOTAS';
+
+
+    if (
+        mediaAP !== null
+    ) {
+
+        if (
+            mediaAP >= 7
+        ) {
+
+            statusClasse =
+                'aprovado';
+
+            statusTexto =
+                'APROVADO POR MÉDIA 🏆';
+
+        } else if (
+            mediaAP >= 4
+        ) {
+
+            statusClasse =
+                'atencao';
+
+            statusTexto =
+                'POSSÍVEL AVALIAÇÃO FINAL';
+
+        } else {
+
+            statusClasse =
+                'reprovado';
+
+            statusTexto =
+                'ABAIXO DE 4,0';
+
+        }
+
+    }
+
+
+    let etapasHTML =
+        '';
+
+
+    materia.parciais.forEach(
+        parcial => {
+
+            const calculo =
+                calcularEtapa(
+                    parcial
+                );
+
+
+            let linhas =
+                '';
+
+
+            parcial.notas.forEach(
+                nota => {
+
+                    const valor =
+                        nota.valor === ''
+                            ? 'Pendente'
+                            : numero(nota.valor) !== null
+                                ? numero(nota.valor).toFixed(1)
+                                : nota.valor;
+
+
+                    linhas += `
+
+                        <tr>
+
+                            <td>
+                                ${escapeHTML(
+                                    nota.tipo ||
+                                    'Avaliação'
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    nota.peso
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    valor
+                                )}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            );
+
+
+            if (
+                !linhas
+            ) {
+
+                linhas = `
+
+                    <tr>
+
+                        <td colspan="3"
+                            style="
+                                text-align:center;
+                                color:#666;
+                            ">
+
+                            Nenhuma avaliação cadastrada.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            let resultado =
+                '';
+
+
+            if (
+                calculo.mediaFinal !== null
+            ) {
+
+                resultado = `
+
+                    <div class="media-etapa">
+
+                        Média da etapa:
+
+                        <strong>
+                            ${calculo.mediaFinal.toFixed(1)}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            } else if (
+                calculo.meta !== null
+            ) {
+
+                resultado = `
+
+                    <div class="media-etapa">
+
+                        🎯 Média necessária para 7,0:
+
+                        <strong>
+                            ${calculo.meta.toFixed(1)}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            etapasHTML += `
+
+                <div class="etapa">
+
+                    <h3>
+
+                        ${escapeHTML(
+                            parcial.nome
+                        )}
+
+                    </h3>
+
+
+                    <table class="tabela">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Avaliação
+                                </th>
+
+                                <th>
+                                    Peso
+                                </th>
+
+                                <th>
+                                    Nota
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            ${linhas}
+
+                        </tbody>
+
+                    </table>
+
+
+                    ${resultado}
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    let afHTML =
+        '';
+
+
+    if (
+        mediaAP !== null &&
+        mediaAP >= 4 &&
+        mediaAP < 7
+    ) {
+
+        const afNecessaria =
+            calcularAFnecessaria(
+                mediaAP
+            );
+
+
+        afHTML = `
+
+            <div class="af">
+
+                🎯 Nota mínima necessária na AF:
+
+                <strong>
+                    ${afNecessaria.toFixed(1)}
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <section class="materia">
+
+            <h2>
+
+                📚 ${escapeHTML(
+                    materia.nome
+                )}
+
+            </h2>
+
+
+            <div class="materia-id">
+
+                ${escapeHTML(
+                    materia.id
+                )}
+
+            </div>
+
+
+            ${etapasHTML}
+
+
+            <div class="media">
+
+                <div>
+                    Média das APs
+                </div>
+
+
+                <div class="media-numero">
+
+                    ${
+                        mediaAP === null
+                            ? '—'
+                            : mediaAP.toFixed(1)
+                    }
+
+                </div>
+
+
+                <div>
+
+                    <span
+                        class="
+                            status
+                            ${statusClasse}
+                        ">
+
+                        ${statusTexto}
+
+                    </span>
+
+                </div>
+
+
+                ${afHTML}
+
+            </div>
+
+        </section>
+
+    `;
+
+}
+
+
+/* =====================================================
    INICIALIZAÇÃO
-   ========================================================= */
+   ===================================================== */
 
 sincronizar();
 
