@@ -1,2077 +1,1714 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d1117">
 
-<title>UFC Planner</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="theme-color"
+    content="#0d1117"
+>
+
+<title>Histórico de Notas - UFC</title>
 
 <style>
+
+/* =====================================================
+   VARIÁVEIS
+   ===================================================== */
+
 :root {
+
     --bg: #0d1117;
     --card: #151a22;
+    --card-2: #1a1f29;
+
     --text: #eee;
-    --primary: #bb86fc;
+    --muted: #777;
+
+    --primary: #7c4dff;
     --secondary: #00e5ff;
+
     --success: #00c853;
+    --warning: #ffab00;
     --danger: #ff5252;
-    --bus: #ffab00;
-    --accent: #ff4081;
+
+    --border: #2a2a2a;
+
 }
+
+
+/* =====================================================
+   RESET
+   ===================================================== */
 
 * {
+
     box-sizing: border-box;
+
 }
+
 
 html {
-    scroll-behavior: smooth;
+
+    width: 100%;
+    min-height: 100%;
+
 }
+
 
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: var(--bg);
+
+    font-family:
+        'Segoe UI',
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            rgba(124,77,255,.10),
+            transparent 35%
+        ),
+
+        var(--bg);
+
     color: var(--text);
+
     margin: 0;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+    padding:
+        12px;
+
     min-height: 100vh;
-    transition: background-color .2s, color .2s;
+
 }
+
+
+/* =====================================================
+   CONTAINER
+   ===================================================== */
 
 .container {
+
     width: 100%;
-    max-width: 600px;
+
+    max-width: 700px;
+
+    margin: auto;
+
 }
+
+
+/* =====================================================
+   TÍTULO
+   ===================================================== */
 
 h1 {
-    color: var(--secondary);
-    text-align: center;
-    margin: 15px 0 20px;
-    font-size: 1.8rem;
-    letter-spacing: 3px;
-    font-weight: 900;
-    text-shadow: 0 0 10px rgba(0, 229, 255, .3);
+
+    color:
+        var(--secondary);
+
+    text-align:
+        center;
+
+    margin:
+        15px 0 20px;
+
+    font-size:
+        clamp(
+            1.25rem,
+            5vw,
+            1.7rem
+        );
+
+    letter-spacing:
+        2px;
+
+    font-weight:
+        900;
+
+    text-shadow:
+        0 0 10px
+        rgba(0,229,255,.3);
+
 }
 
-button,
-input,
-textarea,
-select {
-    font-family: inherit;
-}
+
+/* =====================================================
+   BOTÕES
+   ===================================================== */
 
 button {
-    background: #1c222d;
-    color: #eee;
-    border: 1px solid #333;
-    padding: 12px 8px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: .75rem;
-    transition: .15s;
-    box-shadow: 0 4px 0 #000;
-    text-transform: uppercase;
+
+    background:
+        #1c222d;
+
+    color:
+        #eee;
+
+    border:
+        1px solid #333;
+
+    padding:
+        12px;
+
+    border-radius:
+        12px;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    font-size:
+        .78rem;
+
+    transition:
+        .12s;
+
+    box-shadow:
+        0 4px 0 #000;
+
+    text-transform:
+        uppercase;
+
 }
+
 
 button:hover {
-    filter: brightness(1.12);
+
+    filter:
+        brightness(1.12);
+
 }
+
 
 button:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #000;
-}
 
-.menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    margin-bottom: 25px;
-}
+    transform:
+        translateY(3px);
 
-.btn-config {
-    border-color: var(--bus);
-    color: var(--bus);
-    box-shadow: 0 4px 0 #916200;
-}
+    box-shadow:
+        0 1px 0 #000;
 
-.btn-notes {
-    border-color: var(--success);
-    color: var(--success);
-    box-shadow: 0 4px 0 #007a3d;
 }
 
-.btn-grades {
-    border-color: var(--secondary);
-    color: #000;
-    background: var(--secondary);
-    grid-column: span 2;
-    font-size: .9rem;
-    padding: 16px;
-    box-shadow: 0 5px 0 #0097a7;
-}
 
-.btn-backup {
-    border-color: var(--primary);
-    color: var(--primary);
-    grid-column: span 2;
-    box-shadow: 0 4px 0 #4a148c;
-}
+.top-menu {
 
-#config-panel,
-#backup-panel {
-    display: none;
-    background: #1a1f29;
-    border-radius: 20px;
-    padding: 15px;
-    margin-bottom: 20px;
-    width: 100%;
-    border: 2px solid var(--secondary);
-    box-shadow: 0 0 30px rgba(0, 229, 255, .15);
-}
+    display:
+        grid;
 
-#backup-panel {
-    border-color: var(--primary);
-}
+    grid-template-columns:
+        1fr 1fr;
 
-.config-box {
-    background: rgba(0, 0, 0, .2);
-    padding: 12px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #333;
-}
+    gap:
+        10px;
 
-.config-box h4 {
-    margin: 0 0 10px;
-    color: var(--secondary);
-    text-transform: uppercase;
-    font-size: .8rem;
-}
+    width:
+        100%;
 
-.config-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
-    align-items: center;
-}
-
-#config-panel input,
-#config-panel select {
-    background: #000;
-    color: #fff;
-    border: 1px solid #444;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: .85rem;
-    min-width: 0;
-}
-
-.in-bus {
-    flex: 1 1 100%;
-    border-color: var(--bus) !important;
-    color: var(--bus) !important;
-    font-weight: bold;
-}
-
-.in-time {
-    flex: 1 1 65px;
-    text-align: center;
-}
-
-.in-aula {
-    flex: 2 1 120px;
-}
-
-.in-sala {
-    flex: 1 1 55px;
-    text-align: center;
-    color: var(--accent) !important;
-    font-weight: bold;
-}
-
-.btn-del {
-    background: none;
-    border: none;
-    color: var(--danger);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px;
-    flex-shrink: 0;
-    box-shadow: none;
-}
-
-.btn-del:hover {
-    filter: brightness(1.3);
-}
-
-.quick-add {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
-    background: rgba(255, 255, 255, .05);
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid #333;
-}
-
-.quick-add input[type="text"] {
-    flex: 1;
-    min-width: 0;
-    background: #000;
-    color: #fff;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: .85rem;
-}
-
-.quick-add input[type="date"] {
-    width: 120px;
-    background: #000;
-    color: #fff;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 5px;
-    font-size: .75rem;
-}
-
-.btn-add-quick {
-    background: var(--success);
-    color: #000;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 0 #007a3d;
-    font-size: 1rem;
-}
-
-.section-title {
-    color: var(--primary);
-    text-transform: uppercase;
-    font-size: .85rem;
-    margin: 30px 0 12px;
-    border-bottom: 2px solid var(--primary);
-    width: 100%;
-    letter-spacing: 2px;
-    font-weight: 900;
-    padding-bottom: 5px;
-}
-
-.card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 15px;
-    border: 1px solid #2a2a2a;
-    width: 100%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
-}
-
-.card.today-highlight {
-    border: 2px solid var(--secondary);
-    background: linear-gradient(145deg, #151921 0%, #1a2b3d 100%);
-    box-shadow: 0 0 20px rgba(0, 229, 255, .15);
-}
-
-.today-badge {
-    background: var(--secondary);
-    color: #000;
-    font-size: .65rem;
-    padding: 3px 10px;
-    border-radius: 10px;
-    vertical-align: middle;
-    margin-left: 10px;
-    font-weight: 900;
-}
-
-.card h2 {
-    color: var(--secondary);
-    margin: 0 0 12px;
-    font-size: 1.4rem;
-    font-weight: 800;
-}
-
-.bus-txt {
-    color: var(--bus);
-    font-size: .85rem;
-    font-weight: 900;
-    margin-bottom: 15px;
-    display: block;
-    background: rgba(255, 171, 0, .1);
-    padding: 8px;
-    border-radius: 10px;
-    border-left: 4px solid var(--bus);
-}
-
-.aula-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    font-size: .95rem;
-    padding: 12px 0;
-    border-bottom: 1px solid #2a2a2a;
-}
-
-.aula-item:last-child {
-    border-bottom: none;
-}
-
-.time {
-    color: var(--primary);
-    font-weight: 900;
-    margin-right: 8px;
-}
-
-.sala {
-    color: var(--accent);
-    font-weight: 900;
-    background: rgba(255, 64, 129, .1);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: .8rem;
-    border: 1px solid rgba(255, 64, 129, .2);
-    white-space: nowrap;
-}
-
-textarea {
-    width: 100%;
-    background: #000;
-    color: #eee;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 10px;
-    min-height: 100px;
-    resize: vertical;
-    font-family: inherit;
-    font-size: 1rem;
-}
-
-textarea:focus,
-input:focus,
-select:focus {
-    border-color: var(--secondary);
-    outline: none;
-}
-
-.todo-line {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #222;
-}
-
-.todo-line:last-child {
-    border-bottom: none;
-}
-
-.todo-line input[type="checkbox"] {
-    width: 24px;
-    height: 24px;
-    accent-color: var(--success);
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.todo-text {
-    flex: 1;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-}
-
-.todo-text.done {
-    text-decoration: line-through;
-    color: #666;
-}
-
-.todo-date {
-    font-size: .75rem;
-    color: var(--bus);
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.todo-date.today {
-    color: var(--secondary);
-}
-
-.empty-message {
-    color: #666;
-    font-size: .85rem;
-    text-align: center;
-    padding: 10px;
-}
-
-.btn-clean {
-    background: rgba(255, 82, 82, .05);
-    border: 1px solid var(--danger);
-    color: var(--danger);
-    width: 100%;
-    margin-top: 15px;
-    padding: 10px;
-    font-weight: 800;
-    border-radius: 12px;
-    box-shadow: 0 3px 0 #7e1d1d;
-}
-
-.config-save {
-    background: var(--success);
-    color: #000;
-    border: none;
-    width: 100%;
-    margin: 30px 0 10px;
-    padding: 20px;
-    border-radius: 12px;
-    font-weight: 900;
-    font-size: 1rem;
-    box-shadow: 0 5px 0 #007a3d;
-}
-
-.btn-close {
-    margin-top: 15px;
-    border: none;
-    background: none;
-    color: #666;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: none;
-    width: 100%;
-}
+    margin-bottom:
+        22px;
 
-.backup-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
 }
+
+
+.btn-back {
+
+    border-color:
+        var(--primary);
+
+    color:
+        var(--primary);
 
-.backup-actions button {
-    flex: 1;
+    box-shadow:
+        0 4px 0 #4a148c;
+
 }
+
+
+.btn-download {
+
+    border-color:
+        var(--success);
+
+    color:
+        var(--success);
 
-.backup-info {
-    color: #888;
-    font-size: .75rem;
-    text-align: center;
-    margin-top: 12px;
+    box-shadow:
+        0 4px 0 #007a3d;
+
 }
+
+
+/* =====================================================
+   SEMESTRE
+   ===================================================== */
+
+.semestre-area {
+
+    display:
+        flex;
 
-.status-message {
-    position: fixed;
-    left: 50%;
-    bottom: 20px;
-    transform: translateX(-50%) translateY(100px);
-    background: #1c222d;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 12px;
-    border: 1px solid #333;
-    box-shadow: 0 5px 20px rgba(0,0,0,.4);
-    opacity: 0;
-    transition: .25s;
-    z-index: 9999;
-    font-size: .85rem;
-    text-align: center;
-    max-width: calc(100% - 30px);
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    margin-bottom:
+        25px;
+
 }
+
+
+.semestre-label {
 
-.status-message.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
+    color:
+        #888;
+
+    font-size:
+        .75rem;
+
+    font-weight:
+        800;
+
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        7px;
+
 }
+
+
+.semestre-input {
+
+    background:
+        #000;
+
+    border:
+        2px solid var(--primary);
+
+    border-radius:
+        15px;
 
-#importFile {
-    display: none;
+    color:
+        var(--primary);
+
+    text-align:
+        center;
+
+    font-weight:
+        900;
+
+    width:
+        150px;
+
+    padding:
+        10px;
+
+    font-size:
+        1rem;
+
+    box-shadow:
+        0 4px 0 #4a148c;
+
 }
-
-
-/* =========================================================
-   CONFIGURAÇÕES AVANÇADAS
-   ========================================================= */
+
+
+/* =====================================================
+   RESUMO
+   ===================================================== */
+
+.resumo {
 
-.settings-section {
-    background: rgba(0, 0, 0, .18);
-    border: 1px solid #333;
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 14px;
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:
+        8px;
+
+    margin-bottom:
+        25px;
+
 }
+
+
+.resumo-box {
+
+    background:
+        var(--card);
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        15px;
+
+    padding:
+        12px 6px;
 
-.settings-section h4 {
-    margin: 0 0 14px;
-    color: var(--secondary);
-    font-size: .85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    text-align:
+        center;
+
 }
+
+
+.resumo-numero {
+
+    display:
+        block;
+
+    color:
+        var(--secondary);
 
-.setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #292d35;
+    font-size:
+        1.35rem;
+
+    font-weight:
+        900;
+
 }
+
+
+.resumo-label {
+
+    color:
+        #888;
 
-.setting-row:last-child {
-    border-bottom: none;
+    font-size:
+        .65rem;
+
+    font-weight:
+        800;
+
+    text-transform:
+        uppercase;
+
 }
+
+
+/* =====================================================
+   MATÉRIA
+   ===================================================== */
+
+.materia-card {
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #151a22,
+            #11161d
+        );
+
+    border-radius:
+        20px;
+
+    padding:
+        18px;
+
+    margin-bottom:
+        22px;
 
-.setting-info {
-    flex: 1;
-    min-width: 0;
+    border:
+        1px solid var(--border);
+
+    width:
+        100%;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.4);
+
+    overflow:
+        hidden;
+
 }
+
+
+.materia-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
 
-.setting-title {
-    display: block;
-    font-weight: 800;
-    font-size: .9rem;
-    color: #eee;
+    border-bottom:
+        2px solid var(--border);
+
+    padding-bottom:
+        12px;
+
+    margin-bottom:
+        15px;
+
 }
+
+
+.materia-header > div:first-child {
 
-.setting-description {
-    display: block;
-    color: #777;
-    font-size: .7rem;
-    margin-top: 3px;
+    min-width:
+        0;
+
 }
+
+
+.materia-title {
+
+    color:
+        var(--secondary);
+
+    font-size:
+        clamp(
+            1rem,
+            4vw,
+            1.25rem
+        );
 
-.setting-control {
-    flex-shrink: 0;
+    font-weight:
+        900;
+
+    margin:
+        0;
+
+    overflow-wrap:
+        anywhere;
+
 }
+
+
+.materia-id {
 
-.setting-control select,
-.setting-control input[type="number"] {
-    background: #000;
-    color: #eee;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-family: inherit;
-    font-size: .8rem;
-    min-width: 105px;
+    color:
+        #555;
+
+    font-size:
+        .6rem;
+
+    overflow-wrap:
+        anywhere;
+
 }
+
+
+.btn-delete-materia {
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 48px;
-    height: 26px;
-    flex-shrink: 0;
+    background:
+        transparent;
+
+    color:
+        var(--danger);
+
+    border:
+        none;
+
+    box-shadow:
+        none;
+
+    padding:
+        5px;
+
+    font-size:
+        1.1rem;
+
+    flex-shrink:
+        0;
+
 }
+
+
+/* =====================================================
+   ETAPA
+   ===================================================== */
+
+.np-box {
+
+    background:
+        rgba(0,0,0,.2);
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+    border-radius:
+        15px;
+
+    padding:
+        14px;
+
+    margin-bottom:
+        15px;
+
+    border:
+        1px solid #333;
+
+    border-left:
+        5px solid var(--primary);
+
+    overflow:
+        hidden;
+
 }
+
+
+.np-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
 
-.slider {
-    position: absolute;
-    inset: 0;
-    background: #333;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: .2s;
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        12px;
+
+    color:
+        var(--primary);
+
+    font-weight:
+        900;
+
 }
+
+
+.np-title {
+
+    flex:
+        1;
+
+    min-width:
+        0;
+
+    background:
+        transparent;
 
-.slider::before {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    left: 3px;
-    top: 3px;
-    background: #fff;
-    border-radius: 50%;
-    transition: .2s;
+    border:
+        none;
+
+    border-bottom:
+        1px solid #444;
+
+    border-radius:
+        0;
+
+    color:
+        var(--primary);
+
+    font-weight:
+        900;
+
+    padding:
+        5px;
+
 }
+
+
+.np-title:focus {
+
+    outline:
+        none;
+
+    border-color:
+        var(--secondary);
 
-.switch input:checked + .slider {
-    background: var(--secondary);
 }
+
+
+/* =====================================================
+   INPUTS
+   ===================================================== */
+
+input {
+
+    background:
+        #000;
+
+    color:
+        #fff;
+
+    border:
+        1px solid #444;
+
+    padding:
+        9px;
+
+    border-radius:
+        9px;
+
+    font-size:
+        .82rem;
+
+    width:
+        100%;
+
+    font-weight:
+        600;
 
-.switch input:checked + .slider::before {
-    transform: translateX(22px);
 }
 
-.color-options {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+
+input:focus {
+
+    border-color:
+        var(--secondary);
+
+    outline:
+        none;
+
 }
+
+
+/* =====================================================
+   LINHA DE NOTA
+   ===================================================== */
+
+.nota-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        65px
+        65px
+        32px;
+
+    gap:
+        6px;
 
-.color-option {
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    box-shadow: none;
+    margin-bottom:
+        8px;
+
+    align-items:
+        center;
+
 }
+
+
+.btn-del-small {
+
+    background:
+        none;
+
+    border:
+        none;
+
+    color:
+        var(--danger);
+
+    cursor:
+        pointer;
+
+    font-size:
+        1.1rem;
+
+    box-shadow:
+        none;
 
-.color-option.active {
-    border-color: #fff;
-    transform: scale(1.12);
+    padding:
+        2px;
+
 }
+
+
+/* =====================================================
+   MÉDIA DA ETAPA
+   ===================================================== */
+
+.media-etapa {
+
+    text-align:
+        right;
 
-.color-purple {
-    background: #bb86fc;
+    font-size:
+        .85rem;
+
+    margin-top:
+        10px;
+
+    font-weight:
+        900;
+
 }
+
+
+.media-boa {
 
-.color-cyan {
-    background: #00e5ff;
+    color:
+        var(--success);
+
 }
+
 
-.color-green {
-    background: #00c853;
+.media-baixa {
+
+    color:
+        var(--warning);
+
 }
+
 
-.color-pink {
-    background: #ff4081;
+.media-ruim {
+
+    color:
+        var(--danger);
+
 }
+
+
+/* =====================================================
+   PREVISÃO
+   ===================================================== */
+
+.previsao-tag {
+
+    background:
+        rgba(124,77,255,.1);
 
-.color-orange {
-    background: #ff9800;
+    color:
+        var(--primary);
+
+    border:
+        1px dashed var(--primary);
+
+    padding:
+        10px;
+
+    border-radius:
+        12px;
+
+    font-size:
+        .8rem;
+
+    margin-top:
+        10px;
+
+    font-weight:
+        800;
+
+    text-align:
+        center;
+
 }
+
+
+.previsao-impossivel {
 
-.settings-danger {
-    width: 100%;
-    margin-top: 8px;
-    color: var(--danger);
-    border-color: var(--danger);
-    background: rgba(255, 82, 82, .05);
+    color:
+        var(--danger);
+
+    border-color:
+        var(--danger);
+
+    background:
+        rgba(255,82,82,.08);
+
 }
+
+
+/* =====================================================
+   BOTÕES ETAPAS
+   ===================================================== */
+
+.btn-add-nota {
+
+    width:
+        100%;
+
+    font-size:
+        .7rem;
+
+    margin-top:
+        10px;
+
+    padding:
+        9px;
 
-.settings-reset {
-    width: 100%;
-    margin-top: 8px;
-    color: var(--bus);
-    border-color: var(--bus);
-    background: rgba(255, 171, 0, .05);
+    border-style:
+        dashed;
+
+    box-shadow:
+        none;
+
 }
+
+
+.btn-add-np {
+
+    background:
+        var(--primary);
+
+    color:
+        #fff;
+
+    border:
+        none;
+
+    margin-top:
+        2px;
+
+    width:
+        100%;
+
+    border-radius:
+        12px;
 
-body.compact-mode .card {
-    padding: 12px;
-    margin-bottom: 9px;
-    border-radius: 14px;
+    box-shadow:
+        0 4px 0 #4a148c;
+
 }
+
+
+/* =====================================================
+   RESULTADO
+   ===================================================== */
+
+.media-final-area {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    margin-top:
+        18px;
+
+    padding-top:
+        15px;
+
+    border-top:
+        1px dashed #444;
+
+    gap:
+        10px;
 
-body.compact-mode .aula-item {
-    padding: 7px 0;
 }
 
-body.compact-mode .section-title {
-    margin-top: 18px;
-    margin-bottom: 8px;
+
+.media-final {
+
+    font-size:
+        1.2rem;
+
+    font-weight:
+        900;
+
+    text-align:
+        center;
+
 }
 
-body.compact-mode .todo-line {
-    padding: 7px 0;
+
+.media-final span {
+
+    color:
+        var(--secondary);
+
+    font-size:
+        1.5rem;
+
 }
+
 
-body.no-animations *,
-body.no-animations *::before,
-body.no-animations *::after {
-    animation: none !important;
-    transition: none !important;
+.status-badge {
+
+    padding:
+        9px 20px;
+
+    border-radius:
+        12px;
+
+    font-size:
+        .75rem;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        1px;
+
+    color:
+        #000;
+
+    text-align:
+        center;
+
 }
+
+
+.aprovado {
 
-body.light-theme {
-    --bg: #f2f5f8;
-    --card: #fff;
-    --text: #1c2229;
+    background:
+        var(--success);
+
+    box-shadow:
+        0 4px 0 #007a3d;
+
 }
+
+
+.recuperacao {
+
+    background:
+        var(--warning);
 
-body.light-theme button {
-    background: #fff;
-    color: #222;
-    border-color: #ccd2d8;
-    box-shadow: 0 4px 0 #c5cad0;
+    box-shadow:
+        0 4px 0 #916200;
+
 }
+
+
+.reprovado {
+
+    background:
+        var(--danger);
+
+    color:
+        #fff;
 
-body.light-theme #config-panel,
-body.light-theme #backup-panel {
-    background: #fff;
+    box-shadow:
+        0 4px 0 #7e1d1d;
+
 }
+
+
+.info-af {
+
+    width:
+        100%;
+
+    background:
+        rgba(255,171,0,.08);
+
+    border:
+        1px solid
+        rgba(255,171,0,.25);
+
+    color:
+        var(--warning);
+
+    border-radius:
+        12px;
+
+    padding:
+        10px;
+
+    font-size:
+        .78rem;
+
+    text-align:
+        center;
 
-body.light-theme .config-box,
-body.light-theme .settings-section {
-    background: #f5f7f9;
-    border-color: #d9dee3;
+    font-weight:
+        800;
+
 }
+
+
+/* =====================================================
+   VAZIO
+   ===================================================== */
+
+.empty {
+
+    text-align:
+        center;
 
-body.light-theme textarea,
-body.light-theme input,
-body.light-theme select,
-body.light-theme .quick-add input {
-    background: #fff;
-    color: #222;
-    border-color: #ccd2d8;
+    padding:
+        35px 15px;
+
+    color:
+        #666;
+
 }
+
+
+.empty-icon {
+
+    font-size:
+        2.5rem;
 
-body.light-theme .card {
-    border-color: #d9dee3;
-    box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    margin-bottom:
+        10px;
+
 }
+
 
-body.light-theme .aula-item,
-body.light-theme .todo-line,
-body.light-theme .setting-row {
-    border-color: #e1e5e9;
+.empty-text {
+
+    font-size:
+        .85rem;
+
 }
+
+
+/* =====================================================
+   REMOVIDAS
+   ===================================================== */
+
+.removed-area {
+
+    margin-top:
+        30px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid #252525;
 
-body.font-small {
-    font-size: 14px;
+    border-radius:
+        15px;
+
+    padding:
+        15px;
+
 }
+
+
+.removed-title {
+
+    color:
+        #777;
 
-body.font-normal {
-    font-size: 16px;
+    font-size:
+        .75rem;
+
+    font-weight:
+        900;
+
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        10px;
+
 }
+
 
-body.font-large {
-    font-size: 18px;
+.removed-item {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    padding:
+        8px 0;
+
+    border-bottom:
+        1px solid #222;
+
+    font-size:
+        .8rem;
+
+    color:
+        #777;
+
 }
+
+
+.btn-restore {
 
-@media (prefers-color-scheme: light) {
+    color:
+        var(--secondary);
 
-    body.auto-theme {
-        --bg: #f2f5f8;
-        --card: #fff;
-        --text: #1c2229;
-    }
+    border-color:
+        var(--secondary);
 
-    body.auto-theme button {
-        background: #fff;
-        color: #222;
-        border-color: #ccd2d8;
-    }
+    box-shadow:
+        none;
 
-    body.auto-theme #config-panel,
-    body.auto-theme #backup-panel {
-        background: #fff;
-    }
+    padding:
+        6px 10px;
 
-    body.auto-theme .config-box,
-    body.auto-theme .settings-section {
-        background: #f5f7f9;
-    }
+    font-size:
+        .65rem;
 
-    body.auto-theme textarea,
-    body.auto-theme input,
-    body.auto-theme select,
-    body.auto-theme .quick-add input {
-        background: #fff;
-        color: #222;
-    }
 }
 
 
-/* =========================================================
+/* =====================================================
    RESPONSIVO
-   ========================================================= */
+   ===================================================== */
 
 @media (max-width: 480px) {
 
     body {
-        padding: 8px;
+
+        padding:
+            8px;
+
     }
 
-    .menu {
-        gap: 9px;
+
+    .top-menu {
+
+        gap:
+            7px;
+
     }
+
 
     button {
-        font-size: .7rem;
+
+        font-size:
+            .65rem;
+
     }
 
-    .quick-add {
-        flex-wrap: wrap;
+
+    .nota-row {
+
+        grid-template-columns:
+            minmax(0,1fr)
+            52px
+            58px
+            28px;
+
+        gap:
+            4px;
+
     }
 
-    .quick-add input[type="text"] {
-        flex: 1 1 100%;
+
+    .nota-row input {
+
+        padding:
+            8px 5px;
+
+        font-size:
+            .72rem;
+
     }
 
-    .quick-add input[type="date"] {
-        flex: 1;
-        width: auto;
+
+    .materia-card {
+
+        padding:
+            14px;
+
     }
 
-    .btn-add-quick {
-        flex: 0 0 50px;
+
+    .np-box {
+
+        padding:
+            11px;
+
     }
 
-    .aula-item {
-        align-items: flex-start;
+
+    .resumo-numero {
+
+        font-size:
+            1.15rem;
+
     }
 
-    .todo-line {
-        gap: 8px;
+
+    .status-badge {
+
+        font-size:
+            .65rem;
+
+        padding:
+            8px 12px;
+
     }
 
-    .todo-date {
-        font-size: .68rem;
-    }
-
-    .setting-row {
-        align-items: flex-start;
-    }
-
-    .setting-control {
-        flex-shrink: 0;
-    }
-
-    .color-options {
-        max-width: 120px;
-    }
 }
+
+
+/* =====================================================
+   TELAS MUITO PEQUENAS
+   ===================================================== */
+
+@media (max-width: 360px) {
+
+    .nota-row {
+
+        grid-template-columns:
+            1fr 48px 52px 24px;
+
+    }
+
+
+    .nota-row input {
+
+        font-size:
+            .68rem;
+
+    }
+
+
+    .top-menu {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+/* =====================================================
+   RELATÓRIO
+   ===================================================== */
+
+.relatorio-preview {
+
+    margin-top:
+        25px;
+
+}
+
+
+/* =====================================================
+   IMPRESSÃO
+   ===================================================== */
+
+@media print {
+
+    body {
+
+        background:
+            white !important;
+
+        color:
+            #111 !important;
+
+    }
+
+
+    .top-menu,
+    .semestre-area,
+    #removed-container,
+    .btn-delete-materia,
+    .btn-add-np,
+    .btn-add-nota,
+    .btn-del-small {
+
+        display:
+            none !important;
+
+    }
+
+
+    .materia-card {
+
+        background:
+            white !important;
+
+        color:
+            #111 !important;
+
+        box-shadow:
+            none;
+
+        border:
+            1px solid #ccc;
+
+        break-inside:
+            avoid;
+
+    }
+
+}
+
+
+/* =====================================================
+   FIM CSS
+   ===================================================== */
+
 </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <h1>UFC</h1>
+<h1>
+    📊 HISTÓRICO DE NOTAS
+</h1>
 
-    <div class="menu">
 
-        <button
-            class="btn-grades"
-            onclick="irParaNotas()">
-            📊 Pontuações e Médias
-        </button>
+<div class="top-menu">
 
-        <button
-            class="btn-config"
-            onclick="toggleConfig()">
-            ⚙️ Configurações
-        </button>
+    <button
+        class="btn-back"
+        onclick="window.location.href='index.html'">
 
-        <button
-            class="btn-notes"
-            onclick="baixarRelatorioHTML()">
-            🌐 Exportar Relatório
-        </button>
+        ⬅️ VOLTAR AO PLANNER
 
-        <button
-            class="btn-backup"
-            onclick="toggleBackup()">
-            📂 Backup do Semestre
-        </button>
+    </button>
 
-    </div>
 
+    <button
+        class="btn-download"
+        onclick="baixarHistorico()">
 
-    <!-- =====================================================
-         BACKUP
-         ===================================================== -->
+        📥 SALVAR RELATÓRIO
 
-    <div id="backup-panel">
-
-        <h3 style="margin-top:0; color:var(--secondary)">
-            📂 Backup Completo
-        </h3>
-
-        <div class="backup-actions">
-
-            <button
-                onclick="baixarEstrutura()"
-                style="border-color:var(--success); color:var(--success)">
-                📤 Exportar
-            </button>
-
-            <button
-                onclick="document.getElementById('importFile').click()"
-                style="border-color:var(--secondary); color:var(--secondary)">
-                📥 Importar
-            </button>
-
-            <input
-                type="file"
-                id="importFile"
-                accept=".json,application/json"
-                onchange="importarBackup(this)"
-            >
-
-        </div>
-
-        <div class="backup-info">
-            O backup inclui cronograma, tarefas, anotações,
-            matérias e configurações.
-        </div>
-
-        <button
-            onclick="toggleBackup()"
-            class="btn-close">
-            [ FECHAR ]
-        </button>
-
-    </div>
-
-
-    <!-- =====================================================
-         CONFIGURAÇÕES
-         ===================================================== -->
-
-    <div id="config-panel">
-
-        <h3 style="margin-top:0; color:var(--bus)">
-            ⚙️ Configurações do Planner
-        </h3>
-
-
-        <div class="settings-section">
-
-            <h4>🎨 Aparência</h4>
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-                    <span class="setting-title">Tema</span>
-                    <span class="setting-description">
-                        Escolha como o Planner será exibido.
-                    </span>
-                </div>
-
-                <div class="setting-control">
-
-                    <select
-                        id="setting-theme"
-                        onchange="alterarConfiguracao('tema', this.value)">
-
-                        <option value="dark">🌙 Escuro</option>
-                        <option value="light">☀️ Claro</option>
-                        <option value="auto">🖥️ Automático</option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-                    <span class="setting-title">
-                        Tamanho da fonte
-                    </span>
-
-                    <span class="setting-description">
-                        Ajuste a leitura do Planner.
-                    </span>
-                </div>
-
-                <div class="setting-control">
-
-                    <select
-                        id="setting-font"
-                        onchange="alterarConfiguracao('fonte', this.value)">
-
-                        <option value="small">Pequena</option>
-                        <option value="normal">Normal</option>
-                        <option value="large">Grande</option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Cor de destaque
-                    </span>
-
-                    <span class="setting-description">
-                        Personalize a cor principal.
-                    </span>
-
-                </div>
-
-                <div class="color-options">
-
-                    <button
-                        class="color-option color-purple"
-                        onclick="alterarCor('purple')"
-                        title="Roxo">
-                    </button>
-
-                    <button
-                        class="color-option color-cyan"
-                        onclick="alterarCor('cyan')"
-                        title="Azul">
-                    </button>
-
-                    <button
-                        class="color-option color-green"
-                        onclick="alterarCor('green')"
-                        title="Verde">
-                    </button>
-
-                    <button
-                        class="color-option color-pink"
-                        onclick="alterarCor('pink')"
-                        title="Rosa">
-                    </button>
-
-                    <button
-                        class="color-option color-orange"
-                        onclick="alterarCor('orange')"
-                        title="Laranja">
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Modo compacto
-                    </span>
-
-                    <span class="setting-description">
-                        Reduz o espaço entre os elementos.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-compact"
-                        onchange="alterarConfiguracao(
-                            'compacto',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Animações
-                    </span>
-
-                    <span class="setting-description">
-                        Ativa transições e efeitos visuais.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-animations"
-                        onchange="alterarConfiguracao(
-                            'animacoes',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <!-- PLANNER -->
-
-        <div class="settings-section">
-
-            <h4>📚 Planner</h4>
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Primeiro dia da semana
-                    </span>
-
-                    <span class="setting-description">
-                        Define a organização semanal.
-                    </span>
-
-                </div>
-
-                <div class="setting-control">
-
-                    <select
-                        id="setting-week-start"
-                        onchange="alterarConfiguracao(
-                            'inicioSemana',
-                            this.value
-                        )">
-
-                        <option value="segunda">
-                            Segunda-feira
-                        </option>
-
-                        <option value="domingo">
-                            Domingo
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Mostrar transporte
-                    </span>
-
-                    <span class="setting-description">
-                        Exibe os horários de ônibus.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-bus"
-                        onchange="alterarConfiguracao(
-                            'mostrarTransporte',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Mostrar salas
-                    </span>
-
-                    <span class="setting-description">
-                        Exibe o número da sala de cada aula.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-room"
-                        onchange="alterarConfiguracao(
-                            'mostrarSala',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Destacar dia atual
-                    </span>
-
-                    <span class="setting-description">
-                        Realça automaticamente o dia de hoje.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-today"
-                        onchange="alterarConfiguracao(
-                            'destacarHoje',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <!-- TAREFAS -->
-
-        <div class="settings-section">
-
-            <h4>✅ Tarefas</h4>
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Confirmar exclusões
-                    </span>
-
-                    <span class="setting-description">
-                        Pergunta antes de excluir tarefas.
-                    </span>
-
-                </div>
-
-                <label class="switch">
-
-                    <input
-                        type="checkbox"
-                        id="setting-confirm-delete"
-                        onchange="alterarConfiguracao(
-                            'confirmarExclusao',
-                            this.checked
-                        )"
-                    >
-
-                    <span class="slider"></span>
-
-                </label>
-
-            </div>
-
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Data padrão das tarefas
-                    </span>
-
-                    <span class="setting-description">
-                        Define automaticamente a data de novas tarefas.
-                    </span>
-
-                </div>
-
-                <div class="setting-control">
-
-                    <select
-                        id="setting-task-date"
-                        onchange="alterarConfiguracao(
-                            'dataTarefa',
-                            this.value
-                        )">
-
-                        <option value="none">
-                            Sem data
-                        </option>
-
-                        <option value="today">
-                            Hoje
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- DADOS -->
-
-        <div class="settings-section">
-
-            <h4>💾 Dados</h4>
-
-            <div class="setting-row">
-
-                <div class="setting-info">
-
-                    <span class="setting-title">
-                        Backup
-                    </span>
-
-                    <span class="setting-description">
-                        Exporte ou importe todos os seus dados.
-                    </span>
-
-                </div>
-
-                <button
-                    onclick="toggleBackup(); toggleConfig()"
-                    style="
-                        border-color:var(--primary);
-                        color:var(--primary);
-                        box-shadow:none;
-                    ">
-                    📂 Abrir Backup
-                </button>
-
-            </div>
-
-
-            <button
-                class="settings-reset"
-                onclick="restaurarConfiguracoes()">
-                🔄 Restaurar configurações padrão
-            </button>
-
-
-            <button
-                class="settings-danger"
-                onclick="apagarDadosPlanner()">
-                🗑️ Apagar todos os dados
-            </button>
-
-        </div>
-
-
-        <!-- CRONOGRAMA -->
-
-        <div class="settings-section">
-
-            <h4>📅 Cronograma</h4>
-
-            <div id="dias-editor"></div>
-
-        </div>
-
-
-        <!-- MATÉRIAS -->
-
-        <div class="settings-section">
-
-            <h4>📚 Matérias</h4>
-
-            <div id="mats-editor"></div>
-
-            <button
-                onclick="addItem()"
-                style="
-                    width:100%;
-                    padding:12px;
-                    margin-top:10px;
-                    border-color:var(--secondary);
-                ">
-                + Nova Matéria
-            </button>
-
-        </div>
-
-
-        <button
-            class="config-save"
-            onclick="salvarEFechar()">
-            ✅ SALVAR TUDO
-        </button>
-
-
-        <button
-            onclick="toggleConfig()"
-            class="btn-close">
-            [ FECHAR ]
-        </button>
-
-    </div>
-
-
-    <div id="render-area"></div>
+    </button>
 
 </div>
 
+
+<div class="semestre-area">
+
+    <span class="semestre-label">
+        Semestre atual
+    </span>
+
+
+    <input
+        type="text"
+        id="input-semestre"
+        class="semestre-input"
+        value="2026.1"
+        placeholder="2026.1"
+        maxlength="15"
+    >
+
+</div>
+
+
 <div
-    id="status-message"
-    class="status-message">
+    id="resumo"
+    class="resumo">
+</div>
+
+
+<div
+    id="materias-container">
+</div>
+
+
+<div
+    id="removed-container">
+</div>
+
 </div>
 
 
 <script>
 
-/* =========================================================
-   UFC PLANNER V8
-   ========================================================= */
+/* =====================================================
+   CONFIGURAÇÃO
+   ===================================================== */
 
 const STORAGE_KEY =
-    'ufc_planner_data_v8';
+    'ufc_sistema_notas_v2';
+
+const TRANSPORTE_KEY =
+    'ufc_materias_transporte';
 
 const OLD_STORAGE_KEY =
-    'ufc_planner_data_v7';
-
-const SETTINGS_KEY =
-    'ufc_planner_settings_v8';
-
-const NOTES_STORAGE_KEY =
     'ufc_sistema_notas_v1';
 
 
-/* =========================================================
-   CONFIGURAÇÕES
-   ========================================================= */
+/* =====================================================
+   ESTRUTURA INICIAL
+   ===================================================== */
 
-const defaultSettings = {
+const estruturaInicial = {
 
-    tema: 'dark',
+    version:
+        2,
 
-    fonte: 'normal',
+    semestre:
+        '2026.1',
 
-    cor: 'purple',
+    materias:
+        {},
 
-    compacto: false,
-
-    animacoes: true,
-
-    inicioSemana: 'segunda',
-
-    mostrarTransporte: true,
-
-    mostrarSala: true,
-
-    destacarHoje: true,
-
-    confirmarExclusao: true,
-
-    dataTarefa: 'none'
+    removidas:
+        {}
 
 };
 
 
-function carregarConfiguracoes() {
-
-    try {
-
-        const salvo =
-            localStorage.getItem(
-                SETTINGS_KEY
-            );
-
-        if (!salvo) {
-
-            return {
-                ...defaultSettings
-            };
-
-        }
-
-        const parsed =
-            JSON.parse(salvo);
-
-        return {
-            ...defaultSettings,
-            ...parsed
-        };
-
-    } catch (erro) {
-
-        console.error(
-            'Erro ao carregar configurações:',
-            erro
-        );
-
-        return {
-            ...defaultSettings
-        };
-    }
-}
-
-
-let configuracoes =
-    carregarConfiguracoes();
-
-
-function salvarConfiguracoes() {
-
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(configuracoes)
-    );
-}
-
-
-/* =========================================================
-   DADOS PADRÃO
-   ========================================================= */
-
-const defaultData = {
-
-    version: 8,
-
-    dias: [
-
-        {
-            nome: "Segunda",
-            bus: "16:15 ➔ 21:40",
-            aulas: [
-                ["17:30", "Matéria 1", "S01"]
-            ]
-        },
-
-        {
-            nome: "Terça",
-            bus: "12:20 ➔ 17:40",
-            aulas: [
-                ["13:00", "Matéria 2", "S02"]
-            ]
-        },
-
-        {
-            nome: "Quarta",
-            bus: "12:20 ➔ 15:20",
-            aulas: [
-                ["13:00", "Matéria 2", "S02"]
-            ]
-        },
-
-        {
-            nome: "Quinta",
-            bus: "16:15 ➔ 21:40",
-            aulas: [
-                ["17:30", "Matéria 3", "S03"]
-            ]
-        },
-
-        {
-            nome: "Sexta",
-            bus: "12:20 ➔ 19:40",
-            aulas: [
-                ["13:00", "Matéria 1", "S01"]
-            ]
-        }
-
-    ],
-
-    materias: [
-
-        {
-            id: "mat-001",
-            nome: "Matéria 1"
-        },
-
-        {
-            id: "mat-002",
-            nome: "Matéria 2"
-        }
-
-    ],
-
-    todos: []
-
-};
-
-
-/* =========================================================
+/* =====================================================
    UTILITÁRIOS
-   ========================================================= */
+   ===================================================== */
 
 function gerarId(prefixo = 'id') {
 
     if (
         typeof crypto !== 'undefined' &&
-        typeof crypto.randomUUID === 'function'
+        crypto.randomUUID
     ) {
 
         return `${prefixo}-${crypto.randomUUID()}`;
 
     }
 
-    return `${prefixo}-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 10)}`;
+
+    return `${prefixo}-${Date.now()}-${
+        Math.random()
+            .toString(36)
+            .substring(2,10)
+    }`;
+
 }
 
 
 function escapeHTML(valor) {
 
     return String(valor ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
 
 }
 
 
-function escapeAttribute(valor) {
-
-    return escapeHTML(valor);
-
-}
-
-
-function clonarPadrao() {
-
-    return structuredClone(defaultData);
-
-}
-
-
-function mostrarStatus(
-    mensagem,
-    tempo = 2500
-) {
-
-    const el =
-        document.getElementById(
-            'status-message'
-        );
-
-    if (!el) return;
-
-    el.textContent =
-        mensagem;
-
-    el.classList.add('show');
-
-    clearTimeout(
-        mostrarStatus.timeout
-    );
-
-    mostrarStatus.timeout =
-        setTimeout(() => {
-
-            el.classList.remove(
-                'show'
-            );
-
-        }, tempo);
-}
-
-
-/* =========================================================
-   APLICAÇÃO DAS CONFIGURAÇÕES
-   ========================================================= */
-
-function aplicarConfiguracoes() {
-
-    const body =
-        document.body;
-
-
-    body.classList.remove(
-        'light-theme',
-        'auto-theme'
-    );
-
+function numero(valor) {
 
     if (
-        configuracoes.tema === 'light'
+        valor === '' ||
+        valor === null ||
+        valor === undefined
     ) {
 
-        body.classList.add(
-            'light-theme'
-        );
-
-    } else if (
-        configuracoes.tema === 'auto'
-    ) {
-
-        body.classList.add(
-            'auto-theme'
-        );
+        return null;
 
     }
 
 
-    body.classList.remove(
-        'font-small',
-        'font-normal',
-        'font-large'
-    );
+    const n =
+        parseFloat(
+            String(valor)
+                .replace(',','.')
+        );
 
 
-    body.classList.add(
-        `font-${configuracoes.fonte}`
-    );
-
-
-    body.classList.toggle(
-        'compact-mode',
-        configuracoes.compacto
-    );
-
-
-    body.classList.toggle(
-        'no-animations',
-        !configuracoes.animacoes
-    );
-
-
-    const cores = {
-
-        purple: {
-            primary: '#bb86fc'
-        },
-
-        cyan: {
-            primary: '#00e5ff'
-        },
-
-        green: {
-            primary: '#00c853'
-        },
-
-        pink: {
-            primary: '#ff4081'
-        },
-
-        orange: {
-            primary: '#ff9800'
-        }
-
-    };
-
-
-    const cor =
-        cores[
-            configuracoes.cor
-        ] || cores.purple;
-
-
-    document.documentElement.style.setProperty(
-        '--primary',
-        cor.primary
-    );
-
-
-    atualizarControlesConfiguracao();
+    return Number.isFinite(n)
+        ? n
+        : null;
 
 }
 
 
-function alterarConfiguracao(
-    chave,
-    valor
+function limitarNota(valor) {
+
+    const n =
+        numero(valor);
+
+
+    if (
+        n === null
+    ) {
+
+        return '';
+
+    }
+
+
+    return Math.max(
+        0,
+        Math.min(10,n)
+    );
+
+}
+
+
+/* =====================================================
+   NORMALIZAÇÃO
+   ===================================================== */
+
+function normalizarParcial(parcial) {
+
+    return {
+
+        id:
+            parcial?.id ||
+            gerarId('np'),
+
+        nome:
+            String(
+                parcial?.nome ||
+                'Nova Etapa'
+            ),
+
+        notas:
+            Array.isArray(
+                parcial?.notas
+            )
+                ? parcial.notas.map(
+                    nota => ({
+
+                        id:
+                            nota?.id ||
+                            gerarId('nota'),
+
+                        tipo:
+                            String(
+                                nota?.tipo || ''
+                            ),
+
+                        peso:
+                            nota?.peso ??
+                            1,
+
+                        valor:
+                            nota?.valor ??
+                            ''
+
+                    })
+                )
+                : [],
+
+        af:
+            parcial?.af ??
+            ''
+
+    };
+
+}
+
+
+function normalizarMateria(
+    materia,
+    id
 ) {
 
-    configuracoes[chave] =
-        valor;
+    return {
 
-    salvarConfiguracoes();
+        id,
 
-    aplicarConfiguracoes();
+        nome:
+            String(
+                materia?.nome ||
+                'Matéria'
+            ),
 
-    desenharTudo();
+        parciais:
+            Array.isArray(
+                materia?.parciais
+            )
+                ? materia.parciais.map(
+                    normalizarParcial
+                )
+                : []
 
-    mostrarStatus(
-        '⚙️ Configuração atualizada'
-    );
-
-}
-
-
-function alterarCor(cor) {
-
-    configuracoes.cor =
-        cor;
-
-    salvarConfiguracoes();
-
-    aplicarConfiguracoes();
-
-    mostrarStatus(
-        '🎨 Cor atualizada'
-    );
+    };
 
 }
 
 
-function atualizarControlesConfiguracao() {
+function normalizarDados(dados) {
 
-    const mapa = {
+    const resultado = {
 
-        'setting-theme':
-            configuracoes.tema,
+        version:
+            2,
 
-        'setting-font':
-            configuracoes.fonte,
+        semestre:
+            String(
+                dados?.semestre ||
+                '2026.1'
+            ),
 
-        'setting-compact':
-            configuracoes.compacto,
+        materias:
+            {},
 
-        'setting-animations':
-            configuracoes.animacoes,
-
-        'setting-week-start':
-            configuracoes.inicioSemana,
-
-        'setting-bus':
-            configuracoes.mostrarTransporte,
-
-        'setting-room':
-            configuracoes.mostrarSala,
-
-        'setting-today':
-            configuracoes.destacarHoje,
-
-        'setting-confirm-delete':
-            configuracoes.confirmarExclusao,
-
-        'setting-task-date':
-            configuracoes.dataTarefa
+        removidas:
+            {}
 
     };
 
 
-    Object.entries(mapa)
-        .forEach(
-            ([id, valor]) => {
+    if (
+        dados?.materias &&
+        typeof dados.materias === 'object'
+    ) {
 
-                const elemento =
-                    document.getElementById(id);
+        Object.entries(
+            dados.materias
+        ).forEach(
+            ([id,materia]) => {
 
-                if (!elemento) return;
-
-
-                if (
-                    elemento.type === 'checkbox'
-                ) {
-
-                    elemento.checked =
-                        Boolean(valor);
-
-                } else {
-
-                    elemento.value =
-                        valor;
-
-                }
+                resultado.materias[id] =
+                    normalizarMateria(
+                        materia,
+                        id
+                    );
 
             }
         );
 
-
-    document
-        .querySelectorAll(
-            '.color-option'
-        )
-        .forEach(botao => {
-
-            botao.classList.remove(
-                'active'
-            );
-
-        });
-
-
-    const botaoCor =
-        document.querySelector(
-            `.color-option.color-${configuracoes.cor}`
-        );
-
-
-    if (botaoCor) {
-
-        botaoCor.classList.add(
-            'active'
-        );
-
     }
 
-}
 
+    if (
+        dados?.removidas &&
+        typeof dados.removidas === 'object'
+    ) {
 
-/* =========================================================
-   STORAGE
-   ========================================================= */
+        Object.entries(
+            dados.removidas
+        ).forEach(
+            ([id,materia]) => {
 
-function salvarDados() {
+                resultado.removidas[id] = {
 
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(dados)
-        );
-
-    } catch (erro) {
-
-        console.error(
-            'Erro ao salvar dados:',
-            erro
-        );
-
-        alert(
-            'Não foi possível salvar os dados.'
-        );
-
-    }
-
-}
-
-
-function validarDados(obj) {
-
-    return !!(
-        obj &&
-        typeof obj === 'object' &&
-        Array.isArray(obj.dias) &&
-        Array.isArray(obj.materias) &&
-        Array.isArray(obj.todos)
-    );
-
-}
-
-
-function normalizarDados(obj) {
-
-    const resultado = {
-
-        version: 8,
-
-        dias: Array.isArray(obj.dias)
-            ? obj.dias
-            : [],
-
-        materias: [],
-
-        todos: Array.isArray(obj.todos)
-            ? obj.todos
-            : []
-
-    };
-
-
-    resultado.materias =
-        obj.materias
-            .map((materia, index) => {
-
-                if (
-                    typeof materia === 'string'
-                ) {
-
-                    return {
-
-                        id: gerarId('mat'),
-
-                        nome: materia
-
-                    };
-
-                }
-
-                return {
-
-                    id:
-                        materia.id ||
-                        gerarId('mat'),
+                    id,
 
                     nome:
                         String(
-                            materia.nome ||
-                            `Matéria ${index + 1}`
+                            materia?.nome || ''
                         )
 
                 };
 
-            })
-            .filter(
-                m => m.nome.trim() !== ''
-            );
+            }
+        );
 
-
-    resultado.todos =
-        obj.todos
-            .map(tarefa => ({
-
-                id:
-                    tarefa.id ||
-                    gerarId('todo'),
-
-                texto:
-                    String(
-                        tarefa.texto || ''
-                    ),
-
-                data:
-                    tarefa.data || '',
-
-                concluida:
-                    tarefa.concluida === true
-
-            }))
-            .filter(
-                t => t.texto.trim() !== ''
-            );
-
-
-    resultado.dias =
-        resultado.dias.map(dia => ({
-
-            nome:
-                String(
-                    dia.nome || ''
-                ),
-
-            bus:
-                String(
-                    dia.bus || ''
-                ),
-
-            aulas:
-                Array.isArray(dia.aulas)
-                    ? dia.aulas.map(aula => [
-
-                        String(aula[0] || ''),
-
-                        String(aula[1] || ''),
-
-                        String(aula[2] || '')
-
-                    ])
-                    : []
-
-        }));
+    }
 
 
     return resultado;
@@ -2079,73 +1716,67 @@ function normalizarDados(obj) {
 }
 
 
+/* =====================================================
+   MIGRAÇÃO
+   ===================================================== */
+
 function migrarVersaoAntiga(antigo) {
 
-    const novo = {
-
-        version: 8,
-
-        dias:
-            Array.isArray(antigo.dias)
-                ? antigo.dias
-                : clonarPadrao().dias,
-
-        materias: [],
-
-        todos: []
-
-    };
+    const novo =
+        structuredClone(
+            estruturaInicial
+        );
 
 
-    const materiasAntigas =
-        Array.isArray(antigo.materias)
-            ? antigo.materias
-            : [];
+    const semestre =
+        localStorage.getItem(
+            'ufc_semestre'
+        );
 
 
-    materiasAntigas.forEach(nome => {
+    if (semestre) {
 
-        novo.materias.push({
+        novo.semestre =
+            semestre;
 
-            id: gerarId('mat'),
-
-            nome: String(nome)
-
-        });
-
-    });
+    }
 
 
-    const todosAntigos =
-        Array.isArray(antigo.todos)
-            ? antigo.todos
-            : [];
+    if (
+        antigo &&
+        typeof antigo === 'object'
+    ) {
+
+        Object.entries(
+            antigo
+        ).forEach(
+            ([nome,materia]) => {
+
+                const id =
+                    gerarId('mat');
 
 
-    todosAntigos.forEach(
-        (tarefa, index) => {
+                novo.materias[id] = {
 
-            novo.todos.push({
+                    id,
 
-                id: gerarId('todo'),
+                    nome,
 
-                texto:
-                    String(
-                        tarefa.texto || ''
-                    ),
+                    parciais:
+                        Array.isArray(
+                            materia?.parciais
+                        )
+                            ? materia.parciais.map(
+                                normalizarParcial
+                            )
+                            : []
 
-                data:
-                    tarefa.data || '',
+                };
 
-                concluida:
-                    localStorage.getItem(
-                        `chk-${index}`
-                    ) === 'true'
+            }
+        );
 
-            });
-
-        }
-    );
+    }
 
 
     return novo;
@@ -2153,30 +1784,25 @@ function migrarVersaoAntiga(antigo) {
 }
 
 
+/* =====================================================
+   CARREGAR
+   ===================================================== */
+
 function carregarDados() {
 
     try {
 
-        const atual =
+        const salvo =
             localStorage.getItem(
                 STORAGE_KEY
             );
 
 
-        if (atual) {
+        if (salvo) {
 
-            const parsed =
-                JSON.parse(atual);
-
-            if (
-                validarDados(parsed)
-            ) {
-
-                return normalizarDados(
-                    parsed
-                );
-
-            }
+            return normalizarDados(
+                JSON.parse(salvo)
+            );
 
         }
 
@@ -2189,324 +1815,1208 @@ function carregarDados() {
 
         if (antigo) {
 
-            const parsed =
-                JSON.parse(antigo);
-
             const migrado =
                 migrarVersaoAntiga(
-                    parsed
+                    JSON.parse(antigo)
                 );
+
 
             localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify(migrado)
             );
 
+
             return migrado;
 
         }
 
-
-    } catch (erro) {
+    } catch(erro) {
 
         console.error(
-            'Erro ao carregar dados:',
+            'Erro ao carregar notas:',
             erro
         );
 
     }
 
 
-    return clonarPadrao();
+    return structuredClone(
+        estruturaInicial
+    );
 
 }
 
 
-/* =========================================================
-   NAVEGAÇÃO
-   ========================================================= */
+let dados =
+    carregarDados();
 
-function irParaNotas() {
 
-    const nomesMaterias =
-        dados.materias.map(
-            materia => materia.nome
-        );
+/* =====================================================
+   SALVAR
+   ===================================================== */
 
+function salvar() {
 
     localStorage.setItem(
-        'ufc_materias_transporte',
-        JSON.stringify(
-            nomesMaterias
-        )
+        STORAGE_KEY,
+        JSON.stringify(dados)
     );
 
 
-    window.location.href =
-        'notas.html';
+    localStorage.setItem(
+        'ufc_semestre',
+        dados.semestre
+    );
 
 }
 
 
-/* =========================================================
-   RENDERIZAÇÃO
-   ========================================================= */
+/* =====================================================
+   PLANNER
+   ===================================================== */
 
-function desenharTudo() {
+function obterMateriasPlanner() {
 
-    const area =
-        document.getElementById(
-            'render-area'
+    try {
+
+        const salvo =
+            localStorage.getItem(
+                TRANSPORTE_KEY
+            );
+
+
+        if (!salvo) {
+
+            return [];
+
+        }
+
+
+        const lista =
+            JSON.parse(salvo);
+
+
+        if (
+            !Array.isArray(lista)
+        ) {
+
+            return [];
+
+        }
+
+
+        return lista.map(
+            item => {
+
+                if (
+                    typeof item === 'string'
+                ) {
+
+                    return {
+
+                        id:
+                            'legacy-' +
+                            item,
+
+                        nome:
+                            item
+
+                    };
+
+                }
+
+
+                return {
+
+                    id:
+                        item?.id ||
+                        'legacy-' +
+                        item?.nome,
+
+                    nome:
+                        String(
+                            item?.nome || ''
+                        )
+
+                };
+
+            }
+        );
+
+    } catch(erro) {
+
+        console.error(
+            'Erro no Planner:',
+            erro
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function sincronizar() {
+
+    const materias =
+        obterMateriasPlanner();
+
+
+    let alterou =
+        false;
+
+
+    materias.forEach(
+        materia => {
+
+            if (
+                !materia.id ||
+                !materia.nome.trim()
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                dados.removidas[
+                    materia.id
+                ]
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                !dados.materias[
+                    materia.id
+                ]
+            ) {
+
+                dados.materias[
+                    materia.id
+                ] = {
+
+                    id:
+                        materia.id,
+
+                    nome:
+                        materia.nome,
+
+                    parciais:
+                        []
+
+                };
+
+
+                alterou =
+                    true;
+
+            } else {
+
+                if (
+                    dados.materias[
+                        materia.id
+                    ].nome !==
+                    materia.nome
+                ) {
+
+                    dados.materias[
+                        materia.id
+                    ].nome =
+                        materia.nome;
+
+
+                    alterou =
+                        true;
+
+                }
+
+            }
+
+        }
+    );
+
+
+    if (alterou) {
+
+        salvar();
+
+    }
+
+}
+
+
+/* =====================================================
+   CÁLCULO DA ETAPA
+   ===================================================== */
+
+function calcularEtapa(parcial) {
+
+    let soma =
+        0;
+
+    let pesos =
+        0;
+
+
+    const faltantes =
+        [];
+
+
+    parcial.notas.forEach(
+        nota => {
+
+            const peso =
+                numero(nota.peso) ||
+                0;
+
+
+            const valor =
+                numero(nota.valor);
+
+
+            if (
+                peso <= 0
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                valor === null
+            ) {
+
+                faltantes.push({
+
+                    id:
+                        nota.id,
+
+                    tipo:
+                        nota.tipo ||
+                        'Próxima nota',
+
+                    peso
+
+                });
+
+            } else {
+
+                soma +=
+                    valor * peso;
+
+                pesos +=
+                    peso;
+
+            }
+
+        }
+    );
+
+
+    const pesosFaltantes =
+        faltantes.reduce(
+            (total,item) =>
+                total + item.peso,
+            0
         );
 
 
-    let html = '';
-
-    const agora =
-        new Date();
-
-
-    const hojeData =
-        agora.getFullYear() +
-        '-' +
-        String(
-            agora.getMonth() + 1
-        ).padStart(2, '0') +
-        '-' +
-        String(
-            agora.getDate()
-        ).padStart(2, '0');
+    const pesoTotal =
+        pesos +
+        pesosFaltantes;
 
 
-    const nomesDias = [
-
-        "Domingo",
-        "Segunda",
-        "Terça",
-        "Quarta",
-        "Quinta",
-        "Sexta",
-        "Sábado"
-
-    ];
+    const mediaAtual =
+        pesos > 0
+            ? soma / pesos
+            : null;
 
 
-    const hojeNome =
-        nomesDias[
-            agora.getDay()
-        ];
+    let meta =
+        null;
 
 
-    /* LEMBRETES */
+    if (
+        pesosFaltantes > 0 &&
+        pesoTotal > 0
+    ) {
 
-    html += `
+        meta =
+            (
+                7 * pesoTotal -
+                soma
+            ) /
+            pesosFaltantes;
 
-        <div class="section-title">
-            💡 Lembretes Gerais
+    }
+
+
+    let mediaFinal =
+        null;
+
+
+    if (
+        pesoTotal > 0 &&
+        pesosFaltantes === 0
+    ) {
+
+        mediaFinal =
+            soma / pesoTotal;
+
+    }
+
+
+    return {
+
+        soma,
+
+        pesos,
+
+        pesosFaltantes,
+
+        pesoTotal,
+
+        faltantes,
+
+        mediaAtual,
+
+        mediaFinal,
+
+        meta
+
+    };
+
+}
+
+
+/* =====================================================
+   MÉDIA DAS APs
+   ===================================================== */
+
+function calcularMediaAPs(materia) {
+
+    const etapas =
+        materia.parciais
+            .map(calcularEtapa)
+            .filter(
+                etapa =>
+                    etapa.mediaFinal !== null
+            );
+
+
+    if (
+        etapas.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const soma =
+        etapas.reduce(
+            (total,etapa) =>
+                total +
+                etapa.mediaFinal,
+            0
+        );
+
+
+    return soma /
+        etapas.length;
+
+}
+
+
+/* =====================================================
+   AF
+   ===================================================== */
+
+function calcularAFnecessaria(mediaAP) {
+
+    if (
+        mediaAP === null
+    ) {
+
+        return null;
+
+    }
+
+
+    if (
+        mediaAP < 4
+    ) {
+
+        return null;
+
+    }
+
+
+    return Math.max(
+        4,
+        10 - mediaAP
+    );
+
+}
+
+
+/* =====================================================
+   STATUS
+   ===================================================== */
+
+function obterStatus(mediaAP) {
+
+    if (
+        mediaAP === null
+    ) {
+
+        return {
+
+            classe:
+                'recuperacao',
+
+            texto:
+                'AGUARDANDO NOTAS'
+
+        };
+
+    }
+
+
+    if (
+        mediaAP >= 7
+    ) {
+
+        return {
+
+            classe:
+                'aprovado',
+
+            texto:
+                'APROVADO POR MÉDIA 🏆'
+
+        };
+
+    }
+
+
+    if (
+        mediaAP >= 4
+    ) {
+
+        return {
+
+            classe:
+                'recuperacao',
+
+            texto:
+                'POSSÍVEL AVALIAÇÃO FINAL'
+
+        };
+
+    }
+
+
+    return {
+
+        classe:
+            'reprovado',
+
+        texto:
+            'ABAIXO DE 4,0'
+
+    };
+
+}
+
+
+/* =====================================================
+   RENDER PRINCIPAL
+   ===================================================== */
+
+function renderizar() {
+
+    const container =
+        document.getElementById(
+            'materias-container'
+        );
+
+
+    const resumo =
+        document.getElementById(
+            'resumo'
+        );
+
+
+    const lista =
+        Object.values(
+            dados.materias
+        );
+
+
+    document.getElementById(
+        'input-semestre'
+    ).value =
+        dados.semestre;
+
+
+    let aprovadas =
+        0;
+
+    let recuperacao =
+        0;
+
+    let aguardando =
+        0;
+
+
+    lista.forEach(
+        materia => {
+
+            const media =
+                calcularMediaAPs(
+                    materia
+                );
+
+
+            if (
+                media === null
+            ) {
+
+                aguardando++;
+
+            } else if (
+                media >= 7
+            ) {
+
+                aprovadas++;
+
+            } else if (
+                media >= 4
+            ) {
+
+                recuperacao++;
+
+            }
+
+        }
+    );
+
+
+    resumo.innerHTML = `
+
+        <div class="resumo-box">
+
+            <span class="resumo-numero">
+                ${lista.length}
+            </span>
+
+            <span class="resumo-label">
+                Matérias
+            </span>
+
         </div>
 
-        <div class="card">
 
-            <textarea
-                id="not-geral"
-                placeholder="Escreva lembretes importantes aqui..."
-            ></textarea>
+        <div class="resumo-box">
+
+            <span
+                class="resumo-numero"
+                style="color:var(--success)">
+
+                ${aprovadas}
+
+            </span>
+
+            <span class="resumo-label">
+                Aprovadas
+            </span>
 
         </div>
 
-    `;
 
+        <div class="resumo-box">
 
-    /* CHECKLIST */
+            <span
+                class="resumo-numero"
+                style="color:var(--warning)">
 
-    html += `
+                ${recuperacao}
 
-        <div class="section-title">
-            ✅ Check-list
+            </span>
+
+            <span class="resumo-label">
+                Atenção
+            </span>
+
         </div>
-
-        <div class="card">
-
-            <div class="quick-add">
-
-                <input
-                    type="text"
-                    id="new-todo-text"
-                    placeholder="Nova tarefa..."
-                    maxlength="300"
-                    onkeydown="
-                        if(event.key === 'Enter')
-                            addTodoRapido()
-                    "
-                >
-
-                <input
-                    type="date"
-                    id="new-todo-date"
-                >
-
-                <button
-                    class="btn-add-quick"
-                    onclick="addTodoRapido()">
-                    +
-                </button>
-
-            </div>
-
-            <div id="todo-list-area">
 
     `;
 
 
     if (
-        dados.todos.length === 0
+        lista.length === 0
     ) {
 
-        html += `
+        container.innerHTML = `
 
-            <p class="empty-message">
-                Nada para fazer. Relaxe! ☕
-            </p>
+            <div class="empty">
+
+                <div class="empty-icon">
+                    📚
+                </div>
+
+                <div class="empty-text">
+
+                    Nenhuma matéria cadastrada.
+
+                    <br><br>
+
+                    Adicione matérias pelo Planner
+                    ou restaure uma matéria removida.
+
+                </div>
+
+            </div>
 
         `;
 
     } else {
 
-        const tarefasOrdenadas =
-            [...dados.todos].sort(
-                (a, b) => {
-
-                    if (
-                        a.concluida !==
-                        b.concluida
-                    ) {
-
-                        return a.concluida
-                            ? 1
-                            : -1;
-
-                    }
-
-
-                    if (
-                        a.data &&
-                        b.data
-                    ) {
-
-                        return a.data
-                            .localeCompare(
-                                b.data
-                            );
-
-                    }
-
-
-                    if (a.data)
-                        return -1;
-
-                    if (b.data)
-                        return 1;
-
-                    return 0;
-
-                }
-            );
-
-
-        tarefasOrdenadas.forEach(t => {
-
-            const hoje =
-                t.data === hojeData;
-
-
-            const dataFmt =
-                formatarData(
-                    t.data
-                );
-
-
-            html += `
-
-                <label class="todo-line">
-
-                    <input
-                        type="checkbox"
-                        ${
-                            t.concluida
-                                ? 'checked'
-                                : ''
-                        }
-                        onchange="
-                            alternarTodo(
-                                '${escapeAttribute(t.id)}',
-                                this.checked
-                            )
-                        "
-                    >
-
-                    <span
-                        class="${
-                            t.concluida
-                                ? 'todo-text done'
-                                : 'todo-text'
-                        }">
-
-                        ${escapeHTML(t.texto)}
-
-                    </span>
-
-                    ${
-                        t.data
-                            ? `
-                                <span
-                                    class="${
-                                        hoje
-                                            ? 'todo-date today'
-                                            : 'todo-date'
-                                    }">
-
-                                    📅 ${
-                                        hoje
-                                            ? 'HOJE'
-                                            : dataFmt
-                                    }
-
-                                </span>
-                            `
-                            : ''
-                    }
-
-                    <button
-                        onclick="
-                            removerTodo(
-                                '${escapeAttribute(t.id)}'
-                            )
-                        "
-                        class="btn-del"
-                        title="Remover tarefa">
-
-                        ✕
-
-                    </button>
-
-                </label>
-
-            `;
-
-        });
+        container.innerHTML =
+            lista.map(
+                renderizarMateria
+            ).join('');
 
     }
 
 
-    html += `
+    renderizarRemovidas();
+
+}
+
+
+/* =====================================================
+   RENDER MATÉRIA
+   ===================================================== */
+
+function renderizarMateria(materia) {
+
+    const mediaAP =
+        calcularMediaAPs(
+            materia
+        );
+
+
+    const status =
+        obterStatus(
+            mediaAP
+        );
+
+
+    const afNecessaria =
+        calcularAFnecessaria(
+            mediaAP
+        );
+
+
+    let etapasHTML =
+        '';
+
+
+    materia.parciais.forEach(
+        (parcial,index) => {
+
+            etapasHTML +=
+                renderizarParcial(
+                    materia,
+                    parcial,
+                    index
+                );
+
+        }
+    );
+
+
+    let afHTML =
+        '';
+
+
+    if (
+        mediaAP !== null &&
+        mediaAP >= 4 &&
+        mediaAP < 7
+    ) {
+
+        const af =
+            numero(
+                materia.af
+            );
+
+
+        if (
+            af !== null
+        ) {
+
+            const mediaFinal =
+                (
+                    mediaAP +
+                    af
+                ) / 2;
+
+
+            const passou =
+                af >= 4 &&
+                mediaFinal >= 5;
+
+
+            afHTML = `
+
+                <div class="info-af">
+
+                    AF registrada:
+                    <b>${af.toFixed(1)}</b>
+
+                    &nbsp; | &nbsp;
+
+                    Média final:
+                    <b>${mediaFinal.toFixed(1)}</b>
+
+                    &nbsp; | &nbsp;
+
+                    ${
+                        passou
+                            ? '✅ APROVADO'
+                            : '❌ REPROVADO'
+                    }
+
+                </div>
+
+            `;
+
+        } else {
+
+            afHTML = `
+
+                <div class="info-af">
+
+                    🎯 Nota mínima na AF:
+
+                    <b>
+                        ${afNecessaria.toFixed(1)}
+                    </b>
+
+                    <br>
+
+                    A AF precisa ser ≥ 4,0
+                    e a média final ≥ 5,0.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    return `
+
+        <div
+            class="materia-card"
+            data-id="${escapeHTML(materia.id)}"
+        >
+
+            <div class="materia-header">
+
+                <div>
+
+                    <h3 class="materia-title">
+
+                        ${escapeHTML(
+                            materia.nome
+                        )}
+
+                    </h3>
+
+
+                    <div class="materia-id">
+
+                        ${escapeHTML(
+                            materia.id
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="btn-delete-materia"
+                    onclick="apagarMateria(
+                        '${escapeHTML(materia.id)}'
+                    )"
+                    title="Apagar matéria">
+
+                    🗑️
+
+                </button>
 
             </div>
 
-            <button
-                class="btn-clean"
-                onclick="limparConcluidos()">
 
-                🧹 Limpar Concluídas
+            ${etapasHTML}
+
+
+            <button
+                class="btn-add-np"
+                onclick="adicionarNP(
+                    '${escapeHTML(materia.id)}'
+                )">
+
+                + NOVA ETAPA
+
+            </button>
+
+
+            ${
+                mediaAP !== null
+
+                    ? `
+
+                        <div class="media-final-area">
+
+                            <div class="media-final">
+
+                                Média das APs:
+
+                                <span>
+                                    ${mediaAP.toFixed(1)}
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                class="
+                                    status-badge
+                                    ${status.classe}
+                                ">
+
+                                ${status.texto}
+
+                            </span>
+
+
+                            ${afHTML}
+
+                        </div>
+
+                    `
+
+                    : `
+
+                        <div class="media-final-area">
+
+                            <span
+                                class="
+                                    status-badge
+                                    recuperacao
+                                ">
+
+                                AGUARDANDO NOTAS
+
+                            </span>
+
+                        </div>
+
+                    `
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   RENDER ETAPA
+   ===================================================== */
+
+function renderizarParcial(
+    materia,
+    parcial
+) {
+
+    const calculo =
+        calcularEtapa(
+            parcial
+        );
+
+
+    let notasHTML =
+        '';
+
+
+    parcial.notas.forEach(
+        nota => {
+
+            notasHTML += `
+
+                <div class="nota-row">
+
+                    <input
+                        type="text"
+                        placeholder="Atividade"
+                        value="${escapeHTML(
+                            nota.tipo
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'tipo',
+                            this.value
+                        )"
+                    >
+
+
+                    <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        placeholder="Peso"
+                        value="${escapeHTML(
+                            nota.peso
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'peso',
+                            this.value
+                        )"
+                    >
+
+
+                    <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        placeholder="Nota"
+                        value="${escapeHTML(
+                            nota.valor
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'valor',
+                            this.value
+                        )"
+                    >
+
+
+                    <button
+                        class="btn-del-small"
+                        onclick="removerNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}'
+                        )">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    let resultadoHTML =
+        '';
+
+
+    if (
+        calculo.faltantes.length > 0 &&
+        calculo.pesoTotal > 0
+    ) {
+
+        const meta =
+            calculo.meta;
+
+
+        if (
+            meta <= 10
+        ) {
+
+            resultadoHTML = `
+
+                <div class="previsao-tag">
+
+                    🎯 Para fechar esta etapa
+                    com <b>7,0</b>:
+
+                    média de
+
+                    <b>
+                        ${Math.max(
+                            0,
+                            meta
+                        ).toFixed(1)}
+                    </b>
+
+                    nas próximas notas.
+
+                </div>
+
+            `;
+
+        } else {
+
+            resultadoHTML = `
+
+                <div
+                    class="
+                        previsao-tag
+                        previsao-impossivel
+                    ">
+
+                    ⚠️ Mesmo tirando 10,0
+                    nas notas restantes,
+                    7,0 não será atingido.
+
+                </div>
+
+            `;
+
+        }
+
+    } else if (
+        calculo.mediaFinal !== null
+    ) {
+
+        let classe =
+            'media-boa';
+
+
+        if (
+            calculo.mediaFinal < 4
+        ) {
+
+            classe =
+                'media-ruim';
+
+        } else if (
+            calculo.mediaFinal < 7
+        ) {
+
+            classe =
+                'media-baixa';
+
+        }
+
+
+        resultadoHTML = `
+
+            <div
+                class="
+                    media-etapa
+                    ${classe}
+                ">
+
+                Média da etapa:
+
+                ${calculo.mediaFinal.toFixed(1)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="np-box">
+
+            <div class="np-header">
+
+                <input
+                    class="np-title"
+                    type="text"
+                    value="${escapeHTML(
+                        parcial.nome
+                    )}"
+                    onchange="atualizarParcialNome(
+                        '${escapeHTML(materia.id)}',
+                        '${escapeHTML(parcial.id)}',
+                        this.value
+                    )"
+                >
+
+
+                <button
+                    class="btn-del-small"
+                    onclick="removerNP(
+                        '${escapeHTML(materia.id)}',
+                        '${escapeHTML(parcial.id)}'
+                    )">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+
+            ${
+                notasHTML ||
+
+                `
+
+                    <div
+                        class="empty-text"
+                        style="
+                            color:#666;
+                            text-align:center;
+                            padding:10px;
+                        ">
+
+                        Nenhuma avaliação cadastrada.
+
+                    </div>
+
+                `
+            }
+
+
+            ${resultadoHTML}
+
+
+            <button
+                class="btn-add-nota"
+                onclick="adicionarNota(
+                    '${escapeHTML(materia.id)}',
+                    '${escapeHTML(parcial.id)}'
+                )">
+
+                + ADICIONAR NOTA
 
             </button>
 
@@ -2514,1105 +3024,671 @@ function desenharTudo() {
 
     `;
 
-
-    /* CRONOGRAMA */
-
-    html += `
-
-        <div class="section-title">
-            📅 Cronograma
-        </div>
-
-    `;
-
-
-    dados.dias.forEach(dia => {
-
-        const eHoje =
-            configuracoes.destacarHoje &&
-            dia.nome === hojeNome;
-
-
-        html += `
-
-            <div class="card ${
-                eHoje
-                    ? 'today-highlight'
-                    : ''
-            }">
-
-                <h2>
-
-                    ${escapeHTML(dia.nome)}
-
-                    ${
-                        eHoje
-                            ? `
-                                <span class="today-badge">
-                                    HOJE
-                                </span>
-                            `
-                            : ''
-                    }
-
-                </h2>
-
-                ${
-                    configuracoes.mostrarTransporte
-                        ? `
-                            <span class="bus-txt">
-                                🚌 Ônibus:
-                                ${escapeHTML(dia.bus)}
-                            </span>
-                        `
-                        : ''
-                }
-
-        `;
-
-
-        const aulasOrdenadas =
-            [...dia.aulas].sort(
-                (a, b) =>
-                    String(a[0])
-                        .localeCompare(
-                            String(b[0])
-                        )
-            );
-
-
-        if (
-            aulasOrdenadas.length === 0
-        ) {
-
-            html += `
-
-                <div class="empty-message">
-                    Nenhuma aula cadastrada.
-                </div>
-
-            `;
-
-        } else {
-
-            aulasOrdenadas.forEach(aula => {
-
-                html += `
-
-                    <div class="aula-item">
-
-                        <span>
-
-                            <span class="time">
-                                ${escapeHTML(aula[0])}
-                            </span>
-
-                            ${escapeHTML(aula[1])}
-
-                        </span>
-
-                        ${
-                            configuracoes.mostrarSala
-                                ? `
-                                    <span class="sala">
-                                        ${escapeHTML(aula[2])}
-                                    </span>
-                                `
-                                : ''
-                        }
-
-                    </div>
-
-                `;
-
-            });
-
-        }
-
-
-        html += `
-
-            </div>
-
-        `;
-
-    });
-
-
-    /* ANOTAÇÕES */
-
-    html += `
-
-        <div class="section-title">
-            📚 Anotações de Matérias
-        </div>
-
-    `;
-
-
-    dados.materias.forEach(materia => {
-
-        html += `
-
-            <div class="card">
-
-                <h2>
-                    ${escapeHTML(materia.nome)}
-                </h2>
-
-                <textarea
-                    id="not-${escapeAttribute(materia.id)}"
-                    placeholder="Anotações para ${escapeAttribute(materia.nome)}..."
-                ></textarea>
-
-            </div>
-
-        `;
-
-    });
-
-
-    area.innerHTML =
-        html;
-
-
-    recuperarNotas();
-
 }
 
 
-/* =========================================================
-   DATAS
-   ========================================================= */
+/* =====================================================
+   ADICIONAR NP
+   ===================================================== */
 
-function formatarData(data) {
+function adicionarNP(materiaId) {
 
-    if (!data) return '';
-
-    const partes =
-        data.split('-');
-
-
-    if (
-        partes.length !== 3
-    ) {
-
-        return data;
-
-    }
+    const materia =
+        dados.materias[
+            materiaId
+        ];
 
 
-    const dataLocal =
-        new Date(
-            Number(partes[0]),
-            Number(partes[1]) - 1,
-            Number(partes[2])
-        );
-
-
-    return new Intl.DateTimeFormat(
-        'pt-BR'
-    ).format(dataLocal);
-
-}
-
-
-/* =========================================================
-   TAREFAS
-   ========================================================= */
-
-function addTodoRapido() {
-
-    const input =
-        document.getElementById(
-            'new-todo-text'
-        );
-
-
-    const dataInput =
-        document.getElementById(
-            'new-todo-date'
-        );
-
-
-    const texto =
-        input.value.trim();
-
-
-    let data =
-        dataInput.value;
-
-
-    if (
-        !data &&
-        configuracoes.dataTarefa === 'today'
-    ) {
-
-        data =
-            obterDataArquivo();
-
-    }
-
-
-    if (!texto) {
-
-        input.focus();
+    if (!materia) {
 
         return;
 
     }
 
 
-    dados.todos.push({
+    materia.parciais.push({
 
-        id: gerarId('todo'),
+        id:
+            gerarId('np'),
 
-        texto,
-
-        data,
-
-        concluida: false
-
-    });
-
-
-    salvarDados();
-
-    desenharTudo();
-
-    mostrarStatus(
-        '✅ Tarefa adicionada'
-    );
-
-}
-
-
-function alternarTodo(
-    id,
-    concluida
-) {
-
-    const tarefa =
-        dados.todos.find(
-            t => t.id === id
-        );
-
-
-    if (!tarefa) return;
-
-
-    tarefa.concluida =
-        Boolean(concluida);
-
-
-    salvarDados();
-
-    desenharTudo();
-
-}
-
-
-function removerTodo(id) {
-
-    const index =
-        dados.todos.findIndex(
-            t => t.id === id
-        );
-
-
-    if (index === -1) return;
-
-
-    const tarefa =
-        dados.todos[index];
-
-
-    if (
-        configuracoes.confirmarExclusao &&
-        !confirm(
-            `Remover a tarefa "${tarefa.texto}"?`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    dados.todos.splice(
-        index,
-        1
-    );
-
-
-    salvarDados();
-
-    desenharTudo();
-
-    mostrarStatus(
-        '🗑️ Tarefa removida'
-    );
-
-}
-
-
-function limparConcluidos() {
-
-    const quantidade =
-        dados.todos.filter(
-            t => t.concluida
-        ).length;
-
-
-    if (
-        quantidade === 0
-    ) {
-
-        mostrarStatus(
-            'Não há tarefas concluídas.'
-        );
-
-        return;
-
-    }
-
-
-    if (
-        configuracoes.confirmarExclusao &&
-        !confirm(
-            `Remover ${quantidade} tarefa(s) concluída(s)?`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    dados.todos =
-        dados.todos.filter(
-            t => !t.concluida
-        );
-
-
-    salvarDados();
-
-    desenharTudo();
-
-    mostrarStatus(
-        '🧹 Tarefas concluídas removidas'
-    );
-
-}
-
-
-/* =========================================================
-   ANOTAÇÕES
-   ========================================================= */
-
-function recuperarNotas() {
-
-    document
-        .querySelectorAll('textarea')
-        .forEach(textarea => {
-
-            const valor =
-                localStorage.getItem(
-                    textarea.id
-                );
-
-
-            textarea.value =
-                valor || '';
-
-
-            textarea.addEventListener(
-                'input',
-                () => {
-
-                    localStorage.setItem(
-                        textarea.id,
-                        textarea.value
-                    );
-
-                }
-            );
-
-        });
-
-}
-
-
-/* =========================================================
-   BACKUP
-   ========================================================= */
-
-function coletarAnotacoes() {
-
-    const notas = {};
-
-
-    for (
-        let i = 0;
-        i < localStorage.length;
-        i++
-    ) {
-
-        const chave =
-            localStorage.key(i);
-
-
-        if (
-            chave &&
-            chave.startsWith('not-')
-        ) {
-
-            notas[chave] =
-                localStorage.getItem(
-                    chave
-                );
-
-        }
-
-    }
-
-
-    return notas;
-
-}
-
-
-function baixarEstrutura() {
-
-    const backup = {
-
-        version: 8,
-
-        app: 'UFC Planner',
-
-        exportedAt:
-            new Date().toISOString(),
-
-        planner:
-            dados,
-
-        configuracoes:
-            configuracoes,
+        nome:
+            `NP${materia.parciais.length + 1}`,
 
         notas:
-            coletarAnotacoes(),
+            [],
 
-        notasSistema:
-            JSON.parse(
-                localStorage.getItem(
-                    NOTES_STORAGE_KEY
-                ) || '{}'
-            )
+        af:
+            ''
+
+    });
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   REMOVER NP
+   ===================================================== */
+
+function removerNP(
+    materiaId,
+    parcialId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p =>
+                p.id === parcialId
+        );
+
+
+    if (!parcial) {
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Remover a etapa "${parcial.nome}"?`
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    materia.parciais =
+        materia.parciais.filter(
+            p =>
+                p.id !== parcialId
+        );
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   NOME DA NP
+   ===================================================== */
+
+function atualizarParcialNome(
+    materiaId,
+    parcialId,
+    valor
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p =>
+                p.id === parcialId
+        );
+
+
+    if (!parcial) {
+
+        return;
+
+    }
+
+
+    parcial.nome =
+        valor.trim() ||
+        'Nova Etapa';
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   ADICIONAR NOTA
+   ===================================================== */
+
+function adicionarNota(
+    materiaId,
+    parcialId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p =>
+                p.id === parcialId
+        );
+
+
+    if (!parcial) {
+
+        return;
+
+    }
+
+
+    parcial.notas.push({
+
+        id:
+            gerarId('nota'),
+
+        tipo:
+            '',
+
+        peso:
+            1,
+
+        valor:
+            ''
+
+    });
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   REMOVER NOTA
+   ===================================================== */
+
+function removerNota(
+    materiaId,
+    parcialId,
+    notaId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p =>
+                p.id === parcialId
+        );
+
+
+    if (!parcial) {
+
+        return;
+
+    }
+
+
+    parcial.notas =
+        parcial.notas.filter(
+            n =>
+                n.id !== notaId
+        );
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   ATUALIZAR NOTA
+   ===================================================== */
+
+function atualizarNota(
+    materiaId,
+    parcialId,
+    notaId,
+    campo,
+    valor
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p =>
+                p.id === parcialId
+        );
+
+
+    if (!parcial) {
+
+        return;
+
+    }
+
+
+    const nota =
+        parcial.notas.find(
+            n =>
+                n.id === notaId
+        );
+
+
+    if (!nota) {
+
+        return;
+
+    }
+
+
+    if (
+        campo === 'valor'
+    ) {
+
+        nota.valor =
+            valor === ''
+                ? ''
+                : limitarNota(valor);
+
+    } else if (
+        campo === 'peso'
+    ) {
+
+        const peso =
+            numero(valor);
+
+
+        nota.peso =
+            peso === null
+                ? 0
+                : Math.max(
+                    0,
+                    peso
+                );
+
+    } else {
+
+        nota[campo] =
+            String(valor);
+
+    }
+
+
+    salvar();
+
+    renderizar();
+
+}
+
+
+/* =====================================================
+   APAGAR MATÉRIA
+   ===================================================== */
+
+function apagarMateria(
+    materiaId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+
+    if (!materia) {
+
+        return;
+
+    }
+
+
+    const confirmou =
+        confirm(
+            `APAGAR COMPLETAMENTE?\n\n` +
+            `${materia.nome}\n\n` +
+            `Todas as NP, notas e dados dessa matéria ` +
+            `serão removidos.\n\n` +
+            `Ela poderá ser restaurada depois.`
+        );
+
+
+    if (!confirmou) {
+
+        return;
+
+    }
+
+
+    delete dados.materias[
+        materiaId
+    ];
+
+
+    dados.removidas[
+        materiaId
+    ] = {
+
+        id:
+            materiaId,
+
+        nome:
+            materia.nome
 
     };
 
 
-    const blob =
-        new Blob(
-            [
-                '\ufeff' +
-                JSON.stringify(
-                    backup,
-                    null,
-                    2
-                )
-            ],
-            {
-                type:
-                    'application/json;charset=utf-8'
-            }
-        );
+    salvar();
 
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement(
-            'a'
-        );
-
-
-    link.href =
-        url;
-
-
-    link.download =
-        `backup_ufc_planner_${
-            obterDataArquivo()
-        }.json`;
-
-
-    document.body.appendChild(
-        link
-    );
-
-
-    link.click();
-
-
-    link.remove();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-
-    mostrarStatus(
-        '📤 Backup exportado'
-    );
+    renderizar();
 
 }
 
 
-function validarBackup(backup) {
+/* =====================================================
+   RESTAURAR
+   ===================================================== */
 
-    return !!(
-        backup &&
-        typeof backup === 'object' &&
-        backup.planner &&
-        validarDados(
-            backup.planner
-        )
-    );
+function restaurarMateria(
+    materiaId
+) {
 
-}
+    const removida =
+        dados.removidas[
+            materiaId
+        ];
 
 
-function importarBackup(input) {
+    if (!removida) {
 
-    const arquivo =
-        input.files?.[0];
-
-
-    if (!arquivo) return;
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        event => {
-
-            try {
-
-                const backup =
-                    JSON.parse(
-                        event.target.result
-                    );
-
-
-                if (
-                    !validarBackup(
-                        backup
-                    )
-                ) {
-
-                    alert(
-                        '❌ Este arquivo não é um backup válido.'
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    !confirm(
-                        'Restaurar este backup?\n\n' +
-                        'Os dados atuais serão substituídos.'
-                    )
-                ) {
-
-                    return;
-
-                }
-
-
-                dados =
-                    normalizarDados(
-                        backup.planner
-                    );
-
-
-                removerDadosDoAplicativo();
-
-
-                if (
-                    backup.configuracoes
-                ) {
-
-                    configuracoes = {
-
-                        ...defaultSettings,
-
-                        ...backup.configuracoes
-
-                    };
-
-                } else {
-
-                    configuracoes =
-                        {
-                            ...defaultSettings
-                        };
-
-                }
-
-
-                salvarDados();
-
-                salvarConfiguracoes();
-
-
-                if (
-                    backup.notas &&
-                    typeof backup.notas === 'object'
-                ) {
-
-                    Object.entries(
-                        backup.notas
-                    ).forEach(
-                        ([chave, valor]) => {
-
-                            if (
-                                chave.startsWith(
-                                    'not-'
-                                )
-                            ) {
-
-                                localStorage.setItem(
-                                    chave,
-                                    String(
-                                        valor ?? ''
-                                    )
-                                );
-
-                            }
-
-                        }
-                    );
-
-                }
-
-
-                if (
-                    backup.notasSistema &&
-                    typeof backup.notasSistema === 'object'
-                ) {
-
-                    localStorage.setItem(
-                        NOTES_STORAGE_KEY,
-                        JSON.stringify(
-                            backup.notasSistema
-                        )
-                    );
-
-                }
-
-
-                aplicarConfiguracoes();
-
-                desenharTudo();
-
-
-                mostrarStatus(
-                    '✅ Backup restaurado',
-                    3500
-                );
-
-
-            } catch (erro) {
-
-                console.error(
-                    erro
-                );
-
-                alert(
-                    '❌ Não foi possível ler o backup.'
-                );
-
-            } finally {
-
-                input.value = '';
-
-            }
-
-        };
-
-
-    reader.readAsText(
-        arquivo,
-        'UTF-8'
-    );
-
-}
-
-
-function removerDadosDoAplicativo() {
-
-    const chavesRemover = [];
-
-
-    for (
-        let i = 0;
-        i < localStorage.length;
-        i++
-    ) {
-
-        const chave =
-            localStorage.key(i);
-
-
-        if (!chave) continue;
-
-
-        if (
-            chave === STORAGE_KEY ||
-            chave === OLD_STORAGE_KEY ||
-            chave === 'ufc_materias_transporte' ||
-            chave.startsWith('not-')
-        ) {
-
-            chavesRemover.push(
-                chave
-            );
-
-        }
+        return;
 
     }
 
 
-    chavesRemover.forEach(
-        chave =>
-            localStorage.removeItem(
-                chave
-            )
-    );
+    delete dados.removidas[
+        materiaId
+    ];
+
+
+    dados.materias[
+        materiaId
+    ] = {
+
+        id:
+            materiaId,
+
+        nome:
+            removida.nome,
+
+        parciais:
+            []
+
+    };
+
+
+    salvar();
+
+    renderizar();
 
 }
 
 
-/* =========================================================
-   RELATÓRIO
-   ========================================================= */
+/* =====================================================
+   REMOVIDAS
+   ===================================================== */
 
-function baixarRelatorioHTML() {
+function renderizarRemovidas() {
 
-    const agora =
-        new Date();
-
-
-    const dataHora =
-        agora.toLocaleString(
-            'pt-BR',
-            {
-                dateStyle: 'full',
-                timeStyle: 'short'
-            }
+    const container =
+        document.getElementById(
+            'removed-container'
         );
 
 
-    const hoje =
-        obterDataArquivo();
-
-
-    const totalTarefas =
-        dados.todos.length;
-
-
-    const concluidas =
-        dados.todos.filter(
-            t => t.concluida
-        ).length;
-
-
-    const pendentes =
-        totalTarefas -
-        concluidas;
-
-
-    const totalMaterias =
-        dados.materias.length;
-
-
-    const totalAulas =
-        dados.dias.reduce(
-            (total, dia) =>
-                total +
-                dia.aulas.length,
-            0
+    const lista =
+        Object.values(
+            dados.removidas
         );
 
 
-    const lembrete =
-        localStorage.getItem(
-            'not-geral'
-        )?.trim()
-        ||
-        'Nenhum lembrete cadastrado.';
+    if (
+        lista.length === 0
+    ) {
+
+        container.innerHTML =
+            '';
+
+        return;
+
+    }
 
 
-    const tarefasPendentes =
-        dados.todos.filter(
-            t => !t.concluida
+    container.innerHTML = `
+
+        <div class="removed-area">
+
+            <div class="removed-title">
+
+                🗑️ Matérias removidas
+
+            </div>
+
+
+            ${lista.map(
+                materia => `
+
+                    <div class="removed-item">
+
+                        <span>
+                            ${escapeHTML(
+                                materia.nome
+                            )}
+                        </span>
+
+
+                        <button
+                            class="btn-restore"
+                            onclick="restaurarMateria(
+                                '${escapeHTML(
+                                    materia.id
+                                )}'
+                            )">
+
+                            RESTAURAR
+
+                        </button>
+
+                    </div>
+
+                `
+            ).join('')}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   SEMESTRE
+   ===================================================== */
+
+document
+    .getElementById(
+        'input-semestre'
+    )
+    .addEventListener(
+        'change',
+        function() {
+
+            dados.semestre =
+                this.value.trim() ||
+                '2026.1';
+
+
+            salvar();
+
+        }
+    );
+
+
+/* =====================================================
+   RELATÓRIO HTML
+   ===================================================== */
+
+function baixarHistorico() {
+
+    const semestre =
+        escapeHTML(
+            dados.semestre
         );
 
 
-    const tarefasConcluidas =
-        dados.todos.filter(
-            t => t.concluida
+    const materias =
+        Object.values(
+            dados.materias
         );
 
 
-    function gerarTarefa(tarefa) {
+    let total =
+        materias.length;
 
-        let prazo = '📅 Sem prazo';
+    let aprovadas =
+        0;
+
+    let atencao =
+        0;
+
+    let aguardando =
+        0;
 
 
-        if (tarefa.data) {
+    materias.forEach(
+        materia => {
+
+            const media =
+                calcularMediaAPs(
+                    materia
+                );
+
 
             if (
-                tarefa.data < hoje
+                media === null
             ) {
 
-                prazo =
-                    `⚠️ Atrasada — ${formatarData(
-                        tarefa.data
-                    )}`;
+                aguardando++;
 
             } else if (
-                tarefa.data === hoje
+                media >= 7
             ) {
 
-                prazo =
-                    '🔥 Hoje';
+                aprovadas++;
 
             } else {
 
-                prazo =
-                    `📅 ${formatarData(
-                        tarefa.data
-                    )}`;
+                atencao++;
 
             }
 
         }
+    );
 
 
-        return `
+    let materiasHTML =
+        '';
 
-            <div style="
-                padding:12px 0;
-                border-bottom:1px solid #333;
-            ">
 
-                <strong>
-                    ${
-                        tarefa.concluida
-                            ? '✓'
-                            : '○'
-                    }
-                </strong>
+    if (
+        materias.length === 0
+    ) {
 
-                ${escapeHTML(
-                    tarefa.texto
-                )}
+        materiasHTML = `
 
-                <small style="
-                    display:block;
-                    color:#ffab00;
-                    margin-top:4px;
-                ">
+            <div class="empty">
 
-                    ${escapeHTML(prazo)}
-
-                </small>
+                📚 Nenhuma matéria cadastrada.
 
             </div>
 
         `;
 
-    }
+    } else {
 
-
-    const tarefasPendentesHTML =
-        tarefasPendentes.length
-            ? tarefasPendentes
-                .map(gerarTarefa)
-                .join('')
-            : '<div>Nenhuma tarefa pendente 🎉</div>';
-
-
-    const tarefasConcluidasHTML =
-        tarefasConcluidas.length
-            ? tarefasConcluidas
-                .map(gerarTarefa)
-                .join('')
-            : '<div>Nenhuma tarefa concluída.</div>';
-
-
-    const diasHTML =
-        dados.dias.map(dia => `
-
-            <section style="
-                background:#151a22;
-                border:1px solid #2a3038;
-                border-radius:18px;
-                padding:20px;
-                margin-bottom:15px;
-            ">
-
-                <h2 style="
-                    color:#00e5ff;
-                    margin-top:0;
-                ">
-
-                    ${escapeHTML(
-                        dia.nome
-                    )}
-
-                </h2>
-
-                ${
-                    configuracoes.mostrarTransporte
-                        ? `
-                            <div style="
-                                color:#ffab00;
-                                margin-bottom:15px;
-                            ">
-
-                                🚌 ${escapeHTML(
-                                    dia.bus
-                                )}
-
-                            </div>
-                        `
-                        : ''
-                }
-
-                ${
-                    dia.aulas.map(
-                        aula => `
-
-                            <div style="
-                                display:flex;
-                                gap:10px;
-                                padding:10px 0;
-                                border-bottom:1px solid #2a3038;
-                            ">
-
-                                <strong style="
-                                    color:#bb86fc;
-                                ">
-                                    ${escapeHTML(
-                                        aula[0]
-                                    )}
-                                </strong>
-
-                                <span>
-                                    ${escapeHTML(
-                                        aula[1]
-                                    )}
-                                </span>
-
-                                ${
-                                    configuracoes.mostrarSala
-                                        ? `
-                                            <strong style="
-                                                color:#ff4081;
-                                                margin-left:auto;
-                                            ">
-                                                ${escapeHTML(
-                                                    aula[2]
-                                                )}
-                                            </strong>
-                                        `
-                                        : ''
-                                }
-
-                            </div>
-
-                        `
-                    ).join('')
-                }
-
-            </section>
-
-        `).join('');
-
-
-    let anotacoesHTML = '';
-
-
-    dados.materias.forEach(
-        materia => {
-
-            const anotacao =
-                localStorage.getItem(
-                    `not-${materia.id}`
-                )?.trim() || '';
-
-
-            if (!anotacao) return;
-
-
-            anotacoesHTML += `
-
-                <section style="
-                    background:#151a22;
-                    border:1px solid #2a3038;
-                    border-radius:18px;
-                    padding:20px;
-                    margin-bottom:15px;
-                ">
-
-                    <h3 style="
-                        color:#00e5ff;
-                    ">
-
-                        📚 ${escapeHTML(
-                            materia.nome
-                        )}
-
-                    </h3>
-
-                    <div>
-                        ${escapeHTML(
-                            anotacao
-                        ).replace(
-                            /\n/g,
-                            '<br>'
-                        )}
-                    </div>
-
-                </section>
-
-            `;
-
-        }
-    );
-
-
-    if (!anotacoesHTML) {
-
-        anotacoesHTML =
-            '<div>Nenhuma anotação cadastrada.</div>';
+        materiasHTML =
+            materias.map(
+                gerarMateriaRelatorio
+            ).join('');
 
     }
 
 
-    const html = `<!DOCTYPE html>
+    const relatorio = `
+
+<!DOCTYPE html>
 
 <html lang="pt-BR">
 
@@ -3620,97 +3696,607 @@ function baixarRelatorioHTML() {
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<title>Relatório — UFC Planner</title>
+
+<title>
+    Histórico de Notas - UFC
+</title>
+
 
 <style>
 
-body {
-    margin:0;
-    padding:20px;
-    background:#0d1117;
-    color:#eee;
-    font-family:system-ui,sans-serif;
+* {
+
+    box-sizing:
+        border-box;
+
 }
+
+
+body {
+
+    margin:
+        0;
+
+    padding:
+        20px;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        #0d1117;
+
+    color:
+        #eee;
+
+}
+
 
 .container {
-    max-width:850px;
-    margin:auto;
+
+    width:
+        100%;
+
+    max-width:
+        850px;
+
+    margin:
+        auto;
+
 }
+
 
 .header {
-    text-align:center;
-    padding:30px;
-    background:#151a22;
-    border:1px solid #2a3038;
-    border-radius:22px;
-    margin-bottom:25px;
+
+    text-align:
+        center;
+
+    padding:
+        30px 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #151a22,
+            #11161d
+        );
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        20px;
+
+    margin-bottom:
+        20px;
+
 }
 
-.logo {
-    color:#00e5ff;
-    font-size:2.5rem;
-    font-weight:900;
-    letter-spacing:5px;
+
+.header h1 {
+
+    margin:
+        0 0 8px;
+
+    color:
+        #00e5ff;
+
+    font-size:
+        clamp(
+            1.4rem,
+            5vw,
+            2rem
+        );
+
 }
 
-.subtitle {
-    color:#bb86fc;
-    font-weight:900;
+
+.header p {
+
+    margin:
+        5px;
+
+    color:
+        #888;
+
 }
 
-.section {
-    color:#bb86fc;
-    font-weight:900;
-    letter-spacing:2px;
-    border-bottom:2px solid #bb86fc;
-    padding-bottom:6px;
-    margin:30px 0 12px;
+
+.semestre {
+
+    display:
+        inline-block;
+
+    margin-top:
+        10px;
+
+    padding:
+        8px 15px;
+
+    border:
+        1px solid #7c4dff;
+
+    border-radius:
+        10px;
+
+    color:
+        #7c4dff;
+
+    font-weight:
+        bold;
+
 }
 
-.summary {
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
+
+.resumo {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            1fr
+        );
+
+    gap:
+        10px;
+
+    margin-bottom:
+        20px;
+
 }
 
-.stat {
-    background:#151a22;
-    border:1px solid #2a3038;
-    border-radius:15px;
-    padding:15px;
-    text-align:center;
+
+.box {
+
+    background:
+        #151a22;
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        15px;
+
+    padding:
+        15px 8px;
+
+    text-align:
+        center;
+
 }
 
-.number {
-    display:block;
-    color:#00e5ff;
-    font-size:1.5rem;
-    font-weight:900;
+
+.box strong {
+
+    display:
+        block;
+
+    font-size:
+        1.5rem;
+
+    color:
+        #00e5ff;
+
 }
 
-.card {
-    background:#151a22;
-    border:1px solid #2a3038;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:15px;
+
+.box span {
+
+    color:
+        #777;
+
+    font-size:
+        .7rem;
+
+    text-transform:
+        uppercase;
+
+    font-weight:
+        bold;
+
 }
+
+
+.materia {
+
+    background:
+        #151a22;
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        18px;
+
+    padding:
+        20px;
+
+    margin-bottom:
+        18px;
+
+    page-break-inside:
+        avoid;
+
+}
+
+
+.materia h2 {
+
+    margin:
+        0;
+
+    color:
+        #00e5ff;
+
+    font-size:
+        1.2rem;
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+.materia-id {
+
+    color:
+        #555;
+
+    font-size:
+        .65rem;
+
+    margin-top:
+        4px;
+
+}
+
+
+.etapa {
+
+    margin-top:
+        15px;
+
+    background:
+        #10151c;
+
+    border:
+        1px solid #292929;
+
+    border-left:
+        4px solid #7c4dff;
+
+    border-radius:
+        12px;
+
+    padding:
+        14px;
+
+}
+
+
+.etapa h3 {
+
+    margin:
+        0 0 10px;
+
+    color:
+        #7c4dff;
+
+    font-size:
+        1rem;
+
+}
+
+
+.tabela {
+
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+
+}
+
+
+.tabela th,
+.tabela td {
+
+    padding:
+        8px;
+
+    border-bottom:
+        1px solid #292929;
+
+    text-align:
+        left;
+
+    font-size:
+        .8rem;
+
+}
+
+
+.tabela th {
+
+    color:
+        #777;
+
+    font-size:
+        .65rem;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.media-etapa {
+
+    text-align:
+        right;
+
+    margin-top:
+        10px;
+
+    font-weight:
+        bold;
+
+}
+
+
+.media {
+
+    margin-top:
+        18px;
+
+    padding-top:
+        15px;
+
+    border-top:
+        1px dashed #444;
+
+    text-align:
+        center;
+
+}
+
+
+.media-numero {
+
+    color:
+        #00e5ff;
+
+    font-size:
+        1.8rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.status {
+
+    display:
+        inline-block;
+
+    margin-top:
+        10px;
+
+    padding:
+        9px 15px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        .7rem;
+
+    font-weight:
+        900;
+
+}
+
+
+.aprovado {
+
+    background:
+        #00c853;
+
+    color:
+        #000;
+
+}
+
+
+.atencao {
+
+    background:
+        #ffab00;
+
+    color:
+        #000;
+
+}
+
+
+.reprovado {
+
+    background:
+        #ff5252;
+
+    color:
+        #fff;
+
+}
+
+
+.aguardando {
+
+    background:
+        #7c4dff;
+
+    color:
+        #fff;
+
+}
+
+
+.af {
+
+    margin-top:
+        12px;
+
+    padding:
+        10px;
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(
+            255,
+            171,
+            0,
+            .08
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            171,
+            0,
+            .25
+        );
+
+    color:
+        #ffab00;
+
+    text-align:
+        center;
+
+    font-size:
+        .78rem;
+
+    font-weight:
+        bold;
+
+}
+
+
+.footer {
+
+    text-align:
+        center;
+
+    color:
+        #555;
+
+    font-size:
+        .7rem;
+
+    padding:
+        20px;
+
+}
+
 
 @media(max-width:600px) {
 
     body {
-        padding:10px;
+
+        padding:
+            8px;
+
     }
 
-    .summary {
-        grid-template-columns:repeat(2,1fr);
+
+    .resumo {
+
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+
     }
 
-    .stat:last-child {
-        grid-column:span 2;
+
+    .materia {
+
+        padding:
+            14px;
+
+    }
+
+
+    .tabela th,
+    .tabela td {
+
+        padding:
+            7px 4px;
+
+        font-size:
+            .7rem;
+
+    }
+
+}
+
+
+@media print {
+
+    body {
+
+        background:
+            white;
+
+        color:
+            #111;
+
+    }
+
+
+    .header,
+    .materia,
+    .box {
+
+        background:
+            white;
+
+        color:
+            #111;
+
+        border:
+            1px solid #ccc;
+
+    }
+
+
+    .materia h2 {
+
+        color:
+            #111;
+
+    }
+
+
+    .header h1 {
+
+        color:
+            #111;
+
     }
 
 }
@@ -3719,139 +4305,122 @@ body {
 
 </head>
 
+
 <body>
 
 <div class="container">
 
+
 <header class="header">
 
-    <div class="logo">
-        UFC
-    </div>
+    <h1>
+        📊 HISTÓRICO DE NOTAS
+    </h1>
 
-    <div class="subtitle">
-        UFC Planner
-    </div>
 
-    <div style="color:#888;margin-top:10px">
-        Relatório gerado em ${escapeHTML(dataHora)}
+    <p>
+        Universidade Federal do Ceará
+    </p>
+
+
+    <div class="semestre">
+
+        Semestre ${semestre}
+
     </div>
 
 </header>
 
 
-<div class="section">
-    📊 Resumo
-</div>
+<div class="resumo">
 
-<div class="summary">
 
-    <div class="stat">
-        <span class="number">
-            ${totalMaterias}
+    <div class="box">
+
+        <strong>
+            ${total}
+        </strong>
+
+        <span>
+            Matérias
         </span>
-        Matérias
+
     </div>
 
-    <div class="stat">
-        <span class="number">
-            ${totalAulas}
+
+    <div class="box">
+
+        <strong style="color:#00c853">
+
+            ${aprovadas}
+
+        </strong>
+
+        <span>
+            Aprovadas
         </span>
-        Aulas
+
     </div>
 
-    <div class="stat">
-        <span class="number">
-            ${totalTarefas}
+
+    <div class="box">
+
+        <strong style="color:#ffab00">
+
+            ${atencao}
+
+        </strong>
+
+        <span>
+            Atenção
         </span>
-        Tarefas
+
     </div>
 
-    <div class="stat">
-        <span class="number">
-            ${pendentes}
+
+    <div class="box">
+
+        <strong style="color:#7c4dff">
+
+            ${aguardando}
+
+        </strong>
+
+        <span>
+            Aguardando
         </span>
-        Pendentes
+
     </div>
 
-    <div class="stat">
-        <span class="number">
-            ${concluidas}
-        </span>
-        Concluídas
-    </div>
 
 </div>
 
 
-<div class="section">
-    💡 Lembretes
-</div>
-
-<div class="card">
-
-    ${escapeHTML(lembrete)}
-
-</div>
+${materiasHTML}
 
 
-<div class="section">
-    ⏳ Tarefas Pendentes
-</div>
+<footer class="footer">
 
-<div class="card">
+    Relatório gerado pelo Histórico de Notas UFC
 
-    ${tarefasPendentesHTML}
+</footer>
 
-</div>
-
-
-<div class="section">
-    ✅ Tarefas Concluídas
-</div>
-
-<div class="card">
-
-    ${tarefasConcluidasHTML}
-
-</div>
-
-
-<div class="section">
-    📅 Cronograma
-</div>
-
-${diasHTML}
-
-
-<div class="section">
-    📚 Anotações
-</div>
-
-${anotacoesHTML}
-
-
-<div style="
-    text-align:center;
-    color:#777;
-    padding:30px;
-">
-
-    UFC Planner<br>
-    📚 Boa sorte nos estudos!
-
-</div>
 
 </div>
 
 </body>
 
-</html>`;
+</html>
+
+`;
 
 
     const blob =
         new Blob(
-            ['\ufeff' + html],
+            [
+                '\ufeff',
+                relatorio
+            ],
             {
                 type:
                     'text/html;charset=utf-8'
@@ -3876,7 +4445,11 @@ ${anotacoesHTML}
 
 
     link.download =
-        `Relatorio_UFC_${obterDataArquivo()}.html`;
+        `Notas_UFC_${
+            dados.semestre
+                .replace(/\./g,'_')
+                .replace(/\s+/g,'_')
+        }.html`;
 
 
     document.body.appendChild(
@@ -3894,179 +4467,120 @@ ${anotacoesHTML}
         url
     );
 
-
-    mostrarStatus(
-        '🌐 Relatório HTML exportado'
-    );
-
 }
 
 
-/* =========================================================
-   CONFIGURAÇÕES / EDITOR
-   ========================================================= */
+/* =====================================================
+   GERAR MATÉRIA DO RELATÓRIO
+   ===================================================== */
 
-function toggleBackup() {
+function gerarMateriaRelatorio(
+    materia
+) {
 
-    const painel =
-        document.getElementById(
-            'backup-panel'
+    const mediaAP =
+        calcularMediaAPs(
+            materia
         );
 
 
-    painel.style.display =
-        painel.style.display === 'block'
-            ? 'none'
-            : 'block';
-
-}
+    let statusClasse =
+        'aguardando';
 
 
-function toggleConfig() {
-
-    const painel =
-        document.getElementById(
-            'config-panel'
-        );
+    let statusTexto =
+        'AGUARDANDO NOTAS';
 
 
-    const abrir =
-        painel.style.display !== 'block';
+    if (
+        mediaAP !== null
+    ) {
 
+        if (
+            mediaAP >= 7
+        ) {
 
-    painel.style.display =
-        abrir
-            ? 'block'
-            : 'none';
+            statusClasse =
+                'aprovado';
 
+            statusTexto =
+                'APROVADO POR MÉDIA 🏆';
 
-    if (abrir) {
+        } else if (
+            mediaAP >= 4
+        ) {
 
-        abrirEditor();
+            statusClasse =
+                'atencao';
 
-        atualizarControlesConfiguracao();
+            statusTexto =
+                'POSSÍVEL AVALIAÇÃO FINAL';
+
+        } else {
+
+            statusClasse =
+                'reprovado';
+
+            statusTexto =
+                'ABAIXO DE 4,0';
+
+        }
 
     }
 
-}
+
+    let etapasHTML =
+        '';
 
 
-function abrirEditor() {
+    materia.parciais.forEach(
+        parcial => {
 
-    const diasEditor =
-        document.getElementById(
-            'dias-editor'
-        );
-
-
-    const materiasEditor =
-        document.getElementById(
-            'mats-editor'
-        );
+            const calculo =
+                calcularEtapa(
+                    parcial
+                );
 
 
-    diasEditor.innerHTML = '';
+            let linhas =
+                '';
 
 
-    dados.dias.forEach(
-        (dia, diaIndex) => {
+            parcial.notas.forEach(
+                nota => {
 
-            let html = `
-
-                <div class="config-box">
-
-                    <h4>
-                        ${escapeHTML(dia.nome)}
-                    </h4>
-
-                    <div class="config-row">
-
-                        🚌
-
-                        <input
-                            type="text"
-                            class="in-bus"
-                            value="${escapeAttribute(dia.bus)}"
-                            placeholder="Horário do ônibus"
-                            oninput="
-                                atualizarBus(
-                                    ${diaIndex},
-                                    this.value
-                                )
-                            "
-                        >
-
-                    </div>
-
-            `;
+                    const valor =
+                        nota.valor === ''
+                            ? 'Pendente'
+                            : numero(nota.valor) !== null
+                                ? numero(nota.valor).toFixed(1)
+                                : nota.valor;
 
 
-            dia.aulas.forEach(
-                (aula, aulaIndex) => {
+                    linhas += `
 
-                    html += `
+                        <tr>
 
-                        <div class="config-row">
+                            <td>
+                                ${escapeHTML(
+                                    nota.tipo ||
+                                    'Avaliação'
+                                )}
+                            </td>
 
-                            <input
-                                type="text"
-                                class="in-time"
-                                placeholder="Hora"
-                                value="${escapeAttribute(aula[0])}"
-                                oninput="
-                                    atualizarAula(
-                                        ${diaIndex},
-                                        ${aulaIndex},
-                                        0,
-                                        this.value
-                                    )
-                                "
-                            >
+                            <td>
+                                ${escapeHTML(
+                                    nota.peso
+                                )}
+                            </td>
 
-                            <input
-                                type="text"
-                                class="in-aula"
-                                placeholder="Aula"
-                                value="${escapeAttribute(aula[1])}"
-                                oninput="
-                                    atualizarAula(
-                                        ${diaIndex},
-                                        ${aulaIndex},
-                                        1,
-                                        this.value
-                                    )
-                                "
-                            >
+                            <td>
+                                ${escapeHTML(
+                                    valor
+                                )}
+                            </td>
 
-                            <input
-                                type="text"
-                                class="in-sala"
-                                placeholder="Sala"
-                                value="${escapeAttribute(aula[2])}"
-                                oninput="
-                                    atualizarAula(
-                                        ${diaIndex},
-                                        ${aulaIndex},
-                                        2,
-                                        this.value
-                                    )
-                                "
-                            >
-
-                            <button
-                                class="btn-del"
-                                onclick="
-                                    removerAula(
-                                        ${diaIndex},
-                                        ${aulaIndex}
-                                    )
-                                ">
-
-                                ✕
-
-                            </button>
-
-                        </div>
+                        </tr>
 
                     `;
 
@@ -4074,437 +4588,241 @@ function abrirEditor() {
             );
 
 
-            html += `
+            if (
+                !linhas
+            ) {
 
-                <button
-                    onclick="
-                        adicionarAula(
-                            ${diaIndex}
-                        )
-                    "
-                    style="
-                        width:100%;
-                        font-size:.75rem;
-                        box-shadow:none;
-                        margin-top:5px;
-                    ">
+                linhas = `
 
-                    + Adicionar Aula
+                    <tr>
 
-                </button>
+                        <td colspan="3"
+                            style="
+                                text-align:center;
+                                color:#666;
+                            ">
+
+                            Nenhuma avaliação cadastrada.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            let resultado =
+                '';
+
+
+            if (
+                calculo.mediaFinal !== null
+            ) {
+
+                resultado = `
+
+                    <div class="media-etapa">
+
+                        Média da etapa:
+
+                        <strong>
+                            ${calculo.mediaFinal.toFixed(1)}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            } else if (
+                calculo.meta !== null
+            ) {
+
+                resultado = `
+
+                    <div class="media-etapa">
+
+                        🎯 Média necessária para 7,0:
+
+                        <strong>
+                            ${calculo.meta.toFixed(1)}
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            etapasHTML += `
+
+                <div class="etapa">
+
+                    <h3>
+
+                        ${escapeHTML(
+                            parcial.nome
+                        )}
+
+                    </h3>
+
+
+                    <table class="tabela">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Avaliação
+                                </th>
+
+                                <th>
+                                    Peso
+                                </th>
+
+                                <th>
+                                    Nota
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            ${linhas}
+
+                        </tbody>
+
+                    </table>
+
+
+                    ${resultado}
 
                 </div>
 
             `;
 
-
-            diasEditor.innerHTML +=
-                html;
-
         }
     );
 
 
-    materiasEditor.innerHTML =
+    let afHTML =
         '';
 
 
-    dados.materias.forEach(
-        (materia, index) => {
+    if (
+        mediaAP !== null &&
+        mediaAP >= 4 &&
+        mediaAP < 7
+    ) {
 
-            materiasEditor.innerHTML += `
+        const afNecessaria =
+            calcularAFnecessaria(
+                mediaAP
+            );
 
-                <div class="config-row">
 
-                    <input
-                        type="text"
-                        value="${escapeAttribute(materia.nome)}"
-                        oninput="
-                            atualizarMateria(
-                                ${index},
-                                this.value
-                            )
-                        "
-                        style="flex:1"
-                        placeholder="Nome da matéria"
-                    >
+        afHTML = `
 
-                    <button
-                        class="btn-del"
-                        onclick="
-                            removerMateria(
-                                ${index}
-                            )
-                        ">
+            <div class="af">
 
-                        ✕
+                🎯 Nota mínima necessária na AF:
 
-                    </button>
+                <strong>
+                    ${afNecessaria.toFixed(1)}
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <section class="materia">
+
+            <h2>
+
+                📚 ${escapeHTML(
+                    materia.nome
+                )}
+
+            </h2>
+
+
+            <div class="materia-id">
+
+                ${escapeHTML(
+                    materia.id
+                )}
+
+            </div>
+
+
+            ${etapasHTML}
+
+
+            <div class="media">
+
+                <div>
+                    Média das APs
+                </div>
+
+
+                <div class="media-numero">
+
+                    ${
+                        mediaAP === null
+                            ? '—'
+                            : mediaAP.toFixed(1)
+                    }
 
                 </div>
 
-            `;
 
-        }
-    );
+                <div>
 
-}
+                    <span
+                        class="
+                            status
+                            ${statusClasse}
+                        ">
 
+                        ${statusTexto}
 
-function atualizarBus(
-    diaIndex,
-    valor
-) {
+                    </span>
 
-    if (
-        !dados.dias[diaIndex]
-    ) return;
+                </div>
 
 
-    dados.dias[diaIndex].bus =
-        valor;
+                ${afHTML}
 
-}
+            </div>
 
+        </section>
 
-function atualizarAula(
-    diaIndex,
-    aulaIndex,
-    campo,
-    valor
-) {
-
-    if (
-        !dados.dias[diaIndex] ||
-        !dados.dias[diaIndex].aulas[aulaIndex]
-    ) {
-
-        return;
-
-    }
-
-
-    dados.dias[diaIndex]
-        .aulas[aulaIndex][campo] =
-        valor;
+    `;
 
 }
 
 
-function adicionarAula(
-    diaIndex
-) {
-
-    if (
-        !dados.dias[diaIndex]
-    ) return;
-
-
-    dados.dias[diaIndex]
-        .aulas.push([
-            '',
-            '',
-            ''
-        ]);
-
-
-    abrirEditor();
-
-}
-
-
-function removerAula(
-    diaIndex,
-    aulaIndex
-) {
-
-    if (
-        !dados.dias[diaIndex]
-    ) return;
-
-
-    dados.dias[diaIndex]
-        .aulas.splice(
-            aulaIndex,
-            1
-        );
-
-
-    abrirEditor();
-
-}
-
-
-function atualizarMateria(
-    index,
-    valor
-) {
-
-    if (
-        !dados.materias[index]
-    ) return;
-
-
-    dados.materias[index].nome =
-        valor;
-
-}
-
-
-function removerMateria(
-    index
-) {
-
-    const materia =
-        dados.materias[index];
-
-
-    if (!materia) return;
-
-
-    if (
-        configuracoes.confirmarExclusao &&
-        !confirm(
-            `Remover a matéria "${materia.nome}"?`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    dados.materias.splice(
-        index,
-        1
-    );
-
-
-    localStorage.removeItem(
-        `not-${materia.id}`
-    );
-
-
-    abrirEditor();
-
-}
-
-
-function addItem() {
-
-    dados.materias.push({
-
-        id: gerarId('mat'),
-
-        nome: 'Nova Matéria'
-
-    });
-
-
-    abrirEditor();
-
-}
-
-
-function salvarEFechar() {
-
-    dados.materias =
-        dados.materias.filter(
-            materia =>
-                materia.nome.trim() !== ''
-        );
-
-
-    dados.dias.forEach(
-        dia => {
-
-            dia.aulas =
-                dia.aulas.filter(
-                    aula =>
-                        aula.some(
-                            valor =>
-                                String(
-                                    valor
-                                ).trim() !== ''
-                        )
-                );
-
-        }
-    );
-
-
-    salvarDados();
-
-    salvarConfiguracoes();
-
-    desenharTudo();
-
-
-    document.getElementById(
-        'config-panel'
-    ).style.display =
-        'none';
-
-
-    mostrarStatus(
-        '✅ Configurações salvas'
-    );
-
-}
-
-
-/* =========================================================
-   RESTAURAR CONFIGURAÇÕES
-   ========================================================= */
-
-function restaurarConfiguracoes() {
-
-    if (
-        !confirm(
-            'Restaurar todas as configurações para o padrão?'
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    configuracoes =
-        {
-            ...defaultSettings
-        };
-
-
-    salvarConfiguracoes();
-
-    aplicarConfiguracoes();
-
-    abrirEditor();
-
-    desenharTudo();
-
-
-    mostrarStatus(
-        '🔄 Configurações restauradas'
-    );
-
-}
-
-
-/* =========================================================
-   APAGAR DADOS
-   ========================================================= */
-
-function apagarDadosPlanner() {
-
-    const primeiraConfirmacao =
-        confirm(
-            '⚠️ ATENÇÃO!\n\n' +
-            'Isso apagará tarefas, cronograma, matérias e anotações.\n\n' +
-            'Deseja continuar?'
-        );
-
-
-    if (!primeiraConfirmacao) {
-        return;
-    }
-
-
-    const segundaConfirmacao =
-        confirm(
-            'Esta ação não pode ser desfeita.\n\n' +
-            'Apagar TODOS os dados do Planner?'
-        );
-
-
-    if (!segundaConfirmacao) {
-        return;
-    }
-
-
-    removerDadosDoAplicativo();
-
-
-    localStorage.removeItem(
-        SETTINGS_KEY
-    );
-
-
-    dados =
-        clonarPadrao();
-
-
-    configuracoes =
-        {
-            ...defaultSettings
-        };
-
-
-    salvarDados();
-
-    salvarConfiguracoes();
-
-    aplicarConfiguracoes();
-
-    desenharTudo();
-
-
-    mostrarStatus(
-        '🗑️ Dados apagados. Planner restaurado.',
-        3500
-    );
-
-}
-
-
-/* =========================================================
-   UTILITÁRIO DE DATA
-   ========================================================= */
-
-function obterDataArquivo() {
-
-    const agora =
-        new Date();
-
-
-    return [
-
-        agora.getFullYear(),
-
-        String(
-            agora.getMonth() + 1
-        ).padStart(2, '0'),
-
-        String(
-            agora.getDate()
-        ).padStart(2, '0')
-
-    ].join('-');
-
-}
-
-
-/* =========================================================
+/* =====================================================
    INICIALIZAÇÃO
-   ========================================================= */
+   ===================================================== */
 
-let dados =
-    carregarDados();
+sincronizar();
 
-
-window.addEventListener(
-    'DOMContentLoaded',
-    () => {
-
-        aplicarConfiguracoes();
-
-        desenharTudo();
-
-    }
-);
+renderizar();
 
 </script>
 
 </body>
+
 </html>
