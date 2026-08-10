@@ -1,5 +1,2336 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+
+<title>UFC Planner</title>
+
+<style>
+    :root {
+        --bg: #0d1117;
+        --card: #151a22;
+        --text: #eee;
+        --primary: #bb86fc;
+        --secondary: #00e5ff;
+        --success: #00c853;
+        --danger: #ff5252;
+        --bus: #ffab00;
+        --accent: #ff4081;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    h1 {
+        color: var(--secondary);
+        text-align: center;
+        margin: 15px 0 20px;
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+        font-weight: 900;
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    button,
+    input,
+    textarea {
+        font-family: inherit;
+    }
+
+    button {
+        background: #1c222d;
+        color: #eee;
+        border: 1px solid #333;
+        padding: 12px 8px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: 0.1s;
+        box-shadow: 0 4px 0 #000;
+        text-transform: uppercase;
+    }
+
+    button:hover {
+        filter: brightness(1.12);
+    }
+
+    button:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 #000;
+    }
+
+    .menu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+    .btn-config {
+        border-color: var(--bus);
+        color: var(--bus);
+        box-shadow: 0 4px 0 #916200;
+    }
+
+    .btn-notes {
+        border-color: var(--success);
+        color: var(--success);
+        box-shadow: 0 4px 0 #007a3d;
+    }
+
+    .btn-grades {
+        border-color: var(--secondary);
+        color: #000;
+        background: var(--secondary);
+        grid-column: span 2;
+        font-size: 0.9rem;
+        padding: 16px;
+        box-shadow: 0 5px 0 #0097a7;
+    }
+
+    .btn-backup {
+        border-color: var(--primary);
+        color: var(--primary);
+        grid-column: span 2;
+        box-shadow: 0 4px 0 #4a148c;
+    }
+
+    #config-panel,
+    #backup-panel {
+        display: none;
+        background: #1a1f29;
+        border-radius: 20px;
+        padding: 15px;
+        margin-bottom: 20px;
+        width: 100%;
+        border: 2px solid var(--secondary);
+        box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+    }
+
+    #backup-panel {
+        border-color: var(--primary);
+    }
+
+    .config-box {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #333;
+    }
+
+    .config-box h4 {
+        margin: 0 0 10px 0;
+        color: var(--secondary);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    .config-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+
+    #config-panel input {
+        background: #000;
+        color: #fff;
+        border: 1px solid #444;
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        min-width: 0;
+    }
+
+    .in-bus {
+        flex: 1 1 100%;
+        border-color: var(--bus) !important;
+        color: var(--bus) !important;
+        font-weight: bold;
+    }
+
+    .in-time {
+        flex: 1 1 65px;
+        text-align: center;
+    }
+
+    .in-aula {
+        flex: 2 1 120px;
+    }
+
+    .in-sala {
+        flex: 1 1 55px;
+        text-align: center;
+        color: var(--accent) !important;
+        font-weight: bold;
+    }
+
+    .btn-del {
+        background: none;
+        border: none;
+        color: var(--danger);
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px;
+        flex-shrink: 0;
+        box-shadow: none;
+    }
+
+    .btn-del:hover {
+        filter: brightness(1.3);
+    }
+
+    .quick-add {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid #333;
+    }
+
+    .quick-add input[type="text"] {
+        flex: 1;
+        min-width: 0;
+        background: #000;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    .quick-add input[type="date"] {
+        width: 120px;
+        background: #000;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 5px;
+        font-size: 0.75rem;
+    }
+
+    .btn-add-quick {
+        background: var(--success);
+        color: #000;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        box-shadow: 0 3px 0 #007a3d;
+        font-size: 1rem;
+    }
+
+    .section-title {
+        color: var(--primary);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        margin: 30px 0 12px 0;
+        border-bottom: 2px solid var(--primary);
+        width: 100%;
+        letter-spacing: 2px;
+        font-weight: 900;
+        padding-bottom: 5px;
+    }
+
+    .card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border: 1px solid #2a2a2a;
+        width: 100%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .card.today-highlight {
+        border: 2px solid var(--secondary);
+        background: linear-gradient(
+            145deg,
+            #151921 0%,
+            #1a2b3d 100%
+        );
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+    }
+
+    .today-badge {
+        background: var(--secondary);
+        color: #000;
+        font-size: 0.65rem;
+        padding: 3px 10px;
+        border-radius: 10px;
+        vertical-align: middle;
+        margin-left: 10px;
+        font-weight: 900;
+    }
+
+    .card h2 {
+        color: var(--secondary);
+        margin: 0 0 12px 0;
+        font-size: 1.4rem;
+        font-weight: 800;
+    }
+
+    .bus-txt {
+        color: var(--bus);
+        font-size: 0.85rem;
+        font-weight: 900;
+        margin-bottom: 15px;
+        display: block;
+        background: rgba(255, 171, 0, 0.1);
+        padding: 8px;
+        border-radius: 10px;
+        border-left: 4px solid var(--bus);
+    }
+
+    .aula-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+        padding: 12px 0;
+        border-bottom: 1px solid #2a2a2a;
+    }
+
+    .aula-item:last-child {
+        border-bottom: none;
+    }
+
+    .time {
+        color: var(--primary);
+        font-weight: 900;
+        margin-right: 8px;
+    }
+
+    .sala {
+        color: var(--accent);
+        font-weight: 900;
+        background: rgba(255, 64, 129, 0.1);
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(255, 64, 129, 0.2);
+        white-space: nowrap;
+    }
+
+    textarea {
+        width: 100%;
+        background: #000;
+        color: #eee;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 10px;
+        min-height: 100px;
+        resize: vertical;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    textarea:focus,
+    input:focus {
+        border-color: var(--secondary);
+        outline: none;
+    }
+
+    .todo-line {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #222;
+    }
+
+    .todo-line:last-child {
+        border-bottom: none;
+    }
+
+    .todo-line input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        accent-color: var(--success);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .todo-text {
+        flex: 1;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .todo-text.done {
+        text-decoration: line-through;
+        color: #666;
+    }
+
+    .todo-date {
+        font-size: 0.75rem;
+        color: var(--bus);
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .todo-date.today {
+        color: var(--secondary);
+    }
+
+    .empty-message {
+        color: #666;
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .btn-clean {
+        background: rgba(255, 82, 82, 0.05);
+        border: 1px solid var(--danger);
+        color: var(--danger);
+        width: 100%;
+        margin-top: 15px;
+        padding: 10px;
+        font-weight: 800;
+        border-radius: 12px;
+        box-shadow: 0 3px 0 #7e1d1d;
+    }
+
+    .config-save {
+        background: var(--success);
+        color: #000;
+        border: none;
+        width: 100%;
+        margin: 30px 0 10px 0;
+        padding: 20px;
+        border-radius: 12px;
+        font-weight: 900;
+        font-size: 1rem;
+        box-shadow: 0 5px 0 #007a3d;
+    }
+
+    .btn-close {
+        margin-top: 15px;
+        border: none;
+        background: none;
+        color: #666;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: none;
+        width: 100%;
+    }
+
+    .backup-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .backup-actions button {
+        flex: 1;
+    }
+
+    .backup-info {
+        color: #888;
+        font-size: 0.75rem;
+        text-align: center;
+        margin-top: 12px;
+    }
+
+    .status-message {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) translateY(100px);
+        background: #1c222d;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 12px;
+        border: 1px solid #333;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        opacity: 0;
+        transition: 0.25s;
+        z-index: 9999;
+        font-size: 0.85rem;
+        text-align: center;
+        max-width: calc(100% - 30px);
+    }
+
+    .status-message.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+
+    #importFile {
+        display: none;
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 8px;
+        }
+
+        .menu {
+            gap: 9px;
+        }
+
+        button {
+            font-size: 0.7rem;
+        }
+
+        .quick-add {
+            flex-wrap: wrap;
+        }
+
+        .quick-add input[type="text"] {
+            flex: 1 1 100%;
+        }
+
+        .quick-add input[type="date"] {
+            flex: 1;
+            width: auto;
+        }
+
+        .btn-add-quick {
+            flex: 0 0 50px;
+        }
+
+        .aula-item {
+            align-items: flex-start;
+        }
+
+        .todo-line {
+            gap: 8px;
+        }
+
+        .todo-date {
+            font-size: 0.68rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>UFC</h1>
+
+    <div class="menu">
+        <button
+            class="btn-grades"
+            onclick="irParaNotas()">
+            📊 Pontuações e Médias
+        </button>
+
+        <button
+            class="btn-config"
+            onclick="toggleConfig()">
+            ⚙️ Configurações
+        </button>
+
+        <button
+            class="btn-notes"
+            onclick="baixarRelatorioHTML()">
+            🌐 Exportar Relatório (.html)
+        </button>
+        
+        <button
+            class="btn-backup"
+            onclick="toggleBackup()">
+            📂 Backup do Semestre
+        </button>
+    </div>
+
+    <!-- BACKUP -->
+
+    <div id="backup-panel">
+
+        <h3 style="margin-top:0; color:var(--secondary)">
+            Backup Completo
+        </h3>
+
+        <div class="backup-actions">
+
+            <button
+                onclick="baixarEstrutura()"
+                style="border-color:var(--success); color:var(--success)">
+                📤 Exportar
+            </button>
+
+            <button
+                onclick="document.getElementById('importFile').click()"
+                style="border-color:var(--secondary); color:var(--secondary)">
+                📥 Importar
+            </button>
+
+            <input
+                type="file"
+                id="importFile"
+                accept=".json,application/json"
+                onchange="importarBackup(this)"
+            >
+
+        </div>
+
+        <div class="backup-info">
+            O backup inclui cronograma, tarefas e anotações.
+        </div>
+
+        <button
+            onclick="toggleBackup()"
+            class="btn-close">
+            [ FECHAR ]
+        </button>
+
+    </div>
+
+    <!-- CONFIGURAÇÕES -->
+
+    <div id="config-panel">
+
+        <h3 style="margin-top:0; color:var(--bus)">
+            ⚙️ Editar Cronograma
+        </h3>
+
+        <div id="dias-editor"></div>
+
+        <h3 style="color:var(--secondary)">
+            📚 Matérias
+        </h3>
+
+        <div id="mats-editor"></div>
+
+        <button
+            onclick="addItem()"
+            style="width:100%; padding:12px; margin-top:10px; border-color:var(--secondary)">
+            + Nova Matéria
+        </button>
+
+        <button
+            class="config-save"
+            onclick="salvarEFechar()">
+            ✅ SALVAR TUDO
+        </button>
+
+    </div>
+
+    <!-- CONTEÚDO -->
+
+    <div id="render-area"></div>
+
+</div>
+
+<div id="status-message" class="status-message"></div>
+
+<script>
+/* =========================================================
+   UFC PLANNER V7
+   ========================================================= */
+
+const STORAGE_KEY = 'ufc_planner_data_v7';
+const OLD_STORAGE_KEY = 'ufc_planner_data_v6_9';
+const NOTES_STORAGE_KEY = 'ufc_sistema_notas_v1';
+
+const defaultData = {
+    version: 7,
+
+    dias: [
+        {
+            nome: "Segunda",
+            bus: "16:15 ➔ 21:40",
+            aulas: [
+                ["17:30", "Matéria 1", "S01"]
+            ]
+        },
+        {
+            nome: "Terça",
+            bus: "12:20 ➔ 17:40",
+            aulas: [
+                ["13:00", "Matéria 2", "S02"]
+            ]
+        },
+        {
+            nome: "Quarta",
+            bus: "12:20 ➔ 15:20",
+            aulas: [
+                ["13:00", "Matéria 2", "S02"]
+            ]
+        },
+        {
+            nome: "Quinta",
+            bus: "16:15 ➔ 21:40",
+            aulas: [
+                ["17:30", "Matéria 3", "S03"]
+            ]
+        },
+        {
+            nome: "Sexta",
+            bus: "12:20 ➔ 19:40",
+            aulas: [
+                ["13:00", "Matéria 1", "S01"]
+            ]
+        }
+    ],
+
+    materias: [
+        {
+            id: "mat-001",
+            nome: "Matéria 1"
+        },
+        {
+            id: "mat-002",
+            nome: "Matéria 2"
+        }
+    ],
+
+    todos: []
+};
+
+
+/* =========================================================
+   UTILITÁRIOS
+   ========================================================= */
+
+function gerarId(prefixo = 'id') {
+
+    if (
+        typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+    ) {
+        return `${prefixo}-${crypto.randomUUID()}`;
+    }
+
+    return `${prefixo}-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 10)}`;
+}
+
+
+function escapeHTML(valor) {
+
+    return String(valor ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+function escapeAttribute(valor) {
+    return escapeHTML(valor);
+}
+
+
+function clonarPadrao() {
+    return structuredClone(defaultData);
+}
+
+
+function mostrarStatus(mensagem, tempo = 2500) {
+
+    const el = document.getElementById('status-message');
+
+    el.textContent = mensagem;
+    el.classList.add('show');
+
+    clearTimeout(mostrarStatus.timeout);
+
+    mostrarStatus.timeout = setTimeout(() => {
+        el.classList.remove('show');
+    }, tempo);
+}
+
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+
+function salvarDados() {
+
+    try {
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(dados)
+        );
+
+    } catch (erro) {
+
+        console.error(
+            'Erro ao salvar dados:',
+            erro
+        );
+
+        alert(
+            'Não foi possível salvar os dados. ' +
+            'O armazenamento do navegador pode estar cheio.'
+        );
+    }
+}
+
+
+function carregarDados() {
+
+    try {
+
+        const atual = localStorage.getItem(STORAGE_KEY);
+
+        if (atual) {
+
+            const parsed = JSON.parse(atual);
+
+            if (validarDados(parsed)) {
+                return normalizarDados(parsed);
+            }
+        }
+
+        /*
+         * Migração automática da versão antiga.
+         */
+
+        const antigo = localStorage.getItem(
+            OLD_STORAGE_KEY
+        );
+
+        if (antigo) {
+
+            const parsedAntigo = JSON.parse(antigo);
+
+            const migrado = migrarVersaoAntiga(
+                parsedAntigo
+            );
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(migrado)
+            );
+
+            mostrarStatus(
+                '✅ Dados antigos migrados para a versão 7'
+            );
+
+            return migrado;
+        }
+
+    } catch (erro) {
+
+        console.error(
+            'Erro ao carregar dados:',
+            erro
+        );
+
+        alert(
+            'Os dados salvos estavam inválidos. ' +
+            'O sistema iniciou com uma estrutura limpa.'
+        );
+    }
+
+    return clonarPadrao();
+}
+
+
+function validarDados(obj) {
+
+    if (!obj || typeof obj !== 'object') {
+        return false;
+    }
+
+    if (!Array.isArray(obj.dias)) {
+        return false;
+    }
+
+    if (!Array.isArray(obj.materias)) {
+        return false;
+    }
+
+    if (!Array.isArray(obj.todos)) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function normalizarDados(obj) {
+
+    const resultado = {
+        version: 7,
+
+        dias: Array.isArray(obj.dias)
+            ? obj.dias
+            : [],
+
+        materias: [],
+
+        todos: Array.isArray(obj.todos)
+            ? obj.todos
+            : []
+    };
+
+
+    /*
+     * Normaliza matérias.
+     */
+
+    resultado.materias = obj.materias
+        .map((materia, index) => {
+
+            if (typeof materia === 'string') {
+
+                return {
+                    id: gerarId('mat'),
+                    nome: materia
+                };
+            }
+
+            return {
+                id: materia.id || gerarId('mat'),
+                nome: String(
+                    materia.nome || `Matéria ${index + 1}`
+                )
+            };
+
+        })
+        .filter(m => m.nome.trim() !== '');
+
+
+    /*
+     * Normaliza tarefas.
+     */
+
+    resultado.todos = obj.todos.map(tarefa => {
+
+        return {
+            id: tarefa.id || gerarId('todo'),
+
+            texto: String(
+                tarefa.texto || ''
+            ),
+
+            data: tarefa.data || '',
+
+            concluida:
+                tarefa.concluida === true
+        };
+
+    }).filter(t => t.texto.trim() !== '');
+
+
+    /*
+     * Normaliza dias/aulas.
+     */
+
+    resultado.dias = resultado.dias.map(dia => {
+
+        return {
+            nome: String(dia.nome || ''),
+            bus: String(dia.bus || ''),
+
+            aulas: Array.isArray(dia.aulas)
+                ? dia.aulas.map(aula => [
+                    String(aula[0] || ''),
+                    String(aula[1] || ''),
+                    String(aula[2] || '')
+                ])
+                : []
+        };
+
+    });
+
+    return resultado;
+}
+
+
+/* =========================================================
+   MIGRAÇÃO V6.9 → V7
+   ========================================================= */
+
+function migrarVersaoAntiga(antigo) {
+
+    const novo = {
+        version: 7,
+
+        dias: Array.isArray(antigo.dias)
+            ? antigo.dias
+            : clonarPadrao().dias,
+
+        materias: [],
+
+        todos: []
+    };
+
+
+    /*
+     * Converte matérias:
+     *
+     * "Cálculo"
+     *
+     * para:
+     *
+     * {
+     *   id: "mat-...",
+     *   nome: "Cálculo"
+     * }
+     */
+
+    const materiasAntigas =
+        Array.isArray(antigo.materias)
+            ? antigo.materias
+            : [];
+
+
+    materiasAntigas.forEach(nome => {
+
+        novo.materias.push({
+            id: gerarId('mat'),
+            nome: String(nome)
+        });
+
+    });
+
+
+    /*
+     * Converte tarefas e tenta recuperar
+     * o estado antigo dos checkboxes.
+     */
+
+    const todosAntigos =
+        Array.isArray(antigo.todos)
+            ? antigo.todos
+            : [];
+
+
+    todosAntigos.forEach((tarefa, index) => {
+
+        novo.todos.push({
+
+            id: gerarId('todo'),
+
+            texto: String(
+                tarefa.texto || ''
+            ),
+
+            data: tarefa.data || '',
+
+            concluida:
+                localStorage.getItem(
+                    `chk-${index}`
+                ) === 'true'
+
+        });
+
+    });
+
+
+    /*
+     * Migra as anotações antigas de matéria.
+     *
+     * not-Cálculo
+     *
+     * para:
+     *
+     * not-mat-UUID
+     */
+
+    novo.materias.forEach(materia => {
+
+        const chaveAntiga =
+            `not-${materia.nome}`;
+
+        const chaveNova =
+            `not-${materia.id}`;
+
+        const anotacao =
+            localStorage.getItem(chaveAntiga);
+
+        if (
+            anotacao !== null &&
+            localStorage.getItem(chaveNova) === null
+        ) {
+
+            localStorage.setItem(
+                chaveNova,
+                anotacao
+            );
+        }
+
+    });
+
+
+    return novo;
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO
+   ========================================================= */
+
+function irParaNotas() {
+
+    /*
+     * notas.html continua recebendo apenas
+     * os nomes das matérias.
+     */
+
+    const nomesMaterias = dados.materias.map(
+        materia => materia.nome
+    );
+
+    localStorage.setItem(
+        'ufc_materias_transporte',
+        JSON.stringify(nomesMaterias)
+    );
+
+    window.location.href = 'notas.html';
+}
+
+
+/* =========================================================
+   RENDERIZAÇÃO
+   ========================================================= */
+
+function desenharTudo() {
+
+    const area =
+        document.getElementById('render-area');
+
+    let html = '';
+
+    const agora = new Date();
+
+    const hojeData =
+        agora.getFullYear() +
+        '-' +
+        String(agora.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(agora.getDate()).padStart(2, '0');
+
+    const hojeNome = [
+        "Domingo",
+        "Segunda",
+        "Terça",
+        "Quarta",
+        "Quinta",
+        "Sexta",
+        "Sábado"
+    ][agora.getDay()];
+
+
+    /* =====================================================
+       LEMBRETES
+       ===================================================== */
+
+    html += `
+        <div class="section-title">
+            💡 Lembretes Gerais
+        </div>
+
+        <div class="card">
+            <textarea
+                id="not-geral"
+                placeholder="Escreva lembretes importantes aqui..."
+            ></textarea>
+        </div>
+    `;
+
+
+    /* =====================================================
+       CHECKLIST
+       ===================================================== */
+
+    html += `
+        <div class="section-title">
+            ✅ Check-list
+        </div>
+
+        <div class="card">
+
+            <div class="quick-add">
+
+                <input
+                    type="text"
+                    id="new-todo-text"
+                    placeholder="Nova tarefa..."
+                    maxlength="300"
+                    onkeydown="if(event.key === 'Enter') addTodoRapido()"
+                >
+
+                <input
+                    type="date"
+                    id="new-todo-date"
+                >
+
+                <button
+                    class="btn-add-quick"
+                    onclick="addTodoRapido()">
+                    +
+                </button>
+
+            </div>
+
+            <div id="todo-list-area">
+    `;
+
+
+    if (dados.todos.length === 0) {
+
+        html += `
+            <p class="empty-message">
+                Nada para fazer. Relaxe! ☕
+            </p>
+        `;
+
+    } else {
+
+        /*
+         * Ordena visualmente:
+         *
+         * 1. tarefas de hoje
+         * 2. tarefas pendentes
+         * 3. tarefas concluídas
+         */
+
+        const tarefasOrdenadas = [
+            ...dados.todos
+        ].sort((a, b) => {
+
+            if (a.concluida !== b.concluida) {
+                return a.concluida ? 1 : -1;
+            }
+
+            if (a.data && b.data) {
+                return a.data.localeCompare(b.data);
+            }
+
+            if (a.data) return -1;
+            if (b.data) return 1;
+
+            return 0;
+        });
+
+
+        tarefasOrdenadas.forEach(t => {
+
+            const hoje =
+                t.data === hojeData;
+
+            const dataFmt =
+                formatarData(t.data);
+
+            const classeTexto =
+                t.concluida
+                    ? 'todo-text done'
+                    : 'todo-text';
+
+            const classeData =
+                hoje
+                    ? 'todo-date today'
+                    : 'todo-date';
+
+            html += `
+                <label class="todo-line">
+
+                    <input
+                        type="checkbox"
+                        ${t.concluida ? 'checked' : ''}
+                        onchange="alternarTodo(
+                            '${escapeAttribute(t.id)}',
+                            this.checked
+                        )"
+                    >
+
+                    <span class="${classeTexto}">
+                        ${escapeHTML(t.texto)}
+                    </span>
+
+                    ${
+                        t.data
+                            ? `
+                                <span class="${classeData}">
+                                    📅 ${
+                                        hoje
+                                            ? 'HOJE'
+                                            : dataFmt
+                                    }
+                                </span>
+                            `
+                            : ''
+                    }
+
+                    <button
+                        onclick="removerTodo(
+                            '${escapeAttribute(t.id)}'
+                        )"
+                        class="btn-del"
+                        title="Remover tarefa">
+                        ✕
+                    </button>
+
+                </label>
+            `;
+        });
+    }
+
+
+    html += `
+            </div>
+
+            <button
+                class="btn-clean"
+                onclick="limparConcluidos()">
+                🧹 Limpar Concluídas
+            </button>
+
+        </div>
+    `;
+
+
+    /* =====================================================
+       CRONOGRAMA
+       ===================================================== */
+
+    html += `
+        <div class="section-title">
+            📅 Cronograma
+        </div>
+    `;
+
+
+    dados.dias.forEach(dia => {
+
+        const eHoje =
+            dia.nome === hojeNome;
+
+        html += `
+            <div class="card ${
+                eHoje
+                    ? 'today-highlight'
+                    : ''
+            }">
+
+                <h2>
+                    ${escapeHTML(dia.nome)}
+
+                    ${
+                        eHoje
+                            ? `
+                                <span class="today-badge">
+                                    HOJE
+                                </span>
+                            `
+                            : ''
+                    }
+                </h2>
+
+                <span class="bus-txt">
+                    🚌 Ônibus:
+                    ${escapeHTML(dia.bus)}
+                </span>
+        `;
+
+
+        /*
+         * Ordenação das aulas pelo horário.
+         */
+
+        const aulasOrdenadas = [
+            ...dia.aulas
+        ].sort((a, b) =>
+            String(a[0]).localeCompare(
+                String(b[0])
+            )
+        );
+
+
+        if (aulasOrdenadas.length === 0) {
+
+            html += `
+                <div class="empty-message">
+                    Nenhuma aula cadastrada.
+                </div>
+            `;
+
+        } else {
+
+            aulasOrdenadas.forEach(aula => {
+
+                html += `
+                    <div class="aula-item">
+
+                        <span>
+                            <span class="time">
+                                ${escapeHTML(aula[0])}
+                            </span>
+
+                            ${escapeHTML(aula[1])}
+                        </span>
+
+                        <span class="sala">
+                            ${escapeHTML(aula[2])}
+                        </span>
+
+                    </div>
+                `;
+
+            });
+        }
+
+
+        html += `
+            </div>
+        `;
+    });
+
+
+    /* =====================================================
+       ANOTAÇÕES DAS MATÉRIAS
+       ===================================================== */
+
+    html += `
+        <div class="section-title">
+            📚 Anotações de Matérias
+        </div>
+    `;
+
+
+    dados.materias.forEach(materia => {
+
+        html += `
+            <div class="card">
+
+                <h2>
+                    ${escapeHTML(materia.nome)}
+                </h2>
+
+                <textarea
+                    id="not-${escapeAttribute(materia.id)}"
+                    placeholder="Anotações para ${escapeAttribute(materia.nome)}..."
+                ></textarea>
+
+            </div>
+        `;
+    });
+
+
+    area.innerHTML = html;
+
+    recuperarNotas();
+}
+
+
+/* =========================================================
+   DATAS
+   ========================================================= */
+
+function formatarData(data) {
+
+    if (!data) return '';
+
+    const partes =
+        data.split('-');
+
+    if (partes.length !== 3) {
+        return data;
+    }
+
+    const ano =
+        Number(partes[0]);
+
+    const mes =
+        Number(partes[1]);
+
+    const dia =
+        Number(partes[2]);
+
+    const dataLocal =
+        new Date(
+            ano,
+            mes - 1,
+            dia
+        );
+
+    return new Intl.DateTimeFormat(
+        'pt-BR'
+    ).format(dataLocal);
+}
+
+
+/* =========================================================
+   TAREFAS
+   ========================================================= */
+
+function addTodoRapido() {
+
+    const input =
+        document.getElementById(
+            'new-todo-text'
+        );
+
+    const dataInput =
+        document.getElementById(
+            'new-todo-date'
+        );
+
+    const texto =
+        input.value.trim();
+
+    const data =
+        dataInput.value;
+
+
+    if (!texto) {
+
+        input.focus();
+
+        return;
+    }
+
+
+    dados.todos.push({
+
+        id: gerarId('todo'),
+
+        texto,
+
+        data,
+
+        concluida: false
+
+    });
+
+
+    salvarDados();
+
+    desenharTudo();
+
+    mostrarStatus(
+        '✅ Tarefa adicionada'
+    );
+}
+
+
+function alternarTodo(id, concluida) {
+
+    const tarefa =
+        dados.todos.find(
+            t => t.id === id
+        );
+
+    if (!tarefa) return;
+
+    tarefa.concluida =
+        Boolean(concluida);
+
+    salvarDados();
+
+    desenharTudo();
+}
+
+
+function removerTodo(id) {
+
+    const index =
+        dados.todos.findIndex(
+            t => t.id === id
+        );
+
+    if (index === -1) return;
+
+
+    const tarefa =
+        dados.todos[index];
+
+
+    if (
+        !confirm(
+            `Remover a tarefa "${tarefa.texto}"?`
+        )
+    ) {
+        return;
+    }
+
+
+    dados.todos.splice(index, 1);
+
+    salvarDados();
+
+    desenharTudo();
+
+    mostrarStatus(
+        '🗑️ Tarefa removida'
+    );
+}
+
+
+function limparConcluidos() {
+
+    const quantidade =
+        dados.todos.filter(
+            t => t.concluida
+        ).length;
+
+
+    if (quantidade === 0) {
+
+        mostrarStatus(
+            'Não há tarefas concluídas.'
+        );
+
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `Remover ${quantidade} tarefa(s) concluída(s)?`
+        )
+    ) {
+        return;
+    }
+
+
+    dados.todos =
+        dados.todos.filter(
+            t => !t.concluida
+        );
+
+
+    salvarDados();
+
+    desenharTudo();
+
+    mostrarStatus(
+        '🧹 Tarefas concluídas removidas'
+    );
+}
+
+
+/* =========================================================
+   ANOTAÇÕES
+   ========================================================= */
+
+function recuperarNotas() {
+
+    document
+        .querySelectorAll('textarea')
+        .forEach(textarea => {
+
+            const valor =
+                localStorage.getItem(
+                    textarea.id
+                );
+
+            textarea.value =
+                valor || '';
+
+
+            textarea.addEventListener(
+                'input',
+                () => {
+
+                    localStorage.setItem(
+                        textarea.id,
+                        textarea.value
+                    );
+
+                }
+            );
+
+        });
+}
+
+
+/* =========================================================
+   BACKUP
+   ========================================================= */
+
+function coletarAnotacoes() {
+
+    const notas = {};
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const chave =
+            localStorage.key(i);
+
+        if (
+            chave &&
+            chave.startsWith('not-')
+        ) {
+
+            notas[chave] =
+                localStorage.getItem(chave);
+        }
+    }
+
+    return notas;
+}
+
+
+function baixarEstrutura() {
+
+    const backup = {
+
+        version: 7,
+
+        app: 'UFC Planner',
+
+        exportedAt:
+            new Date().toISOString(),
+
+        planner: dados,
+
+        notas: coletarAnotacoes(),
+
+        notasSistema:
+            JSON.parse(
+                localStorage.getItem(
+                    NOTES_STORAGE_KEY
+                ) || '{}'
+            )
+
+    };
+
+
+    const blob =
+        new Blob(
+            [
+                '\ufeff' +
+                JSON.stringify(
+                    backup,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:
+                    'application/json;charset=utf-8'
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement('a');
+
+    link.href = url;
+
+    link.download =
+        `backup_ufc_planner_${
+            obterDataArquivo()
+        }.json`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+
+    mostrarStatus(
+        '📤 Backup exportado'
+    );
+}
+
+
+function validarBackup(backup) {
+
+    if (
+        !backup ||
+        typeof backup !== 'object'
+    ) {
+        return false;
+    }
+
+    if (
+        backup.version !== 7
+    ) {
+        return false;
+    }
+
+    if (
+        !backup.planner ||
+        !validarDados(backup.planner)
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function importarBackup(input) {
+
+    const arquivo =
+        input.files?.[0];
+
+    if (!arquivo) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = event => {
+
+        try {
+
+            const backup =
+                JSON.parse(
+                    event.target.result
+                );
+
+
+            if (
+                !validarBackup(backup)
+            ) {
+
+                alert(
+                    '❌ Este arquivo não é um backup válido do UFC Planner V7.'
+                );
+
+                return;
+            }
+
+
+            const confirmar =
+                confirm(
+                    'Restaurar este backup?\n\n' +
+                    'Os dados atuais do UFC Planner serão substituídos.'
+                );
+
+
+            if (!confirmar) {
+                return;
+            }
+
+
+            /*
+             * Primeiro normaliza os dados.
+             */
+
+            dados =
+                normalizarDados(
+                    backup.planner
+                );
+
+
+            /*
+             * Remove somente as chaves
+             * pertencentes ao UFC Planner.
+             */
+
+            removerDadosDoAplicativo();
+
+
+            /*
+             * Salva o novo planner.
+             */
+
+            salvarDados();
+
+
+            /*
+             * Restaura anotações.
+             */
+
+            if (
+                backup.notas &&
+                typeof backup.notas === 'object'
+            ) {
+
+                Object.entries(
+                    backup.notas
+                ).forEach(
+                    ([chave, valor]) => {
+
+                        if (
+                            chave.startsWith('not-')
+                        ) {
+
+                            localStorage.setItem(
+                                chave,
+                                String(valor ?? '')
+                            );
+                        }
+
+                    }
+                );
+            }
+
+
+            /*
+             * Restaura sistema de notas.
+             */
+
+            if (
+                backup.notasSistema &&
+                typeof backup.notasSistema === 'object'
+            ) {
+
+                localStorage.setItem(
+                    NOTES_STORAGE_KEY,
+                    JSON.stringify(
+                        backup.notasSistema
+                    )
+                );
+            }
+
+
+            desenharTudo();
+
+            mostrarStatus(
+                '✅ Backup restaurado',
+                3500
+            );
+
+
+        } catch (erro) {
+
+            console.error(
+                'Erro ao importar backup:',
+                erro
+            );
+
+            alert(
+                '❌ Não foi possível ler o arquivo de backup.'
+            );
+
+        } finally {
+
+            /*
+             * Permite importar o mesmo arquivo
+             * novamente se necessário.
+             */
+
+            input.value = '';
+        }
+    };
+
+
+    reader.readAsText(
+        arquivo,
+        'UTF-8'
+    );
+}
+
+
+function removerDadosDoAplicativo() {
+
+    const chavesRemover = [];
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const chave =
+            localStorage.key(i);
+
+        if (!chave) continue;
+
+
+        if (
+            chave === STORAGE_KEY ||
+            chave === OLD_STORAGE_KEY ||
+            chave === 'ufc_materias_transporte' ||
+            chave.startsWith('not-')
+        ) {
+
+            chavesRemover.push(chave);
+        }
+    }
+
+
+    chavesRemover.forEach(
+        chave =>
+            localStorage.removeItem(chave)
+    );
+}
+
+
+/* =========================================================
+   RELATÓRIO TXT
+   ========================================================= */
+
+function baixarRelatorioHTML() {
+
+    const agora = new Date();
+
+    const dataHora = agora.toLocaleString('pt-BR', {
+        dateStyle: 'full',
+        timeStyle: 'short'
+    });
+
+    const hoje =
+        obterDataArquivo();
+
+    const totalTarefas =
+        dados.todos.length;
+
+    const concluidas =
+        dados.todos.filter(
+            t => t.concluida
+        ).length;
+
+    const pendentes =
+        totalTarefas - concluidas;
+
+    const totalMaterias =
+        dados.materias.length;
+
+    const totalAulas =
+        dados.dias.reduce(
+            (total, dia) =>
+                total + dia.aulas.length,
+            0
+        );
+
+
+    /* =====================================================
+       LEMBRETE
+       ===================================================== */
+
+    const lembrete =
+        localStorage.getItem(
+            'not-geral'
+        )?.trim() || 'Nenhum lembrete cadastrado.';
+
+
+    /* =====================================================
+       TAREFAS
+       ===================================================== */
+
+    const tarefasPendentes =
+        dados.todos.filter(
+            t => !t.concluida
+        );
+
+    const tarefasConcluidas =
+        dados.todos.filter(
+            t => t.concluida
+        );
+
+
+    function gerarTarefa(tarefa) {
+
+        let prazoHTML = '';
+
+        if (tarefa.data) {
+
+            if (tarefa.data < hoje) {
+
+                prazoHTML = `
+                    <span class="prazo atrasada">
+                        ⚠️ Atrasada — ${escapeHTML(
+                            formatarData(tarefa.data)
+                        )}
+                    </span>
+                `;
+
+            } else if (
+                tarefa.data === hoje
+            ) {
+
+                prazoHTML = `
+                    <span class="prazo hoje">
+                        🔥 Hoje
+                    </span>
+                `;
+
+            } else {
+
+                prazoHTML = `
+                    <span class="prazo">
+                        📅 ${escapeHTML(
+                            formatarData(tarefa.data)
+                        )}
+                    </span>
+                `;
+            }
+
+        } else {
+
+            prazoHTML = `
+                <span class="prazo">
+                    📅 Sem prazo
+                </span>
+            `;
+        }
+
+
+        return `
+            <div class="task ${
+                tarefa.concluida
+                    ? 'task-done'
+                    : ''
+            }">
+
+                <div class="task-check">
+                    ${
+                        tarefa.concluida
+                            ? '✓'
+                            : '○'
+                    }
+                </div>
+
+                <div class="task-content">
+
+                    <div class="task-text">
+                        ${escapeHTML(
+                            tarefa.texto
+                        )}
+                    </div>
+
+                    ${prazoHTML}
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    let tarefasPendentesHTML = '';
+
+    if (tarefasPendentes.length) {
+
+        tarefasPendentesHTML =
+            tarefasPendentes
+                .map(gerarTarefa)
+                .join('');
+
+    } else {
+
+        tarefasPendentesHTML = `
+            <div class="empty">
+                🎉 Nenhuma tarefa pendente!
+            </div>
+        `;
+    }
+
+
+    let tarefasConcluidasHTML = '';
+
+    if (tarefasConcluidas.length) {
+
+        tarefasConcluidasHTML =
+            tarefasConcluidas
+                .map(gerarTarefa)
+                .join('');
+
+    } else {
+
+        tarefasConcluidasHTML = `
+            <div class="empty">
+                Nenhuma tarefa concluída ainda.
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       CRONOGRAMA
+       ===================================================== */
+
+    const diasHTML =
+        dados.dias.map(
+            dia => {
+
+                const aulas =
+                    [...dia.aulas].sort(
+                        (a, b) =>
+                            String(a[0])
+                                .localeCompare(
+                                    String(b[0])
+                                )
+                    );
+
+
+                let aulasHTML = '';
+
+                if (aulas.length) {
+
+                    aulasHTML =
+                        aulas.map(
+                            aula => `
+                                <div class="class-row">
+
+                                    <div class="class-time">
+                                        ${escapeHTML(
+                                            aula[0]
+                                        )}
+                                    </div>
+
+                                    <div class="class-name">
+                                        ${escapeHTML(
+                                            aula[1]
+                                        )}
+                                    </div>
+
+                                    <div class="class-room">
+                                        ${
+                                            escapeHTML(
+                                                aula[2] ||
+                                                '—'
+                                            )
+                                        }
+                                    </div>
+
+                                </div>
+                            `
+                        ).join('');
+
+                } else {
+
+                    aulasHTML = `
+                        <div class="empty">
+                            Nenhuma aula cadastrada.
+                        </div>
+                    `;
+                }
+
+
+                return `
+                    <section class="day-card">
+
+                        <div class="day-header">
+
+                            <div class="day-name">
+                                ${escapeHTML(
+                                    dia.nome
+                                )}
+                            </div>
+
+                            <div class="bus">
+                                🚌 ${escapeHTML(
+                                    dia.bus ||
+                                    'Não informado'
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="classes">
+
+                            <div class="class-head">
+                                <span>HORÁRIO</span>
+                                <span>MATÉRIA</span>
+                                <span>SALA</span>
+                            </div>
+
+                            ${aulasHTML}
+
+                        </div>
+
+                    </section>
+                `;
+            }
+        ).join('');
+
+
+    /* =====================================================
+       ANOTAÇÕES
+       ===================================================== */
+
+    let anotacoesHTML = '';
+
+    let temAnotacao = false;
+
+
+    dados.materias.forEach(
+        materia => {
+
+            const anotacao =
+                localStorage.getItem(
+                    `not-${materia.id}`
+                )?.trim() || '';
+
+
+            if (!anotacao) {
+                return;
+            }
+
+
+            temAnotacao = true;
+
+
+            anotacoesHTML += `
+                <section class="notes-card">
+
+                    <h3>
+                        📚 ${escapeHTML(
+                            materia.nome
+                        )}
+                    </h3>
+
+                    <div class="notes">
+                        ${escapeHTML(
+                            anotacao
+                        ).replace(
+                            /\n/g,
+                            '<br>'
+                        )}
+                    </div>
+
+                </section>
+            `;
+        }
+    );
+
+
+    if (!temAnotacao) {
+
+        anotacoesHTML = `
+            <div class="empty">
+                Nenhuma anotação de matéria encontrada.
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       HTML DO RELATÓRIO
+       ===================================================== */
+
+    const html = `<!DOCTYPE html>
+
+<html lang="pt-BR">
 
 <head>
 
@@ -15,94 +2346,73 @@
     content="#0d1117"
 >
 
-<title>Histórico de Notas - UFC</title>
+<title>Relatório — UFC Planner</title>
 
 <style>
-
-/* =====================================================
-   VARIÁVEIS
-   ===================================================== */
 
 :root {
 
     --bg: #0d1117;
     --card: #151a22;
-    --card-2: #1a1f29;
+    --card2: #1a2029;
 
     --text: #eee;
-    --muted: #777;
+    --muted: #8b949e;
 
-    --primary: #7c4dff;
-    --secondary: #00e5ff;
+    --cyan: #00e5ff;
+    --purple: #bb86fc;
+    --green: #00c853;
+    --red: #ff5252;
+    --yellow: #ffab00;
+    --pink: #ff4081;
 
-    --success: #00c853;
-    --warning: #ffab00;
-    --danger: #ff5252;
-
-    --border: #2a2a2a;
+    --border: #2a3038;
 
 }
 
 
-/* =====================================================
-   RESET
-   ===================================================== */
-
 * {
-
     box-sizing: border-box;
-
 }
 
 
 html {
-
-    width: 100%;
-    min-height: 100%;
-
+    scroll-behavior: smooth;
 }
 
 
 body {
 
-    font-family:
-        'Segoe UI',
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        sans-serif;
+    margin: 0;
+
+    padding: 20px;
 
     background:
-
         radial-gradient(
             circle at top,
-            rgba(124,77,255,.10),
-            transparent 35%
-        ),
-
-        var(--bg);
+            #17202d 0,
+            var(--bg) 500px
+        );
 
     color: var(--text);
 
-    margin: 0;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
-    padding:
-        12px;
-
-    min-height: 100vh;
+    line-height: 1.5;
 
 }
 
-
-/* =====================================================
-   CONTAINER
-   ===================================================== */
 
 .container {
 
     width: 100%;
 
-    max-width: 700px;
+    max-width: 850px;
 
     margin: auto;
 
@@ -110,221 +2420,99 @@ body {
 
 
 /* =====================================================
-   TÍTULO
+   CABEÇALHO
    ===================================================== */
 
-h1 {
+.header {
 
-    color:
-        var(--secondary);
+    text-align: center;
 
-    text-align:
-        center;
+    padding: 35px 20px;
 
-    margin:
-        15px 0 20px;
+    margin-bottom: 25px;
 
-    font-size:
-        clamp(
-            1.25rem,
-            5vw,
-            1.7rem
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #151c26,
+            #11161d
         );
 
-    letter-spacing:
-        2px;
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.3);
 
-    font-weight:
-        900;
+}
 
-    text-shadow:
-        0 0 10px
-        rgba(0,229,255,.3);
+
+.logo {
+
+    color: var(--cyan);
+
+    font-size: 2.5rem;
+
+    font-weight: 900;
+
+    letter-spacing: 5px;
+
+    margin: 0;
+
+}
+
+
+.subtitle {
+
+    color: var(--purple);
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-top: 5px;
+
+}
+
+
+.generated {
+
+    color: var(--muted);
+
+    font-size: .85rem;
+
+    margin-top: 15px;
 
 }
 
 
 /* =====================================================
-   BOTÕES
+   TÍTULOS
    ===================================================== */
 
-button {
+.section {
 
-    background:
-        #1c222d;
+    margin-top: 30px;
 
-    color:
-        #eee;
+    margin-bottom: 12px;
 
-    border:
-        1px solid #333;
+    color: var(--purple);
 
-    padding:
-        12px;
+    font-size: .85rem;
 
-    border-radius:
-        12px;
+    font-weight: 900;
 
-    font-weight:
-        800;
+    letter-spacing: 2px;
 
-    cursor:
-        pointer;
+    text-transform: uppercase;
 
-    font-size:
-        .78rem;
+    border-bottom: 2px solid var(--purple);
 
-    transition:
-        .12s;
-
-    box-shadow:
-        0 4px 0 #000;
-
-    text-transform:
-        uppercase;
-
-}
-
-
-button:hover {
-
-    filter:
-        brightness(1.12);
-
-}
-
-
-button:active {
-
-    transform:
-        translateY(3px);
-
-    box-shadow:
-        0 1px 0 #000;
-
-}
-
-
-.top-menu {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:
-        10px;
-
-    width:
-        100%;
-
-    margin-bottom:
-        22px;
-
-}
-
-
-.btn-back {
-
-    border-color:
-        var(--primary);
-
-    color:
-        var(--primary);
-
-    box-shadow:
-        0 4px 0 #4a148c;
-
-}
-
-
-.btn-download {
-
-    border-color:
-        var(--success);
-
-    color:
-        var(--success);
-
-    box-shadow:
-        0 4px 0 #007a3d;
-
-}
-
-
-/* =====================================================
-   SEMESTRE
-   ===================================================== */
-
-.semestre-area {
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    align-items:
-        center;
-
-    margin-bottom:
-        25px;
-
-}
-
-
-.semestre-label {
-
-    color:
-        #888;
-
-    font-size:
-        .75rem;
-
-    font-weight:
-        800;
-
-    text-transform:
-        uppercase;
-
-    margin-bottom:
-        7px;
-
-}
-
-
-.semestre-input {
-
-    background:
-        #000;
-
-    border:
-        2px solid var(--primary);
-
-    border-radius:
-        15px;
-
-    color:
-        var(--primary);
-
-    text-align:
-        center;
-
-    font-weight:
-        900;
-
-    width:
-        150px;
-
-    padding:
-        10px;
-
-    font-size:
-        1rem;
-
-    box-shadow:
-        0 4px 0 #4a148c;
+    padding-bottom: 7px;
 
 }
 
@@ -333,704 +2521,340 @@ button:active {
    RESUMO
    ===================================================== */
 
-.resumo {
+.summary {
 
-    display:
-        grid;
+    display: grid;
 
     grid-template-columns:
-        repeat(3, 1fr);
+        repeat(5, 1fr);
 
-    gap:
-        8px;
-
-    margin-bottom:
-        25px;
+    gap: 10px;
 
 }
 
 
-.resumo-box {
+.stat {
 
-    background:
-        var(--card);
+    background: var(--card);
 
-    border:
-        1px solid var(--border);
+    border: 1px solid var(--border);
 
-    border-radius:
-        15px;
+    border-radius: 16px;
 
-    padding:
-        12px 6px;
+    padding: 15px 10px;
 
-    text-align:
-        center;
+    text-align: center;
 
 }
 
 
-.resumo-numero {
+.stat-number {
 
-    display:
-        block;
+    display: block;
 
-    color:
-        var(--secondary);
+    font-size: 1.5rem;
 
-    font-size:
-        1.35rem;
+    font-weight: 900;
 
-    font-weight:
-        900;
+    color: var(--cyan);
 
 }
 
 
-.resumo-label {
+.stat-label {
 
-    color:
-        #888;
+    color: var(--muted);
 
-    font-size:
-        .65rem;
+    font-size: .72rem;
 
-    font-weight:
-        800;
+    text-transform: uppercase;
 
-    text-transform:
-        uppercase;
+    font-weight: 700;
 
 }
 
 
 /* =====================================================
-   MATÉRIA
+   CARDS
    ===================================================== */
 
-.materia-card {
+.card,
+.day-card,
+.notes-card {
 
-    background:
+    background: var(--card);
 
-        linear-gradient(
-            145deg,
-            #151a22,
-            #11161d
-        );
+    border: 1px solid var(--border);
 
-    border-radius:
-        20px;
+    border-radius: 18px;
 
-    padding:
-        18px;
+    padding: 20px;
 
-    margin-bottom:
-        22px;
-
-    border:
-        1px solid var(--border);
-
-    width:
-        100%;
+    margin-bottom: 15px;
 
     box-shadow:
-        0 10px 25px
-        rgba(0,0,0,.4);
-
-    overflow:
-        hidden;
-
-}
-
-
-.materia-header {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    gap:
-        10px;
-
-    border-bottom:
-        2px solid var(--border);
-
-    padding-bottom:
-        12px;
-
-    margin-bottom:
-        15px;
-
-}
-
-
-.materia-header > div:first-child {
-
-    min-width:
-        0;
-
-}
-
-
-.materia-title {
-
-    color:
-        var(--secondary);
-
-    font-size:
-        clamp(
-            1rem,
-            4vw,
-            1.25rem
-        );
-
-    font-weight:
-        900;
-
-    margin:
-        0;
-
-    overflow-wrap:
-        anywhere;
-
-}
-
-
-.materia-id {
-
-    color:
-        #555;
-
-    font-size:
-        .6rem;
-
-    overflow-wrap:
-        anywhere;
-
-}
-
-
-.btn-delete-materia {
-
-    background:
-        transparent;
-
-    color:
-        var(--danger);
-
-    border:
-        none;
-
-    box-shadow:
-        none;
-
-    padding:
-        5px;
-
-    font-size:
-        1.1rem;
-
-    flex-shrink:
-        0;
-
-}
-
-
-/* =====================================================
-   ETAPA
-   ===================================================== */
-
-.np-box {
-
-    background:
+        0 5px 20px
         rgba(0,0,0,.2);
 
-    border-radius:
-        15px;
+}
 
-    padding:
-        14px;
 
-    margin-bottom:
-        15px;
+.reminder {
 
-    border:
-        1px solid #333;
+    white-space: pre-wrap;
 
-    border-left:
-        5px solid var(--primary);
-
-    overflow:
-        hidden;
+    color: var(--text);
 
 }
 
 
-.np-header {
+/* =====================================================
+   TAREFAS
+   ===================================================== */
 
-    display:
-        flex;
+.task {
 
-    justify-content:
-        space-between;
+    display: flex;
 
-    align-items:
-        center;
+    align-items: flex-start;
 
-    gap:
-        8px;
+    gap: 14px;
 
-    margin-bottom:
-        12px;
-
-    color:
-        var(--primary);
-
-    font-weight:
-        900;
-
-}
-
-
-.np-title {
-
-    flex:
-        1;
-
-    min-width:
-        0;
-
-    background:
-        transparent;
-
-    border:
-        none;
+    padding: 14px 0;
 
     border-bottom:
-        1px solid #444;
-
-    border-radius:
-        0;
-
-    color:
-        var(--primary);
-
-    font-weight:
-        900;
-
-    padding:
-        5px;
+        1px solid var(--border);
 
 }
 
 
-.np-title:focus {
+.task:last-child {
+    border-bottom: none;
+}
 
-    outline:
-        none;
 
-    border-color:
-        var(--secondary);
+.task-check {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    border: 2px solid var(--green);
+
+    color: var(--green);
+
+    font-weight: 900;
 
 }
 
 
-/* =====================================================
-   INPUTS
-   ===================================================== */
+.task-done .task-check {
 
-input {
+    background: var(--green);
 
-    background:
-        #000;
-
-    color:
-        #fff;
-
-    border:
-        1px solid #444;
-
-    padding:
-        9px;
-
-    border-radius:
-        9px;
-
-    font-size:
-        .82rem;
-
-    width:
-        100%;
-
-    font-weight:
-        600;
+    color: #000;
 
 }
 
 
-input:focus {
+.task-text {
 
-    border-color:
-        var(--secondary);
+    font-weight: 650;
 
-    outline:
-        none;
+    overflow-wrap: anywhere;
 
 }
 
 
-/* =====================================================
-   LINHA DE NOTA
-   ===================================================== */
+.task-done .task-text {
 
-.nota-row {
+    color: #777;
 
-    display:
-        grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        65px
-        65px
-        32px;
-
-    gap:
-        6px;
-
-    margin-bottom:
-        8px;
-
-    align-items:
-        center;
+    text-decoration: line-through;
 
 }
 
 
-.btn-del-small {
+.prazo {
 
-    background:
-        none;
+    display: inline-block;
 
-    border:
-        none;
+    margin-top: 5px;
 
-    color:
-        var(--danger);
+    color: var(--yellow);
 
-    cursor:
-        pointer;
+    font-size: .78rem;
 
-    font-size:
-        1.1rem;
+    font-weight: 800;
 
-    box-shadow:
-        none;
+}
 
-    padding:
-        2px;
 
+.prazo.hoje {
+    color: var(--cyan);
+}
+
+
+.prazo.atrasada {
+    color: var(--red);
 }
 
 
 /* =====================================================
-   MÉDIA DA ETAPA
+   CRONOGRAMA
    ===================================================== */
 
-.media-etapa {
+.day-header {
 
-    text-align:
-        right;
+    display: flex;
 
-    font-size:
-        .85rem;
+    justify-content: space-between;
 
-    margin-top:
-        10px;
+    align-items: center;
 
-    font-weight:
-        900;
+    gap: 15px;
+
+    margin-bottom: 15px;
 
 }
 
 
-.media-boa {
+.day-name {
 
-    color:
-        var(--success);
+    color: var(--cyan);
 
-}
+    font-size: 1.35rem;
 
-
-.media-baixa {
-
-    color:
-        var(--warning);
+    font-weight: 900;
 
 }
 
 
-.media-ruim {
+.bus {
 
-    color:
-        var(--danger);
-
-}
-
-
-/* =====================================================
-   PREVISÃO
-   ===================================================== */
-
-.previsao-tag {
+    color: var(--yellow);
 
     background:
-        rgba(124,77,255,.1);
-
-    color:
-        var(--primary);
-
-    border:
-        1px dashed var(--primary);
-
-    padding:
-        10px;
-
-    border-radius:
-        12px;
-
-    font-size:
-        .8rem;
-
-    margin-top:
-        10px;
-
-    font-weight:
-        800;
-
-    text-align:
-        center;
-
-}
-
-
-.previsao-impossivel {
-
-    color:
-        var(--danger);
-
-    border-color:
-        var(--danger);
-
-    background:
-        rgba(255,82,82,.08);
-
-}
-
-
-/* =====================================================
-   BOTÕES ETAPAS
-   ===================================================== */
-
-.btn-add-nota {
-
-    width:
-        100%;
-
-    font-size:
-        .7rem;
-
-    margin-top:
-        10px;
-
-    padding:
-        9px;
-
-    border-style:
-        dashed;
-
-    box-shadow:
-        none;
-
-}
-
-
-.btn-add-np {
-
-    background:
-        var(--primary);
-
-    color:
-        #fff;
-
-    border:
-        none;
-
-    margin-top:
-        2px;
-
-    width:
-        100%;
-
-    border-radius:
-        12px;
-
-    box-shadow:
-        0 4px 0 #4a148c;
-
-}
-
-
-/* =====================================================
-   RESULTADO
-   ===================================================== */
-
-.media-final-area {
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    align-items:
-        center;
-
-    margin-top:
-        18px;
-
-    padding-top:
-        15px;
-
-    border-top:
-        1px dashed #444;
-
-    gap:
-        10px;
-
-}
-
-
-.media-final {
-
-    font-size:
-        1.2rem;
-
-    font-weight:
-        900;
-
-    text-align:
-        center;
-
-}
-
-
-.media-final span {
-
-    color:
-        var(--secondary);
-
-    font-size:
-        1.5rem;
-
-}
-
-
-.status-badge {
-
-    padding:
-        9px 20px;
-
-    border-radius:
-        12px;
-
-    font-size:
-        .75rem;
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        1px;
-
-    color:
-        #000;
-
-    text-align:
-        center;
-
-}
-
-
-.aprovado {
-
-    background:
-        var(--success);
-
-    box-shadow:
-        0 4px 0 #007a3d;
-
-}
-
-
-.recuperacao {
-
-    background:
-        var(--warning);
-
-    box-shadow:
-        0 4px 0 #916200;
-
-}
-
-
-.reprovado {
-
-    background:
-        var(--danger);
-
-    color:
-        #fff;
-
-    box-shadow:
-        0 4px 0 #7e1d1d;
-
-}
-
-
-.info-af {
-
-    width:
-        100%;
-
-    background:
-        rgba(255,171,0,.08);
+        rgba(255,171,0,.1);
 
     border:
         1px solid
         rgba(255,171,0,.25);
 
-    color:
-        var(--warning);
+    border-radius: 10px;
 
-    border-radius:
-        12px;
+    padding: 6px 10px;
 
-    padding:
-        10px;
+    font-size: .78rem;
 
-    font-size:
-        .78rem;
+    font-weight: 800;
 
-    text-align:
-        center;
+}
 
-    font-weight:
-        800;
+
+.class-head,
+.class-row {
+
+    display: grid;
+
+    grid-template-columns:
+        80px 1fr 80px;
+
+    gap: 10px;
+
+    align-items: center;
+
+}
+
+
+.class-head {
+
+    color: var(--muted);
+
+    font-size: .65rem;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    padding-bottom: 7px;
+
+}
+
+
+.class-row {
+
+    padding: 12px 0;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.class-time {
+
+    color: var(--purple);
+
+    font-weight: 900;
+
+}
+
+
+.class-name {
+
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.class-room {
+
+    color: var(--pink);
+
+    text-align: right;
+
+    font-size: .8rem;
+
+    font-weight: 900;
+
+}
+
+
+/* =====================================================
+   ANOTAÇÕES
+   ===================================================== */
+
+.notes-card h3 {
+
+    margin-top: 0;
+
+    color: var(--cyan);
+
+}
+
+
+.notes {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    color: #ddd;
+
+    line-height: 1.7;
 
 }
 
@@ -1041,262 +2865,119 @@ input:focus {
 
 .empty {
 
-    text-align:
-        center;
+    color: var(--muted);
 
-    padding:
-        35px 15px;
+    text-align: center;
 
-    color:
-        #666;
+    padding: 15px;
 
-}
-
-
-.empty-icon {
-
-    font-size:
-        2.5rem;
-
-    margin-bottom:
-        10px;
-
-}
-
-
-.empty-text {
-
-    font-size:
-        .85rem;
+    font-size: .85rem;
 
 }
 
 
 /* =====================================================
-   REMOVIDAS
+   RODAPÉ
    ===================================================== */
 
-.removed-area {
+.footer {
 
-    margin-top:
-        30px;
+    text-align: center;
 
-    background:
-        rgba(255,255,255,.025);
+    color: var(--muted);
 
-    border:
-        1px solid #252525;
+    font-size: .75rem;
 
-    border-radius:
-        15px;
-
-    padding:
-        15px;
-
-}
-
-
-.removed-title {
-
-    color:
-        #777;
-
-    font-size:
-        .75rem;
-
-    font-weight:
-        900;
-
-    text-transform:
-        uppercase;
-
-    margin-bottom:
-        10px;
-
-}
-
-
-.removed-item {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        center;
-
-    gap:
-        10px;
-
-    padding:
-        8px 0;
-
-    border-bottom:
-        1px solid #222;
-
-    font-size:
-        .8rem;
-
-    color:
-        #777;
-
-}
-
-
-.btn-restore {
-
-    color:
-        var(--secondary);
-
-    border-color:
-        var(--secondary);
-
-    box-shadow:
-        none;
-
-    padding:
-        6px 10px;
-
-    font-size:
-        .65rem;
+    padding: 30px 10px 10px;
 
 }
 
 
 /* =====================================================
-   RESPONSIVO
+   CELULAR
    ===================================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
 
     body {
-
-        padding:
-            8px;
-
+        padding: 10px;
     }
 
 
-    .top-menu {
-
-        gap:
-            7px;
-
+    .header {
+        padding: 25px 15px;
     }
 
 
-    button {
-
-        font-size:
-            .65rem;
-
+    .logo {
+        font-size: 2rem;
     }
 
 
-    .nota-row {
+    .summary {
 
         grid-template-columns:
-            minmax(0,1fr)
-            52px
-            58px
-            28px;
-
-        gap:
-            4px;
+            repeat(2, 1fr);
 
     }
 
 
-    .nota-row input {
+    .stat:last-child {
 
-        padding:
-            8px 5px;
-
-        font-size:
-            .72rem;
+        grid-column:
+            span 2;
 
     }
 
 
-    .materia-card {
+    .card,
+    .day-card,
+    .notes-card {
 
-        padding:
-            14px;
-
-    }
-
-
-    .np-box {
-
-        padding:
-            11px;
+        padding: 15px;
 
     }
 
 
-    .resumo-numero {
+    .day-header {
 
-        font-size:
-            1.15rem;
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .bus {
+
+        width: 100%;
 
     }
 
 
-    .status-badge {
-
-        font-size:
-            .65rem;
-
-        padding:
-            8px 12px;
-
-    }
-
-}
-
-
-/* =====================================================
-   TELAS MUITO PEQUENAS
-   ===================================================== */
-
-@media (max-width: 360px) {
-
-    .nota-row {
+    .class-head,
+    .class-row {
 
         grid-template-columns:
-            1fr 48px 52px 24px;
+            58px 1fr;
 
     }
 
 
-    .nota-row input {
-
-        font-size:
-            .68rem;
-
+    .class-head span:last-child {
+        display: none;
     }
 
 
-    .top-menu {
+    .class-room {
 
-        grid-template-columns:
-            1fr;
+        grid-column: 2;
+
+        text-align: left;
+
+        margin-top: -8px;
 
     }
-
-}
-
-
-/* =====================================================
-   RELATÓRIO
-   ===================================================== */
-
-.relatorio-preview {
-
-    margin-top:
-        25px;
 
 }
 
@@ -1309,2993 +2990,54 @@ input:focus {
 
     body {
 
-        background:
-            white !important;
+        background: white;
 
-        color:
-            #111 !important;
+        color: black;
 
-    }
-
-
-    .top-menu,
-    .semestre-area,
-    #removed-container,
-    .btn-delete-materia,
-    .btn-add-np,
-    .btn-add-nota,
-    .btn-del-small {
-
-        display:
-            none !important;
-
-    }
-
-
-    .materia-card {
-
-        background:
-            white !important;
-
-        color:
-            #111 !important;
-
-        box-shadow:
-            none;
-
-        border:
-            1px solid #ccc;
-
-        break-inside:
-            avoid;
-
-    }
-
-}
-
-
-/* =====================================================
-   FIM CSS
-   ===================================================== */
-
-</style>
-
-</head>
-
-
-<body>
-
-<div class="container">
-
-<h1>
-    📊 HISTÓRICO DE NOTAS
-</h1>
-
-
-<div class="top-menu">
-
-    <button
-        class="btn-back"
-        onclick="window.location.href='index.html'">
-
-        ⬅️ VOLTAR AO PLANNER
-
-    </button>
-
-
-    <button
-        class="btn-download"
-        onclick="baixarHistorico()">
-
-        📥 SALVAR RELATÓRIO
-
-    </button>
-
-</div>
-
-
-<div class="semestre-area">
-
-    <span class="semestre-label">
-        Semestre atual
-    </span>
-
-
-    <input
-        type="text"
-        id="input-semestre"
-        class="semestre-input"
-        value="2026.1"
-        placeholder="2026.1"
-        maxlength="15"
-    >
-
-</div>
-
-
-<div
-    id="resumo"
-    class="resumo">
-</div>
-
-
-<div
-    id="materias-container">
-</div>
-
-
-<div
-    id="removed-container">
-</div>
-
-</div>
-
-
-<script>
-
-/* =====================================================
-   CONFIGURAÇÃO
-   ===================================================== */
-
-const STORAGE_KEY =
-    'ufc_sistema_notas_v2';
-
-const TRANSPORTE_KEY =
-    'ufc_materias_transporte';
-
-const OLD_STORAGE_KEY =
-    'ufc_sistema_notas_v1';
-
-
-/* =====================================================
-   ESTRUTURA INICIAL
-   ===================================================== */
-
-const estruturaInicial = {
-
-    version:
-        2,
-
-    semestre:
-        '2026.1',
-
-    materias:
-        {},
-
-    removidas:
-        {}
-
-};
-
-
-/* =====================================================
-   UTILITÁRIOS
-   ===================================================== */
-
-function gerarId(prefixo = 'id') {
-
-    if (
-        typeof crypto !== 'undefined' &&
-        crypto.randomUUID
-    ) {
-
-        return `${prefixo}-${crypto.randomUUID()}`;
-
-    }
-
-
-    return `${prefixo}-${Date.now()}-${
-        Math.random()
-            .toString(36)
-            .substring(2,10)
-    }`;
-
-}
-
-
-function escapeHTML(valor) {
-
-    return String(valor ?? '')
-
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;')
-        .replace(/'/g,'&#039;');
-
-}
-
-
-function numero(valor) {
-
-    if (
-        valor === '' ||
-        valor === null ||
-        valor === undefined
-    ) {
-
-        return null;
-
-    }
-
-
-    const n =
-        parseFloat(
-            String(valor)
-                .replace(',','.')
-        );
-
-
-    return Number.isFinite(n)
-        ? n
-        : null;
-
-}
-
-
-function limitarNota(valor) {
-
-    const n =
-        numero(valor);
-
-
-    if (
-        n === null
-    ) {
-
-        return '';
-
-    }
-
-
-    return Math.max(
-        0,
-        Math.min(10,n)
-    );
-
-}
-
-
-/* =====================================================
-   NORMALIZAÇÃO
-   ===================================================== */
-
-function normalizarParcial(parcial) {
-
-    return {
-
-        id:
-            parcial?.id ||
-            gerarId('np'),
-
-        nome:
-            String(
-                parcial?.nome ||
-                'Nova Etapa'
-            ),
-
-        notas:
-            Array.isArray(
-                parcial?.notas
-            )
-                ? parcial.notas.map(
-                    nota => ({
-
-                        id:
-                            nota?.id ||
-                            gerarId('nota'),
-
-                        tipo:
-                            String(
-                                nota?.tipo || ''
-                            ),
-
-                        peso:
-                            nota?.peso ??
-                            1,
-
-                        valor:
-                            nota?.valor ??
-                            ''
-
-                    })
-                )
-                : [],
-
-        af:
-            parcial?.af ??
-            ''
-
-    };
-
-}
-
-
-function normalizarMateria(
-    materia,
-    id
-) {
-
-    return {
-
-        id,
-
-        nome:
-            String(
-                materia?.nome ||
-                'Matéria'
-            ),
-
-        parciais:
-            Array.isArray(
-                materia?.parciais
-            )
-                ? materia.parciais.map(
-                    normalizarParcial
-                )
-                : []
-
-    };
-
-}
-
-
-function normalizarDados(dados) {
-
-    const resultado = {
-
-        version:
-            2,
-
-        semestre:
-            String(
-                dados?.semestre ||
-                '2026.1'
-            ),
-
-        materias:
-            {},
-
-        removidas:
-            {}
-
-    };
-
-
-    if (
-        dados?.materias &&
-        typeof dados.materias === 'object'
-    ) {
-
-        Object.entries(
-            dados.materias
-        ).forEach(
-            ([id,materia]) => {
-
-                resultado.materias[id] =
-                    normalizarMateria(
-                        materia,
-                        id
-                    );
-
-            }
-        );
-
-    }
-
-
-    if (
-        dados?.removidas &&
-        typeof dados.removidas === 'object'
-    ) {
-
-        Object.entries(
-            dados.removidas
-        ).forEach(
-            ([id,materia]) => {
-
-                resultado.removidas[id] = {
-
-                    id,
-
-                    nome:
-                        String(
-                            materia?.nome || ''
-                        )
-
-                };
-
-            }
-        );
-
-    }
-
-
-    return resultado;
-
-}
-
-
-/* =====================================================
-   MIGRAÇÃO
-   ===================================================== */
-
-function migrarVersaoAntiga(antigo) {
-
-    const novo =
-        structuredClone(
-            estruturaInicial
-        );
-
-
-    const semestre =
-        localStorage.getItem(
-            'ufc_semestre'
-        );
-
-
-    if (semestre) {
-
-        novo.semestre =
-            semestre;
-
-    }
-
-
-    if (
-        antigo &&
-        typeof antigo === 'object'
-    ) {
-
-        Object.entries(
-            antigo
-        ).forEach(
-            ([nome,materia]) => {
-
-                const id =
-                    gerarId('mat');
-
-
-                novo.materias[id] = {
-
-                    id,
-
-                    nome,
-
-                    parciais:
-                        Array.isArray(
-                            materia?.parciais
-                        )
-                            ? materia.parciais.map(
-                                normalizarParcial
-                            )
-                            : []
-
-                };
-
-            }
-        );
-
-    }
-
-
-    return novo;
-
-}
-
-
-/* =====================================================
-   CARREGAR
-   ===================================================== */
-
-function carregarDados() {
-
-    try {
-
-        const salvo =
-            localStorage.getItem(
-                STORAGE_KEY
-            );
-
-
-        if (salvo) {
-
-            return normalizarDados(
-                JSON.parse(salvo)
-            );
-
-        }
-
-
-        const antigo =
-            localStorage.getItem(
-                OLD_STORAGE_KEY
-            );
-
-
-        if (antigo) {
-
-            const migrado =
-                migrarVersaoAntiga(
-                    JSON.parse(antigo)
-                );
-
-
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(migrado)
-            );
-
-
-            return migrado;
-
-        }
-
-    } catch(erro) {
-
-        console.error(
-            'Erro ao carregar notas:',
-            erro
-        );
-
-    }
-
-
-    return structuredClone(
-        estruturaInicial
-    );
-
-}
-
-
-let dados =
-    carregarDados();
-
-
-/* =====================================================
-   SALVAR
-   ===================================================== */
-
-function salvar() {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(dados)
-    );
-
-
-    localStorage.setItem(
-        'ufc_semestre',
-        dados.semestre
-    );
-
-}
-
-
-/* =====================================================
-   PLANNER
-   ===================================================== */
-
-function obterMateriasPlanner() {
-
-    try {
-
-        const salvo =
-            localStorage.getItem(
-                TRANSPORTE_KEY
-            );
-
-
-        if (!salvo) {
-
-            return [];
-
-        }
-
-
-        const lista =
-            JSON.parse(salvo);
-
-
-        if (
-            !Array.isArray(lista)
-        ) {
-
-            return [];
-
-        }
-
-
-        return lista.map(
-            item => {
-
-                if (
-                    typeof item === 'string'
-                ) {
-
-                    return {
-
-                        id:
-                            'legacy-' +
-                            item,
-
-                        nome:
-                            item
-
-                    };
-
-                }
-
-
-                return {
-
-                    id:
-                        item?.id ||
-                        'legacy-' +
-                        item?.nome,
-
-                    nome:
-                        String(
-                            item?.nome || ''
-                        )
-
-                };
-
-            }
-        );
-
-    } catch(erro) {
-
-        console.error(
-            'Erro no Planner:',
-            erro
-        );
-
-        return [];
-
-    }
-
-}
-
-
-function sincronizar() {
-
-    const materias =
-        obterMateriasPlanner();
-
-
-    let alterou =
-        false;
-
-
-    materias.forEach(
-        materia => {
-
-            if (
-                !materia.id ||
-                !materia.nome.trim()
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                dados.removidas[
-                    materia.id
-                ]
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                !dados.materias[
-                    materia.id
-                ]
-            ) {
-
-                dados.materias[
-                    materia.id
-                ] = {
-
-                    id:
-                        materia.id,
-
-                    nome:
-                        materia.nome,
-
-                    parciais:
-                        []
-
-                };
-
-
-                alterou =
-                    true;
-
-            } else {
-
-                if (
-                    dados.materias[
-                        materia.id
-                    ].nome !==
-                    materia.nome
-                ) {
-
-                    dados.materias[
-                        materia.id
-                    ].nome =
-                        materia.nome;
-
-
-                    alterou =
-                        true;
-
-                }
-
-            }
-
-        }
-    );
-
-
-    if (alterou) {
-
-        salvar();
-
-    }
-
-}
-
-
-/* =====================================================
-   CÁLCULO DA ETAPA
-   ===================================================== */
-
-function calcularEtapa(parcial) {
-
-    let soma =
-        0;
-
-    let pesos =
-        0;
-
-
-    const faltantes =
-        [];
-
-
-    parcial.notas.forEach(
-        nota => {
-
-            const peso =
-                numero(nota.peso) ||
-                0;
-
-
-            const valor =
-                numero(nota.valor);
-
-
-            if (
-                peso <= 0
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                valor === null
-            ) {
-
-                faltantes.push({
-
-                    id:
-                        nota.id,
-
-                    tipo:
-                        nota.tipo ||
-                        'Próxima nota',
-
-                    peso
-
-                });
-
-            } else {
-
-                soma +=
-                    valor * peso;
-
-                pesos +=
-                    peso;
-
-            }
-
-        }
-    );
-
-
-    const pesosFaltantes =
-        faltantes.reduce(
-            (total,item) =>
-                total + item.peso,
-            0
-        );
-
-
-    const pesoTotal =
-        pesos +
-        pesosFaltantes;
-
-
-    const mediaAtual =
-        pesos > 0
-            ? soma / pesos
-            : null;
-
-
-    let meta =
-        null;
-
-
-    if (
-        pesosFaltantes > 0 &&
-        pesoTotal > 0
-    ) {
-
-        meta =
-            (
-                7 * pesoTotal -
-                soma
-            ) /
-            pesosFaltantes;
-
-    }
-
-
-    let mediaFinal =
-        null;
-
-
-    if (
-        pesoTotal > 0 &&
-        pesosFaltantes === 0
-    ) {
-
-        mediaFinal =
-            soma / pesoTotal;
-
-    }
-
-
-    return {
-
-        soma,
-
-        pesos,
-
-        pesosFaltantes,
-
-        pesoTotal,
-
-        faltantes,
-
-        mediaAtual,
-
-        mediaFinal,
-
-        meta
-
-    };
-
-}
-
-
-/* =====================================================
-   MÉDIA DAS APs
-   ===================================================== */
-
-function calcularMediaAPs(materia) {
-
-    const etapas =
-        materia.parciais
-            .map(calcularEtapa)
-            .filter(
-                etapa =>
-                    etapa.mediaFinal !== null
-            );
-
-
-    if (
-        etapas.length === 0
-    ) {
-
-        return null;
-
-    }
-
-
-    const soma =
-        etapas.reduce(
-            (total,etapa) =>
-                total +
-                etapa.mediaFinal,
-            0
-        );
-
-
-    return soma /
-        etapas.length;
-
-}
-
-
-/* =====================================================
-   AF
-   ===================================================== */
-
-function calcularAFnecessaria(mediaAP) {
-
-    if (
-        mediaAP === null
-    ) {
-
-        return null;
-
-    }
-
-
-    if (
-        mediaAP < 4
-    ) {
-
-        return null;
-
-    }
-
-
-    return Math.max(
-        4,
-        10 - mediaAP
-    );
-
-}
-
-
-/* =====================================================
-   STATUS
-   ===================================================== */
-
-function obterStatus(mediaAP) {
-
-    if (
-        mediaAP === null
-    ) {
-
-        return {
-
-            classe:
-                'recuperacao',
-
-            texto:
-                'AGUARDANDO NOTAS'
-
-        };
-
-    }
-
-
-    if (
-        mediaAP >= 7
-    ) {
-
-        return {
-
-            classe:
-                'aprovado',
-
-            texto:
-                'APROVADO POR MÉDIA 🏆'
-
-        };
-
-    }
-
-
-    if (
-        mediaAP >= 4
-    ) {
-
-        return {
-
-            classe:
-                'recuperacao',
-
-            texto:
-                'POSSÍVEL AVALIAÇÃO FINAL'
-
-        };
-
-    }
-
-
-    return {
-
-        classe:
-            'reprovado',
-
-        texto:
-            'ABAIXO DE 4,0'
-
-    };
-
-}
-
-
-/* =====================================================
-   RENDER PRINCIPAL
-   ===================================================== */
-
-function renderizar() {
-
-    const container =
-        document.getElementById(
-            'materias-container'
-        );
-
-
-    const resumo =
-        document.getElementById(
-            'resumo'
-        );
-
-
-    const lista =
-        Object.values(
-            dados.materias
-        );
-
-
-    document.getElementById(
-        'input-semestre'
-    ).value =
-        dados.semestre;
-
-
-    let aprovadas =
-        0;
-
-    let recuperacao =
-        0;
-
-    let aguardando =
-        0;
-
-
-    lista.forEach(
-        materia => {
-
-            const media =
-                calcularMediaAPs(
-                    materia
-                );
-
-
-            if (
-                media === null
-            ) {
-
-                aguardando++;
-
-            } else if (
-                media >= 7
-            ) {
-
-                aprovadas++;
-
-            } else if (
-                media >= 4
-            ) {
-
-                recuperacao++;
-
-            }
-
-        }
-    );
-
-
-    resumo.innerHTML = `
-
-        <div class="resumo-box">
-
-            <span class="resumo-numero">
-                ${lista.length}
-            </span>
-
-            <span class="resumo-label">
-                Matérias
-            </span>
-
-        </div>
-
-
-        <div class="resumo-box">
-
-            <span
-                class="resumo-numero"
-                style="color:var(--success)">
-
-                ${aprovadas}
-
-            </span>
-
-            <span class="resumo-label">
-                Aprovadas
-            </span>
-
-        </div>
-
-
-        <div class="resumo-box">
-
-            <span
-                class="resumo-numero"
-                style="color:var(--warning)">
-
-                ${recuperacao}
-
-            </span>
-
-            <span class="resumo-label">
-                Atenção
-            </span>
-
-        </div>
-
-    `;
-
-
-    if (
-        lista.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    📚
-                </div>
-
-                <div class="empty-text">
-
-                    Nenhuma matéria cadastrada.
-
-                    <br><br>
-
-                    Adicione matérias pelo Planner
-                    ou restaure uma matéria removida.
-
-                </div>
-
-            </div>
-
-        `;
-
-    } else {
-
-        container.innerHTML =
-            lista.map(
-                renderizarMateria
-            ).join('');
-
-    }
-
-
-    renderizarRemovidas();
-
-}
-
-
-/* =====================================================
-   RENDER MATÉRIA
-   ===================================================== */
-
-function renderizarMateria(materia) {
-
-    const mediaAP =
-        calcularMediaAPs(
-            materia
-        );
-
-
-    const status =
-        obterStatus(
-            mediaAP
-        );
-
-
-    const afNecessaria =
-        calcularAFnecessaria(
-            mediaAP
-        );
-
-
-    let etapasHTML =
-        '';
-
-
-    materia.parciais.forEach(
-        (parcial,index) => {
-
-            etapasHTML +=
-                renderizarParcial(
-                    materia,
-                    parcial,
-                    index
-                );
-
-        }
-    );
-
-
-    let afHTML =
-        '';
-
-
-    if (
-        mediaAP !== null &&
-        mediaAP >= 4 &&
-        mediaAP < 7
-    ) {
-
-        const af =
-            numero(
-                materia.af
-            );
-
-
-        if (
-            af !== null
-        ) {
-
-            const mediaFinal =
-                (
-                    mediaAP +
-                    af
-                ) / 2;
-
-
-            const passou =
-                af >= 4 &&
-                mediaFinal >= 5;
-
-
-            afHTML = `
-
-                <div class="info-af">
-
-                    AF registrada:
-                    <b>${af.toFixed(1)}</b>
-
-                    &nbsp; | &nbsp;
-
-                    Média final:
-                    <b>${mediaFinal.toFixed(1)}</b>
-
-                    &nbsp; | &nbsp;
-
-                    ${
-                        passou
-                            ? '✅ APROVADO'
-                            : '❌ REPROVADO'
-                    }
-
-                </div>
-
-            `;
-
-        } else {
-
-            afHTML = `
-
-                <div class="info-af">
-
-                    🎯 Nota mínima na AF:
-
-                    <b>
-                        ${afNecessaria.toFixed(1)}
-                    </b>
-
-                    <br>
-
-                    A AF precisa ser ≥ 4,0
-                    e a média final ≥ 5,0.
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    return `
-
-        <div
-            class="materia-card"
-            data-id="${escapeHTML(materia.id)}"
-        >
-
-            <div class="materia-header">
-
-                <div>
-
-                    <h3 class="materia-title">
-
-                        ${escapeHTML(
-                            materia.nome
-                        )}
-
-                    </h3>
-
-
-                    <div class="materia-id">
-
-                        ${escapeHTML(
-                            materia.id
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    class="btn-delete-materia"
-                    onclick="apagarMateria(
-                        '${escapeHTML(materia.id)}'
-                    )"
-                    title="Apagar matéria">
-
-                    🗑️
-
-                </button>
-
-            </div>
-
-
-            ${etapasHTML}
-
-
-            <button
-                class="btn-add-np"
-                onclick="adicionarNP(
-                    '${escapeHTML(materia.id)}'
-                )">
-
-                + NOVA ETAPA
-
-            </button>
-
-
-            ${
-                mediaAP !== null
-
-                    ? `
-
-                        <div class="media-final-area">
-
-                            <div class="media-final">
-
-                                Média das APs:
-
-                                <span>
-                                    ${mediaAP.toFixed(1)}
-                                </span>
-
-                            </div>
-
-
-                            <span
-                                class="
-                                    status-badge
-                                    ${status.classe}
-                                ">
-
-                                ${status.texto}
-
-                            </span>
-
-
-                            ${afHTML}
-
-                        </div>
-
-                    `
-
-                    : `
-
-                        <div class="media-final-area">
-
-                            <span
-                                class="
-                                    status-badge
-                                    recuperacao
-                                ">
-
-                                AGUARDANDO NOTAS
-
-                            </span>
-
-                        </div>
-
-                    `
-            }
-
-        </div>
-
-    `;
-
-}
-
-
-/* =====================================================
-   RENDER ETAPA
-   ===================================================== */
-
-function renderizarParcial(
-    materia,
-    parcial
-) {
-
-    const calculo =
-        calcularEtapa(
-            parcial
-        );
-
-
-    let notasHTML =
-        '';
-
-
-    parcial.notas.forEach(
-        nota => {
-
-            notasHTML += `
-
-                <div class="nota-row">
-
-                    <input
-                        type="text"
-                        placeholder="Atividade"
-                        value="${escapeHTML(
-                            nota.tipo
-                        )}"
-                        onchange="atualizarNota(
-                            '${escapeHTML(materia.id)}',
-                            '${escapeHTML(parcial.id)}',
-                            '${escapeHTML(nota.id)}',
-                            'tipo',
-                            this.value
-                        )"
-                    >
-
-
-                    <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
-                        placeholder="Peso"
-                        value="${escapeHTML(
-                            nota.peso
-                        )}"
-                        onchange="atualizarNota(
-                            '${escapeHTML(materia.id)}',
-                            '${escapeHTML(parcial.id)}',
-                            '${escapeHTML(nota.id)}',
-                            'peso',
-                            this.value
-                        )"
-                    >
-
-
-                    <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
-                        placeholder="Nota"
-                        value="${escapeHTML(
-                            nota.valor
-                        )}"
-                        onchange="atualizarNota(
-                            '${escapeHTML(materia.id)}',
-                            '${escapeHTML(parcial.id)}',
-                            '${escapeHTML(nota.id)}',
-                            'valor',
-                            this.value
-                        )"
-                    >
-
-
-                    <button
-                        class="btn-del-small"
-                        onclick="removerNota(
-                            '${escapeHTML(materia.id)}',
-                            '${escapeHTML(parcial.id)}',
-                            '${escapeHTML(nota.id)}'
-                        )">
-
-                        ×
-
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-    );
-
-
-    let resultadoHTML =
-        '';
-
-
-    if (
-        calculo.faltantes.length > 0 &&
-        calculo.pesoTotal > 0
-    ) {
-
-        const meta =
-            calculo.meta;
-
-
-        if (
-            meta <= 10
-        ) {
-
-            resultadoHTML = `
-
-                <div class="previsao-tag">
-
-                    🎯 Para fechar esta etapa
-                    com <b>7,0</b>:
-
-                    média de
-
-                    <b>
-                        ${Math.max(
-                            0,
-                            meta
-                        ).toFixed(1)}
-                    </b>
-
-                    nas próximas notas.
-
-                </div>
-
-            `;
-
-        } else {
-
-            resultadoHTML = `
-
-                <div
-                    class="
-                        previsao-tag
-                        previsao-impossivel
-                    ">
-
-                    ⚠️ Mesmo tirando 10,0
-                    nas notas restantes,
-                    7,0 não será atingido.
-
-                </div>
-
-            `;
-
-        }
-
-    } else if (
-        calculo.mediaFinal !== null
-    ) {
-
-        let classe =
-            'media-boa';
-
-
-        if (
-            calculo.mediaFinal < 4
-        ) {
-
-            classe =
-                'media-ruim';
-
-        } else if (
-            calculo.mediaFinal < 7
-        ) {
-
-            classe =
-                'media-baixa';
-
-        }
-
-
-        resultadoHTML = `
-
-            <div
-                class="
-                    media-etapa
-                    ${classe}
-                ">
-
-                Média da etapa:
-
-                ${calculo.mediaFinal.toFixed(1)}
-
-            </div>
-
-        `;
-
-    }
-
-
-    return `
-
-        <div class="np-box">
-
-            <div class="np-header">
-
-                <input
-                    class="np-title"
-                    type="text"
-                    value="${escapeHTML(
-                        parcial.nome
-                    )}"
-                    onchange="atualizarParcialNome(
-                        '${escapeHTML(materia.id)}',
-                        '${escapeHTML(parcial.id)}',
-                        this.value
-                    )"
-                >
-
-
-                <button
-                    class="btn-del-small"
-                    onclick="removerNP(
-                        '${escapeHTML(materia.id)}',
-                        '${escapeHTML(parcial.id)}'
-                    )">
-
-                    ✕
-
-                </button>
-
-            </div>
-
-
-            ${
-                notasHTML ||
-
-                `
-
-                    <div
-                        class="empty-text"
-                        style="
-                            color:#666;
-                            text-align:center;
-                            padding:10px;
-                        ">
-
-                        Nenhuma avaliação cadastrada.
-
-                    </div>
-
-                `
-            }
-
-
-            ${resultadoHTML}
-
-
-            <button
-                class="btn-add-nota"
-                onclick="adicionarNota(
-                    '${escapeHTML(materia.id)}',
-                    '${escapeHTML(parcial.id)}'
-                )">
-
-                + ADICIONAR NOTA
-
-            </button>
-
-        </div>
-
-    `;
-
-}
-
-
-/* =====================================================
-   ADICIONAR NP
-   ===================================================== */
-
-function adicionarNP(materiaId) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    materia.parciais.push({
-
-        id:
-            gerarId('np'),
-
-        nome:
-            `NP${materia.parciais.length + 1}`,
-
-        notas:
-            [],
-
-        af:
-            ''
-
-    });
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   REMOVER NP
-   ===================================================== */
-
-function removerNP(
-    materiaId,
-    parcialId
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const parcial =
-        materia.parciais.find(
-            p =>
-                p.id === parcialId
-        );
-
-
-    if (!parcial) {
-
-        return;
-
-    }
-
-
-    if (
-        !confirm(
-            `Remover a etapa "${parcial.nome}"?`
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    materia.parciais =
-        materia.parciais.filter(
-            p =>
-                p.id !== parcialId
-        );
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   NOME DA NP
-   ===================================================== */
-
-function atualizarParcialNome(
-    materiaId,
-    parcialId,
-    valor
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const parcial =
-        materia.parciais.find(
-            p =>
-                p.id === parcialId
-        );
-
-
-    if (!parcial) {
-
-        return;
-
-    }
-
-
-    parcial.nome =
-        valor.trim() ||
-        'Nova Etapa';
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   ADICIONAR NOTA
-   ===================================================== */
-
-function adicionarNota(
-    materiaId,
-    parcialId
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const parcial =
-        materia.parciais.find(
-            p =>
-                p.id === parcialId
-        );
-
-
-    if (!parcial) {
-
-        return;
-
-    }
-
-
-    parcial.notas.push({
-
-        id:
-            gerarId('nota'),
-
-        tipo:
-            '',
-
-        peso:
-            1,
-
-        valor:
-            ''
-
-    });
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   REMOVER NOTA
-   ===================================================== */
-
-function removerNota(
-    materiaId,
-    parcialId,
-    notaId
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const parcial =
-        materia.parciais.find(
-            p =>
-                p.id === parcialId
-        );
-
-
-    if (!parcial) {
-
-        return;
-
-    }
-
-
-    parcial.notas =
-        parcial.notas.filter(
-            n =>
-                n.id !== notaId
-        );
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   ATUALIZAR NOTA
-   ===================================================== */
-
-function atualizarNota(
-    materiaId,
-    parcialId,
-    notaId,
-    campo,
-    valor
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const parcial =
-        materia.parciais.find(
-            p =>
-                p.id === parcialId
-        );
-
-
-    if (!parcial) {
-
-        return;
-
-    }
-
-
-    const nota =
-        parcial.notas.find(
-            n =>
-                n.id === notaId
-        );
-
-
-    if (!nota) {
-
-        return;
-
-    }
-
-
-    if (
-        campo === 'valor'
-    ) {
-
-        nota.valor =
-            valor === ''
-                ? ''
-                : limitarNota(valor);
-
-    } else if (
-        campo === 'peso'
-    ) {
-
-        const peso =
-            numero(valor);
-
-
-        nota.peso =
-            peso === null
-                ? 0
-                : Math.max(
-                    0,
-                    peso
-                );
-
-    } else {
-
-        nota[campo] =
-            String(valor);
-
-    }
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   APAGAR MATÉRIA
-   ===================================================== */
-
-function apagarMateria(
-    materiaId
-) {
-
-    const materia =
-        dados.materias[
-            materiaId
-        ];
-
-
-    if (!materia) {
-
-        return;
-
-    }
-
-
-    const confirmou =
-        confirm(
-            `APAGAR COMPLETAMENTE?\n\n` +
-            `${materia.nome}\n\n` +
-            `Todas as NP, notas e dados dessa matéria ` +
-            `serão removidos.\n\n` +
-            `Ela poderá ser restaurada depois.`
-        );
-
-
-    if (!confirmou) {
-
-        return;
-
-    }
-
-
-    delete dados.materias[
-        materiaId
-    ];
-
-
-    dados.removidas[
-        materiaId
-    ] = {
-
-        id:
-            materiaId,
-
-        nome:
-            materia.nome
-
-    };
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   RESTAURAR
-   ===================================================== */
-
-function restaurarMateria(
-    materiaId
-) {
-
-    const removida =
-        dados.removidas[
-            materiaId
-        ];
-
-
-    if (!removida) {
-
-        return;
-
-    }
-
-
-    delete dados.removidas[
-        materiaId
-    ];
-
-
-    dados.materias[
-        materiaId
-    ] = {
-
-        id:
-            materiaId,
-
-        nome:
-            removida.nome,
-
-        parciais:
-            []
-
-    };
-
-
-    salvar();
-
-    renderizar();
-
-}
-
-
-/* =====================================================
-   REMOVIDAS
-   ===================================================== */
-
-function renderizarRemovidas() {
-
-    const container =
-        document.getElementById(
-            'removed-container'
-        );
-
-
-    const lista =
-        Object.values(
-            dados.removidas
-        );
-
-
-    if (
-        lista.length === 0
-    ) {
-
-        container.innerHTML =
-            '';
-
-        return;
-
-    }
-
-
-    container.innerHTML = `
-
-        <div class="removed-area">
-
-            <div class="removed-title">
-
-                🗑️ Matérias removidas
-
-            </div>
-
-
-            ${lista.map(
-                materia => `
-
-                    <div class="removed-item">
-
-                        <span>
-                            ${escapeHTML(
-                                materia.nome
-                            )}
-                        </span>
-
-
-                        <button
-                            class="btn-restore"
-                            onclick="restaurarMateria(
-                                '${escapeHTML(
-                                    materia.id
-                                )}'
-                            )">
-
-                            RESTAURAR
-
-                        </button>
-
-                    </div>
-
-                `
-            ).join('')}
-
-        </div>
-
-    `;
-
-}
-
-
-/* =====================================================
-   SEMESTRE
-   ===================================================== */
-
-document
-    .getElementById(
-        'input-semestre'
-    )
-    .addEventListener(
-        'change',
-        function() {
-
-            dados.semestre =
-                this.value.trim() ||
-                '2026.1';
-
-
-            salvar();
-
-        }
-    );
-
-
-/* =====================================================
-   RELATÓRIO HTML
-   ===================================================== */
-
-function baixarHistorico() {
-
-    const semestre =
-        escapeHTML(
-            dados.semestre
-        );
-
-
-    const materias =
-        Object.values(
-            dados.materias
-        );
-
-
-    let total =
-        materias.length;
-
-    let aprovadas =
-        0;
-
-    let atencao =
-        0;
-
-    let aguardando =
-        0;
-
-
-    materias.forEach(
-        materia => {
-
-            const media =
-                calcularMediaAPs(
-                    materia
-                );
-
-
-            if (
-                media === null
-            ) {
-
-                aguardando++;
-
-            } else if (
-                media >= 7
-            ) {
-
-                aprovadas++;
-
-            } else {
-
-                atencao++;
-
-            }
-
-        }
-    );
-
-
-    let materiasHTML =
-        '';
-
-
-    if (
-        materias.length === 0
-    ) {
-
-        materiasHTML = `
-
-            <div class="empty">
-
-                📚 Nenhuma matéria cadastrada.
-
-            </div>
-
-        `;
-
-    } else {
-
-        materiasHTML =
-            materias.map(
-                gerarMateriaRelatorio
-            ).join('');
-
-    }
-
-
-    const relatorio = `
-
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-
-<title>
-    Histórico de Notas - UFC
-</title>
-
-
-<style>
-
-* {
-
-    box-sizing:
-        border-box;
-
-}
-
-
-body {
-
-    margin:
-        0;
-
-    padding:
-        20px;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background:
-        #0d1117;
-
-    color:
-        #eee;
-
-}
-
-
-.container {
-
-    width:
-        100%;
-
-    max-width:
-        850px;
-
-    margin:
-        auto;
-
-}
-
-
-.header {
-
-    text-align:
-        center;
-
-    padding:
-        30px 15px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #151a22,
-            #11161d
-        );
-
-    border:
-        1px solid #292929;
-
-    border-radius:
-        20px;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-.header h1 {
-
-    margin:
-        0 0 8px;
-
-    color:
-        #00e5ff;
-
-    font-size:
-        clamp(
-            1.4rem,
-            5vw,
-            2rem
-        );
-
-}
-
-
-.header p {
-
-    margin:
-        5px;
-
-    color:
-        #888;
-
-}
-
-
-.semestre {
-
-    display:
-        inline-block;
-
-    margin-top:
-        10px;
-
-    padding:
-        8px 15px;
-
-    border:
-        1px solid #7c4dff;
-
-    border-radius:
-        10px;
-
-    color:
-        #7c4dff;
-
-    font-weight:
-        bold;
-
-}
-
-
-.resumo {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(
-            4,
-            1fr
-        );
-
-    gap:
-        10px;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-.box {
-
-    background:
-        #151a22;
-
-    border:
-        1px solid #292929;
-
-    border-radius:
-        15px;
-
-    padding:
-        15px 8px;
-
-    text-align:
-        center;
-
-}
-
-
-.box strong {
-
-    display:
-        block;
-
-    font-size:
-        1.5rem;
-
-    color:
-        #00e5ff;
-
-}
-
-
-.box span {
-
-    color:
-        #777;
-
-    font-size:
-        .7rem;
-
-    text-transform:
-        uppercase;
-
-    font-weight:
-        bold;
-
-}
-
-
-.materia {
-
-    background:
-        #151a22;
-
-    border:
-        1px solid #292929;
-
-    border-radius:
-        18px;
-
-    padding:
-        20px;
-
-    margin-bottom:
-        18px;
-
-    page-break-inside:
-        avoid;
-
-}
-
-
-.materia h2 {
-
-    margin:
-        0;
-
-    color:
-        #00e5ff;
-
-    font-size:
-        1.2rem;
-
-    overflow-wrap:
-        anywhere;
-
-}
-
-
-.materia-id {
-
-    color:
-        #555;
-
-    font-size:
-        .65rem;
-
-    margin-top:
-        4px;
-
-}
-
-
-.etapa {
-
-    margin-top:
-        15px;
-
-    background:
-        #10151c;
-
-    border:
-        1px solid #292929;
-
-    border-left:
-        4px solid #7c4dff;
-
-    border-radius:
-        12px;
-
-    padding:
-        14px;
-
-}
-
-
-.etapa h3 {
-
-    margin:
-        0 0 10px;
-
-    color:
-        #7c4dff;
-
-    font-size:
-        1rem;
-
-}
-
-
-.tabela {
-
-    width:
-        100%;
-
-    border-collapse:
-        collapse;
-
-}
-
-
-.tabela th,
-.tabela td {
-
-    padding:
-        8px;
-
-    border-bottom:
-        1px solid #292929;
-
-    text-align:
-        left;
-
-    font-size:
-        .8rem;
-
-}
-
-
-.tabela th {
-
-    color:
-        #777;
-
-    font-size:
-        .65rem;
-
-    text-transform:
-        uppercase;
-
-}
-
-
-.media-etapa {
-
-    text-align:
-        right;
-
-    margin-top:
-        10px;
-
-    font-weight:
-        bold;
-
-}
-
-
-.media {
-
-    margin-top:
-        18px;
-
-    padding-top:
-        15px;
-
-    border-top:
-        1px dashed #444;
-
-    text-align:
-        center;
-
-}
-
-
-.media-numero {
-
-    color:
-        #00e5ff;
-
-    font-size:
-        1.8rem;
-
-    font-weight:
-        900;
-
-}
-
-
-.status {
-
-    display:
-        inline-block;
-
-    margin-top:
-        10px;
-
-    padding:
-        9px 15px;
-
-    border-radius:
-        10px;
-
-    font-size:
-        .7rem;
-
-    font-weight:
-        900;
-
-}
-
-
-.aprovado {
-
-    background:
-        #00c853;
-
-    color:
-        #000;
-
-}
-
-
-.atencao {
-
-    background:
-        #ffab00;
-
-    color:
-        #000;
-
-}
-
-
-.reprovado {
-
-    background:
-        #ff5252;
-
-    color:
-        #fff;
-
-}
-
-
-.aguardando {
-
-    background:
-        #7c4dff;
-
-    color:
-        #fff;
-
-}
-
-
-.af {
-
-    margin-top:
-        12px;
-
-    padding:
-        10px;
-
-    border-radius:
-        10px;
-
-    background:
-        rgba(
-            255,
-            171,
-            0,
-            .08
-        );
-
-    border:
-        1px solid
-        rgba(
-            255,
-            171,
-            0,
-            .25
-        );
-
-    color:
-        #ffab00;
-
-    text-align:
-        center;
-
-    font-size:
-        .78rem;
-
-    font-weight:
-        bold;
-
-}
-
-
-.footer {
-
-    text-align:
-        center;
-
-    color:
-        #555;
-
-    font-size:
-        .7rem;
-
-    padding:
-        20px;
-
-}
-
-
-@media(max-width:600px) {
-
-    body {
-
-        padding:
-            8px;
-
-    }
-
-
-    .resumo {
-
-        grid-template-columns:
-            repeat(
-                2,
-                1fr
-            );
-
-    }
-
-
-    .materia {
-
-        padding:
-            14px;
-
-    }
-
-
-    .tabela th,
-    .tabela td {
-
-        padding:
-            7px 4px;
-
-        font-size:
-            .7rem;
-
-    }
-
-}
-
-
-@media print {
-
-    body {
-
-        background:
-            white;
-
-        color:
-            #111;
+        padding: 0;
 
     }
 
 
     .header,
-    .materia,
-    .box {
+    .card,
+    .day-card,
+    .notes-card,
+    .stat {
 
-        background:
-            white;
+        box-shadow: none;
 
-        color:
-            #111;
+        background: white;
 
-        border:
-            1px solid #ccc;
+        color: black;
 
-    }
-
-
-    .materia h2 {
-
-        color:
-            #111;
+        border-color: #ccc;
 
     }
 
 
-    .header h1 {
+    .logo,
+    .day-name,
+    .notes-card h3 {
 
-        color:
-            #111;
+        color: #111;
+
+    }
+
+
+    .section {
+
+        color: #111;
+
+        border-color: #111;
+
+    }
+
+
+    .task,
+    .class-row {
+
+        border-color: #ddd;
 
     }
 
@@ -4305,121 +3047,184 @@ body {
 
 </head>
 
-
 <body>
 
 <div class="container">
 
 
-<header class="header">
+    <!-- CABEÇALHO -->
 
-    <h1>
-        📊 HISTÓRICO DE NOTAS
-    </h1>
+    <header class="header">
+
+        <h1 class="logo">
+            UFC
+        </h1>
+
+        <div class="subtitle">
+            UFC Planner
+        </div>
+
+        <div class="generated">
+            Relatório gerado em ${escapeHTML(
+                dataHora
+            )}
+        </div>
+
+    </header>
 
 
-    <p>
-        Universidade Federal do Ceará
-    </p>
+    <!-- RESUMO -->
+
+    <div class="section">
+        📊 Resumo
+    </div>
+
+    <div class="summary">
+
+        <div class="stat">
+            <span class="stat-number">
+                ${totalMaterias}
+            </span>
+
+            <span class="stat-label">
+                Matérias
+            </span>
+        </div>
 
 
-    <div class="semestre">
+        <div class="stat">
+            <span class="stat-number">
+                ${totalAulas}
+            </span>
 
-        Semestre ${semestre}
+            <span class="stat-label">
+                Aulas
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${totalTarefas}
+            </span>
+
+            <span class="stat-label">
+                Tarefas
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${pendentes}
+            </span>
+
+            <span class="stat-label">
+                Pendentes
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${concluidas}
+            </span>
+
+            <span class="stat-label">
+                Concluídas
+            </span>
+        </div>
 
     </div>
 
-</header>
 
+    <!-- LEMBRETES -->
 
-<div class="resumo">
+    <div class="section">
+        💡 Lembretes
+    </div>
 
+    <div class="card">
 
-    <div class="box">
-
-        <strong>
-            ${total}
-        </strong>
-
-        <span>
-            Matérias
-        </span>
+        <div class="reminder">
+${escapeHTML(lembrete)}
+        </div>
 
     </div>
 
 
-    <div class="box">
+    <!-- PENDENTES -->
 
-        <strong style="color:#00c853">
+    <div class="section">
+        ⏳ Tarefas Pendentes
+    </div>
 
-            ${aprovadas}
+    <div class="card">
 
-        </strong>
-
-        <span>
-            Aprovadas
-        </span>
+        ${tarefasPendentesHTML}
 
     </div>
 
 
-    <div class="box">
+    <!-- CONCLUÍDAS -->
 
-        <strong style="color:#ffab00">
+    <div class="section">
+        ✅ Tarefas Concluídas
+    </div>
 
-            ${atencao}
+    <div class="card">
 
-        </strong>
-
-        <span>
-            Atenção
-        </span>
+        ${tarefasConcluidasHTML}
 
     </div>
 
 
-    <div class="box">
+    <!-- CRONOGRAMA -->
 
-        <strong style="color:#7c4dff">
-
-            ${aguardando}
-
-        </strong>
-
-        <span>
-            Aguardando
-        </span>
-
+    <div class="section">
+        📅 Cronograma Semanal
     </div>
 
-
-</div>
-
-
-${materiasHTML}
+    ${diasHTML}
 
 
-<footer class="footer">
+    <!-- ANOTAÇÕES -->
 
-    Relatório gerado pelo Histórico de Notas UFC
+    <div class="section">
+        📚 Anotações das Matérias
+    </div>
 
-</footer>
+    ${anotacoesHTML}
+
+
+    <!-- RODAPÉ -->
+
+    <footer class="footer">
+
+        UFC Planner<br>
+
+        Relatório gerado automaticamente<br>
+
+        📚 Boa sorte nos estudos!
+
+    </footer>
 
 
 </div>
 
 </body>
 
-</html>
+</html>`;
 
-`;
 
+    /* =====================================================
+       DOWNLOAD
+       ===================================================== */
 
     const blob =
         new Blob(
             [
-                '\ufeff',
-                relatorio
+                '\ufeff' + html
             ],
             {
                 type:
@@ -4429,400 +3234,482 @@ ${materiasHTML}
 
 
     const url =
-        URL.createObjectURL(
-            blob
-        );
+        URL.createObjectURL(blob);
 
 
     const link =
-        document.createElement(
-            'a'
-        );
+        document.createElement('a');
 
-
-    link.href =
-        url;
-
+    link.href = url;
 
     link.download =
-        `Notas_UFC_${
-            dados.semestre
-                .replace(/\./g,'_')
-                .replace(/\s+/g,'_')
-        }.html`;
+        `Relatorio_UFC_${obterDataArquivo()}.html`;
 
 
-    document.body.appendChild(
-        link
-    );
-
+    document.body.appendChild(link);
 
     link.click();
 
-
     link.remove();
 
+    URL.revokeObjectURL(url);
 
-    URL.revokeObjectURL(
-        url
+
+    mostrarStatus(
+        '🌐 Relatório HTML exportado'
     );
+}
 
+/* =========================================================
+   CONFIGURAÇÕES
+   ========================================================= */
+
+function toggleBackup() {
+
+    const painel =
+        document.getElementById(
+            'backup-panel'
+        );
+
+    painel.style.display =
+        painel.style.display === 'block'
+            ? 'none'
+            : 'block';
 }
 
 
-/* =====================================================
-   GERAR MATÉRIA DO RELATÓRIO
-   ===================================================== */
+function toggleConfig() {
 
-function gerarMateriaRelatorio(
-    materia
-) {
-
-    const mediaAP =
-        calcularMediaAPs(
-            materia
+    const painel =
+        document.getElementById(
+            'config-panel'
         );
 
 
-    let statusClasse =
-        'aguardando';
+    const abrir =
+        painel.style.display !== 'block';
 
 
-    let statusTexto =
-        'AGUARDANDO NOTAS';
+    painel.style.display =
+        abrir
+            ? 'block'
+            : 'none';
 
 
-    if (
-        mediaAP !== null
-    ) {
-
-        if (
-            mediaAP >= 7
-        ) {
-
-            statusClasse =
-                'aprovado';
-
-            statusTexto =
-                'APROVADO POR MÉDIA 🏆';
-
-        } else if (
-            mediaAP >= 4
-        ) {
-
-            statusClasse =
-                'atencao';
-
-            statusTexto =
-                'POSSÍVEL AVALIAÇÃO FINAL';
-
-        } else {
-
-            statusClasse =
-                'reprovado';
-
-            statusTexto =
-                'ABAIXO DE 4,0';
-
-        }
-
+    if (abrir) {
+        abrirEditor();
     }
+}
 
 
-    let etapasHTML =
-        '';
+function abrirEditor() {
+
+    const diasEditor =
+        document.getElementById(
+            'dias-editor'
+        );
+
+    const materiasEditor =
+        document.getElementById(
+            'mats-editor'
+        );
 
 
-    materia.parciais.forEach(
-        parcial => {
-
-            const calculo =
-                calcularEtapa(
-                    parcial
-                );
+    diasEditor.innerHTML = '';
 
 
-            let linhas =
-                '';
+    /* =====================================================
+       DIAS
+       ===================================================== */
+
+    dados.dias.forEach(
+        (dia, diaIndex) => {
+
+            let diaHTML = `
+                <div class="config-box">
+
+                    <h4>
+                        ${escapeHTML(dia.nome)}
+                    </h4>
+
+                    <div class="config-row">
+                        🚌
+
+                        <input
+                            type="text"
+                            class="in-bus"
+                            value="${escapeAttribute(dia.bus)}"
+                            placeholder="Horário do ônibus"
+                            oninput="atualizarBus(
+                                ${diaIndex},
+                                this.value
+                            )"
+                        >
+                    </div>
+            `;
 
 
-            parcial.notas.forEach(
-                nota => {
+            dia.aulas.forEach(
+                (aula, aulaIndex) => {
 
-                    const valor =
-                        nota.valor === ''
-                            ? 'Pendente'
-                            : numero(nota.valor) !== null
-                                ? numero(nota.valor).toFixed(1)
-                                : nota.valor;
+                    diaHTML += `
+                        <div class="config-row">
 
+                            <input
+                                type="text"
+                                class="in-time"
+                                placeholder="Hora"
+                                value="${escapeAttribute(aula[0])}"
+                                oninput="atualizarAula(
+                                    ${diaIndex},
+                                    ${aulaIndex},
+                                    0,
+                                    this.value
+                                )"
+                            >
 
-                    linhas += `
+                            <input
+                                type="text"
+                                class="in-aula"
+                                placeholder="Aula"
+                                value="${escapeAttribute(aula[1])}"
+                                oninput="atualizarAula(
+                                    ${diaIndex},
+                                    ${aulaIndex},
+                                    1,
+                                    this.value
+                                )"
+                            >
 
-                        <tr>
+                            <input
+                                type="text"
+                                class="in-sala"
+                                placeholder="Sala"
+                                value="${escapeAttribute(aula[2])}"
+                                oninput="atualizarAula(
+                                    ${diaIndex},
+                                    ${aulaIndex},
+                                    2,
+                                    this.value
+                                )"
+                            >
 
-                            <td>
-                                ${escapeHTML(
-                                    nota.tipo ||
-                                    'Avaliação'
-                                )}
-                            </td>
+                            <button
+                                class="btn-del"
+                                onclick="removerAula(
+                                    ${diaIndex},
+                                    ${aulaIndex}
+                                )">
+                                ✕
+                            </button>
 
-                            <td>
-                                ${escapeHTML(
-                                    nota.peso
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHTML(
-                                    valor
-                                )}
-                            </td>
-
-                        </tr>
-
+                        </div>
                     `;
-
                 }
             );
 
 
-            if (
-                !linhas
-            ) {
-
-                linhas = `
-
-                    <tr>
-
-                        <td colspan="3"
-                            style="
-                                text-align:center;
-                                color:#666;
-                            ">
-
-                            Nenhuma avaliação cadastrada.
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-
-            let resultado =
-                '';
-
-
-            if (
-                calculo.mediaFinal !== null
-            ) {
-
-                resultado = `
-
-                    <div class="media-etapa">
-
-                        Média da etapa:
-
-                        <strong>
-                            ${calculo.mediaFinal.toFixed(1)}
-                        </strong>
-
-                    </div>
-
-                `;
-
-            } else if (
-                calculo.meta !== null
-            ) {
-
-                resultado = `
-
-                    <div class="media-etapa">
-
-                        🎯 Média necessária para 7,0:
-
-                        <strong>
-                            ${calculo.meta.toFixed(1)}
-                        </strong>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            etapasHTML += `
-
-                <div class="etapa">
-
-                    <h3>
-
-                        ${escapeHTML(
-                            parcial.nome
-                        )}
-
-                    </h3>
-
-
-                    <table class="tabela">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Avaliação
-                                </th>
-
-                                <th>
-                                    Peso
-                                </th>
-
-                                <th>
-                                    Nota
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            ${linhas}
-
-                        </tbody>
-
-                    </table>
-
-
-                    ${resultado}
+            diaHTML += `
+                    <button
+                        onclick="adicionarAula(
+                            ${diaIndex}
+                        )"
+                        style="
+                            width:100%;
+                            font-size:0.75rem;
+                            box-shadow:none;
+                            margin-top:5px;
+                        ">
+                        + Adicionar Aula
+                    </button>
 
                 </div>
-
             `;
+
+
+            diasEditor.innerHTML += diaHTML;
+        }
+    );
+
+
+    /* =====================================================
+       MATÉRIAS
+       ===================================================== */
+
+    materiasEditor.innerHTML = '';
+
+
+    dados.materias.forEach(
+        (materia, index) => {
+
+            materiasEditor.innerHTML += `
+                <div class="config-row">
+
+                    <input
+                        type="text"
+                        value="${escapeAttribute(materia.nome)}"
+                        oninput="atualizarMateria(
+                            ${index},
+                            this.value
+                        )"
+                        style="flex:1"
+                        placeholder="Nome da matéria"
+                    >
+
+                    <button
+                        class="btn-del"
+                        onclick="removerMateria(
+                            ${index}
+                        )">
+                        ✕
+                    </button>
+
+                </div>
+            `;
+        }
+    );
+}
+
+
+/* =========================================================
+   EDITOR - DIAS
+   ========================================================= */
+
+function atualizarBus(
+    diaIndex,
+    valor
+) {
+
+    if (
+        !dados.dias[diaIndex]
+    ) return;
+
+    dados.dias[diaIndex].bus =
+        valor;
+}
+
+
+function atualizarAula(
+    diaIndex,
+    aulaIndex,
+    campo,
+    valor
+) {
+
+    if (
+        !dados.dias[diaIndex] ||
+        !dados.dias[diaIndex].aulas[aulaIndex]
+    ) {
+        return;
+    }
+
+    dados.dias[diaIndex]
+        .aulas[aulaIndex][campo] =
+        valor;
+}
+
+
+function adicionarAula(diaIndex) {
+
+    if (!dados.dias[diaIndex]) {
+        return;
+    }
+
+    dados.dias[diaIndex]
+        .aulas.push([
+            '',
+            '',
+            ''
+        ]);
+
+    abrirEditor();
+}
+
+
+function removerAula(
+    diaIndex,
+    aulaIndex
+) {
+
+    if (
+        !dados.dias[diaIndex]
+    ) {
+        return;
+    }
+
+    dados.dias[diaIndex]
+        .aulas.splice(
+            aulaIndex,
+            1
+        );
+
+    abrirEditor();
+}
+
+
+/* =========================================================
+   EDITOR - MATÉRIAS
+   ========================================================= */
+
+function atualizarMateria(
+    index,
+    valor
+) {
+
+    if (
+        !dados.materias[index]
+    ) {
+        return;
+    }
+
+    dados.materias[index].nome =
+        valor;
+}
+
+
+function removerMateria(index) {
+
+    const materia =
+        dados.materias[index];
+
+    if (!materia) return;
+
+
+    if (
+        !confirm(
+            `Remover a matéria "${materia.nome}"?`
+        )
+    ) {
+        return;
+    }
+
+
+    dados.materias.splice(
+        index,
+        1
+    );
+
+
+    /*
+     * A anotação continua armazenada.
+     *
+     * Isso permite recuperar posteriormente
+     * caso o usuário adicione novamente uma
+     * matéria com outro ID? Não.
+     *
+     * Por segurança, removemos também a anotação
+     * associada a esta matéria.
+     */
+
+    localStorage.removeItem(
+        `not-${materia.id}`
+    );
+
+
+    abrirEditor();
+}
+
+
+function addItem() {
+
+    dados.materias.push({
+
+        id: gerarId('mat'),
+
+        nome: 'Nova Matéria'
+
+    });
+
+
+    abrirEditor();
+}
+
+
+function salvarEFechar() {
+
+    /*
+     * Remove matérias vazias.
+     */
+
+    dados.materias =
+        dados.materias.filter(
+            materia =>
+                materia.nome.trim() !== ''
+        );
+
+
+    /*
+     * Remove aulas completamente vazias.
+     */
+
+    dados.dias.forEach(
+        dia => {
+
+            dia.aulas =
+                dia.aulas.filter(
+                    aula =>
+                        aula.some(
+                            valor =>
+                                String(valor).trim() !== ''
+                        )
+                );
 
         }
     );
 
 
-    let afHTML =
-        '';
+    salvarDados();
+
+    desenharTudo();
+
+    document.getElementById(
+        'config-panel'
+    ).style.display = 'none';
 
 
-    if (
-        mediaAP !== null &&
-        mediaAP >= 4 &&
-        mediaAP < 7
-    ) {
-
-        const afNecessaria =
-            calcularAFnecessaria(
-                mediaAP
-            );
-
-
-        afHTML = `
-
-            <div class="af">
-
-                🎯 Nota mínima necessária na AF:
-
-                <strong>
-                    ${afNecessaria.toFixed(1)}
-                </strong>
-
-            </div>
-
-        `;
-
-    }
-
-
-    return `
-
-        <section class="materia">
-
-            <h2>
-
-                📚 ${escapeHTML(
-                    materia.nome
-                )}
-
-            </h2>
-
-
-            <div class="materia-id">
-
-                ${escapeHTML(
-                    materia.id
-                )}
-
-            </div>
-
-
-            ${etapasHTML}
-
-
-            <div class="media">
-
-                <div>
-                    Média das APs
-                </div>
-
-
-                <div class="media-numero">
-
-                    ${
-                        mediaAP === null
-                            ? '—'
-                            : mediaAP.toFixed(1)
-                    }
-
-                </div>
-
-
-                <div>
-
-                    <span
-                        class="
-                            status
-                            ${statusClasse}
-                        ">
-
-                        ${statusTexto}
-
-                    </span>
-
-                </div>
-
-
-                ${afHTML}
-
-            </div>
-
-        </section>
-
-    `;
-
+    mostrarStatus(
+        '✅ Configurações salvas'
+    );
 }
 
 
-/* =====================================================
+/* =========================================================
+   UTILITÁRIOS DE ARQUIVO
+   ========================================================= */
+
+function obterDataArquivo() {
+
+    const agora =
+        new Date();
+
+    return [
+        agora.getFullYear(),
+        String(
+            agora.getMonth() + 1
+        ).padStart(2, '0'),
+        String(
+            agora.getDate()
+        ).padStart(2, '0')
+    ].join('-');
+}
+
+
+/* =========================================================
    INICIALIZAÇÃO
-   ===================================================== */
+   ========================================================= */
 
-sincronizar();
+let dados = carregarDados();
 
-renderizar();
+window.addEventListener(
+    'DOMContentLoaded',
+    () => {
 
+        desenharTudo();
+
+    }
+);
 </script>
 
 </body>
-
 </html>
+
