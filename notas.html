@@ -1,275 +1,3201 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UFC Notas - Ultimate v7.4</title>
-    <style>
-        :root {
-            --bg: #0b0e14;
-            --card: #151921;
-            --primary: #7c4dff;
-            --secondary: #00e5ff;
-            --accent: #ff4081;
-            --text: #ffffff;
-            --success: #00e676;
-            --danger: #ff5252;
-            --warning: #ffab00;
-        }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<meta charset="UTF-8">
 
-        .container { width: 100%; max-width: 600px; }
-        h1 { color: var(--secondary); text-align: center; margin-bottom: 20px; font-size: 1.8rem; letter-spacing: 3px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        .top-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-bottom: 25px; }
+<meta
+    name="theme-color"
+    content="#0d1117"
+>
 
-        /* Efeito 3D Neon */
-        button {
-            background: #1c222d;
-            color: #eee;
-            border: 1px solid #333;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.1s;
-            box-shadow: 0 4px 0 #000;
-            text-transform: uppercase;
-        }
-        button:active { transform: translateY(3px); box-shadow: 0 1px 0 #000; }
+<title>Histórico de Notas - UFC</title>
 
-        .btn-back { border-color: var(--primary); color: var(--primary); box-shadow: 0 4px 0 #4a148c; }
-        .btn-download { border-color: var(--success); color: var(--success); box-shadow: 0 4px 0 #007a3d; }
-        .btn-add-np { background: var(--primary); color: #fff; border: none; margin-top: 15px; width: 100%; border-radius: 12px; box-shadow: 0 4px 0 #4a148c; }
+<style>
 
-        .materia-card {
-            background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 30px;
-            border: 1px solid #2a2a2a; width: 100%; box-sizing: border-box;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
-        .materia-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #2a2a2a; padding-bottom: 12px; margin-bottom: 15px;
-        }
-        .materia-title { color: var(--secondary); font-size: 1.4rem; font-weight: 900; margin: 0; text-shadow: 0 0 5px rgba(0, 229, 255, 0.2); }
+:root {
+    --bg: #0d1117;
+    --card: #151a22;
+    --card-2: #1a1f29;
+    --text: #eee;
 
-        .np-box {
-            background: rgba(0,0,0,0.2); border-radius: 15px; padding: 15px; margin-bottom: 15px;
-            border: 1px solid #333; border-left: 6px solid var(--primary);
-        }
-        .np-header { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--primary); font-weight: 900; font-size: 1rem; }
+    --primary: #7c4dff;
+    --secondary: #00e5ff;
 
-        .nota-row { display: grid; grid-template-columns: 1.5fr 0.7fr 0.9fr 35px; gap: 8px; margin-bottom: 10px; align-items: center; }
-        input {
-            background: #000; color: #fff; border: 1px solid #444; padding: 10px;
-            border-radius: 10px; font-size: 0.9rem; width: 100%; box-sizing: border-box; font-weight: 600;
-        }
-        input:focus { border-color: var(--secondary); outline: none; }
+    --success: #00c853;
+    --warning: #ffab00;
+    --danger: #ff5252;
 
-        .previsao-tag {
-            background: rgba(124, 77, 255, 0.1); color: var(--primary); border: 1px dashed var(--primary);
-            padding: 12px; border-radius: 12px; font-size: 0.85rem; margin-top: 12px; font-weight: 800; text-align: center;
-        }
+    --border: #2a2a2a;
+}
 
-        .media-final-area {
-            display: flex; flex-direction: column; align-items: center;
-            margin-top: 20px; padding-top: 15px; border-top: 1px dashed #444; gap: 12px;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .status-badge { padding: 10px 25px; border-radius: 12px; font-size: 0.85rem; font-weight: 900; letter-spacing: 1px; color: #000; }
-        .aprovado { background: var(--success); box-shadow: 0 4px 0 #007a3d; }
-        .recuperacao { background: var(--warning); box-shadow: 0 4px 0 #916200; }
-        .reprovado { background: var(--danger); box-shadow: 0 4px 0 #7e1d1d; color: #fff; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
 
-        .btn-del-small { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem; box-shadow: none; padding: 0; }
-        .btn-del-small:active { transform: scale(0.9); }
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(124, 77, 255, 0.08),
+            transparent 35%
+        ),
+        var(--bg);
 
-        .semestre-input {
-            background: #000; border: 2px solid var(--primary); border-radius: 15px;
-            color: var(--primary); text-align: center; font-weight: 900; width: 140px; margin-bottom: 30px; padding: 10px; font-size: 1rem;
-            box-shadow: 0 4px 0 #4a148c;
-        }
-    </style>
+    color: var(--text);
+
+    margin: 0;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+}
+
+h1 {
+    color: var(--secondary);
+
+    text-align: center;
+
+    margin: 15px 0 20px;
+
+    font-size: 1.65rem;
+
+    letter-spacing: 2px;
+
+    font-weight: 900;
+
+    text-shadow:
+        0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+
+/* =====================================================
+   BOTÕES
+   ===================================================== */
+
+button {
+    background: #1c222d;
+
+    color: #eee;
+
+    border: 1px solid #333;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    font-size: 0.78rem;
+
+    transition: 0.12s;
+
+    box-shadow: 0 4px 0 #000;
+
+    text-transform: uppercase;
+}
+
+button:hover {
+    filter: brightness(1.12);
+}
+
+button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #000;
+}
+
+.top-menu {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    width: 100%;
+
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    border-color: var(--primary);
+    color: var(--primary);
+
+    box-shadow:
+        0 4px 0 #4a148c;
+}
+
+.btn-download {
+    border-color: var(--success);
+    color: var(--success);
+
+    box-shadow:
+        0 4px 0 #007a3d;
+}
+
+
+/* =====================================================
+   SEMESTRE
+   ===================================================== */
+
+.semestre-area {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.semestre-label {
+    color: #888;
+
+    font-size: 0.75rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    margin-bottom: 7px;
+}
+
+.semestre-input {
+    background: #000;
+
+    border:
+        2px solid
+        var(--primary);
+
+    border-radius: 15px;
+
+    color: var(--primary);
+
+    text-align: center;
+
+    font-weight: 900;
+
+    width: 150px;
+
+    padding: 10px;
+
+    font-size: 1rem;
+
+    box-shadow:
+        0 4px 0 #4a148c;
+}
+
+
+/* =====================================================
+   RESUMO
+   ===================================================== */
+
+.resumo {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-bottom: 25px;
+}
+
+.resumo-box {
+    background: var(--card);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 15px;
+
+    padding: 12px 6px;
+
+    text-align: center;
+}
+
+.resumo-numero {
+    display: block;
+
+    color: var(--secondary);
+
+    font-size: 1.35rem;
+
+    font-weight: 900;
+}
+
+.resumo-label {
+    color: #888;
+
+    font-size: 0.65rem;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+
+/* =====================================================
+   MATÉRIA
+   ===================================================== */
+
+.materia-card {
+    background:
+        linear-gradient(
+            145deg,
+            #151a22,
+            #11161d
+        );
+
+    border-radius: 20px;
+
+    padding: 18px;
+
+    margin-bottom: 25px;
+
+    border:
+        1px solid
+        var(--border);
+
+    width: 100%;
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,0.4);
+}
+
+.materia-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border-bottom:
+        2px solid
+        var(--border);
+
+    padding-bottom: 12px;
+
+    margin-bottom: 15px;
+}
+
+.materia-title {
+    color: var(--secondary);
+
+    font-size: 1.25rem;
+
+    font-weight: 900;
+
+    margin: 0;
+
+    overflow-wrap: anywhere;
+}
+
+.materia-id {
+    color: #555;
+
+    font-size: 0.6rem;
+}
+
+.btn-delete-materia {
+    background: transparent;
+
+    color: var(--danger);
+
+    border: none;
+
+    box-shadow: none;
+
+    padding: 5px;
+
+    font-size: 1.1rem;
+}
+
+
+/* =====================================================
+   ETAPA
+   ===================================================== */
+
+.np-box {
+    background:
+        rgba(0,0,0,0.2);
+
+    border-radius: 15px;
+
+    padding: 14px;
+
+    margin-bottom: 15px;
+
+    border:
+        1px solid
+        #333;
+
+    border-left:
+        5px solid
+        var(--primary);
+}
+
+.np-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+
+    color: var(--primary);
+
+    font-weight: 900;
+}
+
+.np-title {
+    flex: 1;
+
+    background: transparent;
+
+    border: none;
+
+    border-bottom:
+        1px solid
+        #444;
+
+    border-radius: 0;
+
+    color: var(--primary);
+
+    font-weight: 900;
+
+    padding: 5px;
+}
+
+.np-title:focus {
+    outline: none;
+
+    border-color:
+        var(--secondary);
+}
+
+
+/* =====================================================
+   NOTAS
+   ===================================================== */
+
+.nota-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(100px, 1.5fr)
+        70px
+        75px
+        35px;
+
+    gap: 7px;
+
+    margin-bottom: 8px;
+
+    align-items: center;
+}
+
+input {
+    background: #000;
+
+    color: #fff;
+
+    border:
+        1px solid
+        #444;
+
+    padding: 9px;
+
+    border-radius: 9px;
+
+    font-size: 0.82rem;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    font-weight: 600;
+}
+
+input:focus {
+    border-color:
+        var(--secondary);
+
+    outline: none;
+}
+
+.btn-del-small {
+    background: none;
+
+    border: none;
+
+    color: var(--danger);
+
+    cursor: pointer;
+
+    font-size: 1.1rem;
+
+    box-shadow: none;
+
+    padding: 2px;
+}
+
+
+/* =====================================================
+   MÉDIA DA ETAPA
+   ===================================================== */
+
+.media-etapa {
+    text-align: right;
+
+    font-size: 0.85rem;
+
+    margin-top: 10px;
+
+    font-weight: 900;
+}
+
+.media-boa {
+    color: var(--success);
+}
+
+.media-baixa {
+    color: var(--warning);
+}
+
+.media-ruim {
+    color: var(--danger);
+}
+
+.previsao-tag {
+    background:
+        rgba(124, 77, 255, 0.1);
+
+    color:
+        var(--primary);
+
+    border:
+        1px dashed
+        var(--primary);
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    font-size: 0.8rem;
+
+    margin-top: 10px;
+
+    font-weight: 800;
+
+    text-align: center;
+}
+
+.previsao-impossivel {
+    color: var(--danger);
+
+    border-color:
+        var(--danger);
+
+    background:
+        rgba(255,82,82,0.08);
+}
+
+
+/* =====================================================
+   BOTÕES DAS ETAPAS
+   ===================================================== */
+
+.btn-add-nota {
+    width: 100%;
+
+    font-size: 0.7rem;
+
+    margin-top: 10px;
+
+    padding: 9px;
+
+    border-style: dashed;
+
+    box-shadow: none;
+}
+
+.btn-add-np {
+    background:
+        var(--primary);
+
+    color: #fff;
+
+    border: none;
+
+    margin-top: 2px;
+
+    width: 100%;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 0 #4a148c;
+}
+
+
+/* =====================================================
+   RESULTADO
+   ===================================================== */
+
+.media-final-area {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    margin-top: 18px;
+
+    padding-top: 15px;
+
+    border-top:
+        1px dashed
+        #444;
+
+    gap: 10px;
+}
+
+.media-final {
+    font-size: 1.2rem;
+
+    font-weight: 900;
+}
+
+.media-final span {
+    color: var(--secondary);
+
+    font-size: 1.5rem;
+}
+
+.status-badge {
+    padding:
+        9px 20px;
+
+    border-radius: 12px;
+
+    font-size: 0.75rem;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    color: #000;
+}
+
+.aprovado {
+    background:
+        var(--success);
+
+    box-shadow:
+        0 4px 0 #007a3d;
+}
+
+.recuperacao {
+    background:
+        var(--warning);
+
+    box-shadow:
+        0 4px 0 #916200;
+}
+
+.reprovado {
+    background:
+        var(--danger);
+
+    color: #fff;
+
+    box-shadow:
+        0 4px 0 #7e1d1d;
+}
+
+.info-af {
+    width: 100%;
+
+    background:
+        rgba(255,171,0,0.08);
+
+    border:
+        1px solid
+        rgba(255,171,0,0.25);
+
+    color:
+        var(--warning);
+
+    border-radius: 12px;
+
+    padding: 10px;
+
+    font-size: 0.78rem;
+
+    text-align: center;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   VAZIO
+   ===================================================== */
+
+.empty {
+    text-align: center;
+
+    padding: 35px 15px;
+
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+
+    margin-bottom: 10px;
+}
+
+.empty-text {
+    font-size: 0.85rem;
+}
+
+
+/* =====================================================
+   MATÉRIAS REMOVIDAS
+   ===================================================== */
+
+.removed-area {
+    margin-top: 30px;
+
+    background:
+        rgba(255,255,255,0.025);
+
+    border:
+        1px solid
+        #252525;
+
+    border-radius: 15px;
+
+    padding: 15px;
+}
+
+.removed-title {
+    color: #777;
+
+    font-size: 0.75rem;
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+
+    margin-bottom: 10px;
+}
+
+.removed-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 0;
+
+    border-bottom:
+        1px solid
+        #222;
+
+    font-size: 0.8rem;
+
+    color: #777;
+}
+
+.btn-restore {
+    color: var(--secondary);
+
+    border-color:
+        var(--secondary);
+
+    box-shadow: none;
+
+    padding: 6px 10px;
+
+    font-size: 0.65rem;
+}
+
+
+/* =====================================================
+   RESPONSIVO
+   ===================================================== */
+
+@media (max-width: 480px) {
+
+    .top-menu {
+        gap: 8px;
+    }
+
+    button {
+        font-size: 0.68rem;
+    }
+
+    .nota-row {
+        grid-template-columns:
+            1fr 60px 65px 30px;
+    }
+
+    .materia-card {
+        padding: 14px;
+    }
+
+    .resumo-numero {
+        font-size: 1.15rem;
+    }
+}
+
+</style>
+
 </head>
+
+
 <body>
 
-    <div class="container">
-        <h1>📊 HISTÓRICO DE NOTAS</h1>
+<div class="container">
 
-        <div class="top-menu">
-            <button class="btn-back" onclick="window.location.href='index.html'">⬅️ VOLTAR AO PLANNER</button>
-            <button class="btn-download" onclick="baixarHistorico()">📥 SALVAR RELATÓRIO</button>
-        </div>
+    <h1>📊 HISTÓRICO DE NOTAS</h1>
 
-        <div style="text-align: center;">
-            <input type="text" id="input-semestre" class="semestre-input" value="2026.1" placeholder="Semestre">
-        </div>
 
-        <div id="materias-container"></div>
+    <!-- MENU -->
+
+    <div class="top-menu">
+
+        <button
+            class="btn-back"
+            onclick="window.location.href='index.html'">
+            ⬅️ VOLTAR AO PLANNER
+        </button>
+
+        <button
+            class="btn-download"
+            onclick="baixarHistorico()">
+            📥 SALVAR RELATÓRIO
+        </button>
+
     </div>
 
-    <script>
-        // Carrega matérias do Planner para adicionar novas, mas não apaga as que já estão aqui
-        let listaMateriasPlanner = JSON.parse(localStorage.getItem('ufc_materias_transporte')) || [];
-        let dadosNotas = JSON.parse(localStorage.getItem('ufc_sistema_notas_v1')) || {};
 
-        function sincronizar() {
-            // Apenas adiciona se a matéria for nova. Não remove nada para manter o histórico!
-            listaMateriasPlanner.forEach(m => {
-                if (!dadosNotas[m]) dadosNotas[m] = { parciais: [] };
-            });
+    <!-- SEMESTRE -->
+
+    <div class="semestre-area">
+
+        <span class="semestre-label">
+            Semestre atual
+        </span>
+
+        <input
+            type="text"
+            id="input-semestre"
+            class="semestre-input"
+            value="2026.1"
+            placeholder="2026.1"
+            maxlength="15"
+        >
+
+    </div>
+
+
+    <!-- RESUMO -->
+
+    <div
+        id="resumo"
+        class="resumo">
+    </div>
+
+
+    <!-- MATÉRIAS -->
+
+    <div
+        id="materias-container">
+    </div>
+
+
+    <!-- MATÉRIAS REMOVIDAS -->
+
+    <div
+        id="removed-container">
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   UFC NOTAS V2
+   ========================================================= */
+
+const STORAGE_KEY =
+    'ufc_sistema_notas_v2';
+
+const TRANSPORTE_KEY =
+    'ufc_materias_transporte';
+
+const OLD_STORAGE_KEY =
+    'ufc_sistema_notas_v1';
+
+
+/* =========================================================
+   ESTRUTURA
+   ========================================================= */
+
+const estruturaInicial = {
+
+    version: 2,
+
+    semestre: '2026.1',
+
+    materias: {},
+
+    removidas: {}
+
+};
+
+
+/* =========================================================
+   UTILITÁRIOS
+   ========================================================= */
+
+function gerarId(prefixo = 'id') {
+
+    if (
+        typeof crypto !== 'undefined' &&
+        crypto.randomUUID
+    ) {
+
+        return `${prefixo}-${crypto.randomUUID()}`;
+
+    }
+
+    return `${prefixo}-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 10)}`;
+}
+
+
+function escapeHTML(valor) {
+
+    return String(valor ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+function numero(valor) {
+
+    if (
+        valor === '' ||
+        valor === null ||
+        valor === undefined
+    ) {
+        return null;
+    }
+
+    const n =
+        parseFloat(
+            String(valor).replace(',', '.')
+        );
+
+    return Number.isFinite(n)
+        ? n
+        : null;
+}
+
+
+function limitarNota(valor) {
+
+    const n = numero(valor);
+
+    if (n === null) {
+        return '';
+    }
+
+    return Math.max(
+        0,
+        Math.min(10, n)
+    );
+
+}
+
+
+/* =========================================================
+   CARREGAMENTO
+   ========================================================= */
+
+function carregarDados() {
+
+    try {
+
+        const salvo =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if (salvo) {
+
+            const dados =
+                JSON.parse(salvo);
+
+            return normalizarDados(
+                dados
+            );
+        }
+
+
+        /*
+         * Tenta migrar a versão antiga.
+         */
+
+        const antigo =
+            localStorage.getItem(
+                OLD_STORAGE_KEY
+            );
+
+        if (antigo) {
+
+            const dadosAntigos =
+                JSON.parse(antigo);
+
+            const migrado =
+                migrarVersaoAntiga(
+                    dadosAntigos
+                );
+
             salvar();
+
+            return migrado;
         }
 
-        function salvar() {
-            localStorage.setItem('ufc_sistema_notas_v1', JSON.stringify(dadosNotas));
+
+    } catch (erro) {
+
+        console.error(
+            'Erro ao carregar notas:',
+            erro
+        );
+
+    }
+
+
+    return structuredClone(
+        estruturaInicial
+    );
+}
+
+
+function normalizarDados(dados) {
+
+    const resultado = {
+
+        version: 2,
+
+        semestre:
+            String(
+                dados.semestre ||
+                '2026.1'
+            ),
+
+        materias: {},
+
+        removidas: {}
+
+    };
+
+
+    if (
+        dados.materias &&
+        typeof dados.materias === 'object'
+    ) {
+
+        Object.entries(
+            dados.materias
+        ).forEach(
+            ([id, materia]) => {
+
+                resultado.materias[id] =
+                    normalizarMateria(
+                        materia,
+                        id
+                    );
+
+            }
+        );
+    }
+
+
+    if (
+        dados.removidas &&
+        typeof dados.removidas === 'object'
+    ) {
+
+        Object.entries(
+            dados.removidas
+        ).forEach(
+            ([id, materia]) => {
+
+                resultado.removidas[id] = {
+
+                    id,
+
+                    nome:
+                        String(
+                            materia.nome || ''
+                        )
+
+                };
+
+            }
+        );
+    }
+
+
+    return resultado;
+}
+
+
+function normalizarMateria(
+    materia,
+    id
+) {
+
+    return {
+
+        id,
+
+        nome:
+            String(
+                materia?.nome ||
+                'Matéria'
+            ),
+
+        parciais:
+            Array.isArray(
+                materia?.parciais
+            )
+                ? materia.parciais.map(
+                    normalizarParcial
+                )
+                : []
+
+    };
+}
+
+
+function normalizarParcial(
+    parcial
+) {
+
+    return {
+
+        id:
+            parcial.id ||
+            gerarId('np'),
+
+        nome:
+            String(
+                parcial.nome ||
+                'Nova Etapa'
+            ),
+
+        notas:
+            Array.isArray(
+                parcial.notas
+            )
+                ? parcial.notas.map(
+                    nota => ({
+
+                        id:
+                            nota.id ||
+                            gerarId('nota'),
+
+                        tipo:
+                            String(
+                                nota.tipo || ''
+                            ),
+
+                        peso:
+                            nota.peso ??
+                            1,
+
+                        valor:
+                            nota.valor ??
+                            ''
+
+                    })
+                )
+                : [],
+
+        af:
+            parcial.af ?? ''
+
+    };
+}
+
+
+/* =========================================================
+   MIGRAÇÃO V1 → V2
+   ========================================================= */
+
+function migrarVersaoAntiga(
+    antigo
+) {
+
+    const novo =
+        structuredClone(
+            estruturaInicial
+        );
+
+
+    /*
+     * Recupera o semestre antigo.
+     */
+
+    const semestre =
+        localStorage.getItem(
+            'ufc_semestre'
+        );
+
+    if (semestre) {
+        novo.semestre = semestre;
+    }
+
+
+    /*
+     * A versão antiga usava:
+     *
+     * {
+     *   "Cálculo": {
+     *      parciais: [...]
+     *   }
+     * }
+     */
+
+    if (
+        antigo &&
+        typeof antigo === 'object'
+    ) {
+
+        Object.entries(
+            antigo
+        ).forEach(
+            ([nome, materia]) => {
+
+                const id =
+                    gerarId('mat');
+
+
+                novo.materias[id] = {
+
+                    id,
+
+                    nome,
+
+                    parciais:
+                        Array.isArray(
+                            materia?.parciais
+                        )
+                            ? materia.parciais.map(
+                                normalizarParcial
+                            )
+                            : []
+
+                };
+
+            }
+        );
+    }
+
+
+    return novo;
+}
+
+
+/* =========================================================
+   DADOS
+   ========================================================= */
+
+let dados =
+    carregarDados();
+
+
+/* =========================================================
+   SALVAR
+   ========================================================= */
+
+function salvar() {
+
+    localStorage.setItem(
+
+        STORAGE_KEY,
+
+        JSON.stringify(dados)
+
+    );
+
+
+    /*
+     * Mantém o semestre também em uma
+     * chave simples para compatibilidade.
+     */
+
+    localStorage.setItem(
+        'ufc_semestre',
+        dados.semestre
+    );
+}
+
+
+/* =========================================================
+   SINCRONIZAÇÃO COM PLANNER
+   ========================================================= */
+
+function obterMateriasPlanner() {
+
+    try {
+
+        const salvo =
+            localStorage.getItem(
+                TRANSPORTE_KEY
+            );
+
+        if (!salvo) {
+            return [];
         }
 
-        function renderizar() {
-            const container = document.getElementById('materias-container');
-            container.innerHTML = "";
+        const lista =
+            JSON.parse(salvo);
 
-            Object.keys(dadosNotas).forEach(mNome => {
-                const mData = dadosNotas[mNome];
-                let htmlMateria = `
-                    <div class="materia-card">
-                        <div class="materia-header">
-                            <h3 class="materia-title">${mNome}</h3>
-                            <button class="btn-del-small" onclick="apagarMateria('${mNome}')" title="Limpar Tudo">🗑️</button>
-                        </div>
-                        <div id="parciais-${mNome}">`;
 
-                let somaMediasEtapas = 0;
-                let etapasCompletas = 0;
+        /*
+         * Compatibilidade com a versão antiga:
+         *
+         * ["Cálculo", "Programação"]
+         */
 
-                mData.parciais.forEach((p, pIdx) => {
-                    htmlMateria += `
-                        <div class="np-box">
-                            <div class="np-header">
-                                <span>⚡ ${p.nome}</span>
-                                <button class="btn-del-small" onclick="removerNP('${mNome}', ${pIdx})">✕</button>
-                            </div>`;
+        if (
+            Array.isArray(lista)
+        ) {
 
-                    let somaPonderada = 0;
-                    let somaPesos = 0;
-                    let notaFaltante = null;
+            return lista.map(
+                item => {
 
-                    p.notas.forEach((n, nIdx) => {
-                        const val = parseFloat(n.valor);
-                        const peso = parseFloat(n.peso) || 0;
-                        if (!isNaN(val)) {
-                            somaPonderada += (val * peso);
-                            somaPesos += peso;
-                        } else {
-                            notaFaltante = { tipo: n.tipo || 'Próxima Nota', peso: peso };
-                            somaPesos += peso;
-                        }
+                    if (
+                        typeof item === 'string'
+                    ) {
 
-                        htmlMateria += `
-                            <div class="nota-row">
-                                <input type="text" placeholder="Atividade" value="${n.tipo}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'tipo', this.value)">
-                                <input type="number" placeholder="Peso" value="${n.peso}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'peso', this.value)">
-                                <input type="number" step="0.1" placeholder="Nota" value="${n.valor}" onchange="atualizarNota('${mNome}', ${pIdx}, ${nIdx}, 'valor', this.value)">
-                                <button class="btn-del-small" onclick="removerLinhaNota('${mNome}', ${pIdx}, ${nIdx})">×</button>
-                            </div>`;
-                    });
+                        return {
+                            id:
+                                'legacy-' +
+                                item,
 
-                    if (notaFaltante) {
-                        let qtoFalta = (7 * (somaPesos || 1) - somaPonderada) / (notaFaltante.peso || 1);
-                        htmlMateria += `<div class="previsao-tag">🎯 Meta: tirar <b>${Math.max(0, qtoFalta).toFixed(1)}</b> na ${notaFaltante.tipo}</div>`;
-                    } else if (somaPesos > 0) {
-                        let mediaEtapa = somaPonderada / somaPesos;
-                        somaMediasEtapas += mediaEtapa;
-                        etapasCompletas++;
-                        htmlMateria += `<div style="text-align:right; font-size:0.9rem; color:var(--success); margin-top:10px; font-weight:900;">Média: ${mediaEtapa.toFixed(1)}</div>`;
+                            nome:
+                                item
+                        };
+
                     }
 
-                    htmlMateria += `
-                            <button style="font-size:0.7rem; margin-top:12px; padding:10px; border-style: dashed; width:100%; box-shadow:none;" onclick="addLinhaNota('${mNome}', ${pIdx})">+ ADICIONAR NOTA</button>
-                        </div>`;
+                    return {
+
+                        id:
+                            item.id ||
+                            'legacy-' +
+                            item.nome,
+
+                        nome:
+                            String(
+                                item.nome || ''
+                            )
+
+                    };
+
+                }
+            );
+        }
+
+
+    } catch (erro) {
+
+        console.error(
+            'Erro ao sincronizar Planner:',
+            erro
+        );
+
+    }
+
+
+    return [];
+}
+
+
+function sincronizar() {
+
+    const materiasPlanner =
+        obterMateriasPlanner();
+
+
+    let alterou =
+        false;
+
+
+    materiasPlanner.forEach(
+        materia => {
+
+            if (
+                !materia.id ||
+                !materia.nome.trim()
+            ) {
+                return;
+            }
+
+
+            /*
+             * Se o usuário apagou essa matéria
+             * das notas, NÃO recriamos automaticamente.
+             */
+
+            if (
+                dados.removidas[materia.id]
+            ) {
+                return;
+            }
+
+
+            /*
+             * Só cria se for realmente nova.
+             */
+
+            if (
+                !dados.materias[
+                    materia.id
+                ]
+            ) {
+
+                dados.materias[
+                    materia.id
+                ] = {
+
+                    id:
+                        materia.id,
+
+                    nome:
+                        materia.nome,
+
+                    parciais: []
+
+                };
+
+                alterou = true;
+
+            } else {
+
+                /*
+                 * Atualiza o nome vindo do Planner,
+                 * mas preserva todas as notas.
+                 */
+
+                if (
+                    dados.materias[
+                        materia.id
+                    ].nome !==
+                    materia.nome
+                ) {
+
+                    dados.materias[
+                        materia.id
+                    ].nome =
+                        materia.nome;
+
+                    alterou = true;
+                }
+            }
+
+        }
+    );
+
+
+    if (alterou) {
+        salvar();
+    }
+}
+
+
+/* =========================================================
+   CÁLCULOS
+   ========================================================= */
+
+function calcularEtapa(parcial) {
+
+    let soma =
+        0;
+
+    let pesos =
+        0;
+
+    const faltantes = [];
+
+
+    parcial.notas.forEach(
+        nota => {
+
+            const peso =
+                numero(nota.peso) || 0;
+
+            const valor =
+                numero(nota.valor);
+
+
+            if (
+                peso <= 0
+            ) {
+                return;
+            }
+
+
+            if (
+                valor === null
+            ) {
+
+                faltantes.push({
+
+                    id:
+                        nota.id,
+
+                    tipo:
+                        nota.tipo ||
+                        'Próxima nota',
+
+                    peso
+
                 });
 
-                let mediaFinal = etapasCompletas > 0 ? somaMediasEtapas / etapasCompletas : 0;
-                let statusClass = "reprovado"; let statusTxt = "REPROVADO";
-                if(mediaFinal >= 7) { statusClass = "aprovado"; statusTxt = "APROVADO 🏆"; }
-                else if(mediaFinal >= 4) { statusClass = "recuperacao"; statusTxt = "EM RECUPERAÇÃO"; }
+            } else {
 
-                htmlMateria += `
-                        </div>
-                        <button class="btn-add-np" onclick="addNP('${mNome}')">+ NOVA ETAPA (NP${mData.parciais.length + 1})</button>
+                soma +=
+                    valor * peso;
+
+                pesos +=
+                    peso;
+
+            }
+
+        }
+    );
+
+
+    const pesosFaltantes =
+        faltantes.reduce(
+            (total, item) =>
+                total + item.peso,
+            0
+        );
+
+
+    const pesoTotal =
+        pesos +
+        pesosFaltantes;
+
+
+    /*
+     * Média já conhecida.
+     */
+
+    const mediaAtual =
+        pesos > 0
+            ? soma / pesos
+            : null;
+
+
+    /*
+     * Se existem notas faltantes,
+     * calcula a média necessária
+     * nas notas restantes para chegar a 7.
+     */
+
+    let meta =
+        null;
+
+
+    if (
+        pesosFaltantes > 0
+    ) {
+
+        meta =
+            (
+                7 * pesoTotal -
+                soma
+            ) /
+            pesosFaltantes;
+
+    }
+
+
+    /*
+     * Se não existem faltantes,
+     * calcula a média final da etapa.
+     */
+
+    let mediaFinal =
+        null;
+
+
+    if (
+        pesoTotal > 0 &&
+        pesosFaltantes === 0
+    ) {
+
+        mediaFinal =
+            soma / pesoTotal;
+
+    }
+
+
+    return {
+
+        soma,
+
+        pesos,
+
+        pesosFaltantes,
+
+        pesoTotal,
+
+        faltantes,
+
+        mediaAtual,
+
+        mediaFinal,
+
+        meta
+
+    };
+}
+
+
+/*
+ * Média das APs:
+ *
+ * A UFC utiliza a média aritmética
+ * das avaliações progressivas.
+ */
+
+function calcularMediaAPs(materia) {
+
+    const etapas =
+        materia.parciais
+            .map(calcularEtapa)
+            .filter(
+                resultado =>
+                    resultado.mediaFinal !== null
+            );
+
+
+    if (
+        etapas.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const soma =
+        etapas.reduce(
+            (total, etapa) =>
+                total +
+                etapa.mediaFinal,
+            0
+        );
+
+
+    return soma /
+        etapas.length;
+}
+
+
+/*
+ * Calcula quanto seria necessário
+ * na AF para média final >= 5.
+ *
+ * MF = (AF + Média AP) / 2
+ *
+ * AF necessária = 10 - Média AP
+ */
+
+function calcularAFnecessaria(
+    mediaAP
+) {
+
+    if (
+        mediaAP === null
+    ) {
+        return null;
+    }
+
+
+    if (
+        mediaAP < 4
+    ) {
+        return null;
+    }
+
+
+    return Math.max(
+        4,
+        10 - mediaAP
+    );
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+function obterStatus(
+    mediaAP
+) {
+
+    if (
+        mediaAP === null
+    ) {
+
+        return {
+            classe: 'recuperacao',
+            texto: 'AGUARDANDO NOTAS'
+        };
+
+    }
+
+
+    if (
+        mediaAP >= 7
+    ) {
+
+        return {
+            classe: 'aprovado',
+            texto: 'APROVADO POR MÉDIA 🏆'
+        };
+
+    }
+
+
+    if (
+        mediaAP >= 4
+    ) {
+
+        return {
+            classe: 'recuperacao',
+            texto: 'POSSÍVEL AVALIAÇÃO FINAL'
+        };
+
+    }
+
+
+    return {
+
+        classe:
+            'reprovado',
+
+        texto:
+            'ABAIXO DE 4,0'
+
+    };
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderizar() {
+
+    const container =
+        document.getElementById(
+            'materias-container'
+        );
+
+
+    const resumo =
+        document.getElementById(
+            'resumo'
+        );
+
+
+    const lista =
+        Object.values(
+            dados.materias
+        );
+
+
+    /*
+     * Atualiza semestre.
+     */
+
+    document.getElementById(
+        'input-semestre'
+    ).value =
+        dados.semestre;
+
+
+    /*
+     * Resumo.
+     */
+
+    let aprovadas =
+        0;
+
+    let recuperacao =
+        0;
+
+    let aguardando =
+        0;
+
+
+    lista.forEach(
+        materia => {
+
+            const media =
+                calcularMediaAPs(
+                    materia
+                );
+
+
+            if (
+                media === null
+            ) {
+
+                aguardando++;
+
+            } else if (
+                media >= 7
+            ) {
+
+                aprovadas++;
+
+            } else if (
+                media >= 4
+            ) {
+
+                recuperacao++;
+
+            }
+
+        }
+    );
+
+
+    resumo.innerHTML = `
+
+        <div class="resumo-box">
+
+            <span class="resumo-numero">
+                ${lista.length}
+            </span>
+
+            <span class="resumo-label">
+                Matérias
+            </span>
+
+        </div>
+
+
+        <div class="resumo-box">
+
+            <span
+                class="resumo-numero"
+                style="color:var(--success)">
+                ${aprovadas}
+            </span>
+
+            <span class="resumo-label">
+                Aprovadas
+            </span>
+
+        </div>
+
+
+        <div class="resumo-box">
+
+            <span
+                class="resumo-numero"
+                style="color:var(--warning)">
+                ${recuperacao}
+            </span>
+
+            <span class="resumo-label">
+                Atenção
+            </span>
+
+        </div>
+
+    `;
+
+
+    /*
+     * Nenhuma matéria.
+     */
+
+    if (
+        lista.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    📚
+                </div>
+
+                <div class="empty-text">
+                    Nenhuma matéria cadastrada.
+                    <br><br>
+                    Adicione matérias pelo Planner
+                    ou restaure uma matéria removida.
+                </div>
+
+            </div>
+
+        `;
+
+    } else {
+
+        container.innerHTML =
+            lista.map(
+                renderizarMateria
+            ).join('');
+
+    }
+
+
+    renderizarRemovidas();
+}
+
+
+/* =========================================================
+   RENDER MATÉRIA
+   ========================================================= */
+
+function renderizarMateria(
+    materia
+) {
+
+    const mediaAP =
+        calcularMediaAPs(
+            materia
+        );
+
+
+    const status =
+        obterStatus(
+            mediaAP
+        );
+
+
+    const afNecessaria =
+        calcularAFnecessaria(
+            mediaAP
+        );
+
+
+    let etapasHTML =
+        '';
+
+
+    materia.parciais.forEach(
+        (parcial, pIdx) => {
+
+            etapasHTML +=
+                renderizarParcial(
+                    materia,
+                    parcial,
+                    pIdx
+                );
+
+        }
+    );
+
+
+    /*
+     * Média final considerando AF.
+     */
+
+    let mediaFinal =
+        null;
+
+
+    const af =
+        numero(
+            materia.af
+        );
+
+
+    if (
+        mediaAP !== null &&
+        af !== null
+    ) {
+
+        mediaFinal =
+            (
+                mediaAP +
+                af
+            ) / 2;
+
+    }
+
+
+    let afHTML =
+        '';
+
+
+    if (
+        mediaAP !== null &&
+        mediaAP >= 4 &&
+        mediaAP < 7
+    ) {
+
+        if (
+            af !== null
+        ) {
+
+            const passouAF =
+                af >= 4 &&
+                mediaFinal >= 5;
+
+
+            afHTML = `
+
+                <div class="info-af">
+
+                    AF registrada:
+                    <b>${af.toFixed(1)}</b>
+
+                    &nbsp; |
+
+                    Média final:
+                    <b>
+                        ${mediaFinal.toFixed(1)}
+                    </b>
+
+                    &nbsp; |
+
+                    ${
+                        passouAF
+                            ? '✅ APROVADO'
+                            : '❌ REPROVADO'
+                    }
+
+                </div>
+
+            `;
+
+        } else {
+
+            afHTML = `
+
+                <div class="info-af">
+
+                    🎯 Nota mínima na AF:
+                    <b>
+                        ${afNecessaria.toFixed(1)}
+                    </b>
+
+                    <br>
+
+                    A AF precisa ser ≥ 4,0
+                    e a média final ≥ 5,0.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    return `
+
+        <div
+            class="materia-card"
+            data-id="${escapeHTML(materia.id)}"
+        >
+
+            <div class="materia-header">
+
+                <div>
+
+                    <h3 class="materia-title">
+                        ${escapeHTML(
+                            materia.nome
+                        )}
+                    </h3>
+
+                    <div class="materia-id">
+                        ${escapeHTML(
+                            materia.id
+                        )}
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="btn-delete-materia"
+                    onclick="apagarMateria(
+                        '${escapeHTML(materia.id)}'
+                    )"
+                    title="Apagar matéria completamente">
+
+                    🗑️
+
+                </button>
+
+            </div>
+
+
+            ${etapasHTML}
+
+
+            <button
+                class="btn-add-np"
+                onclick="adicionarNP(
+                    '${escapeHTML(materia.id)}'
+                )">
+
+                + NOVA ETAPA
+
+            </button>
+
+
+            ${
+                mediaAP !== null
+                    ? `
+
                         <div class="media-final-area">
-                            <span style="font-weight:900; font-size:1.1rem;">Média Final: <span style="color:var(--secondary)">${mediaFinal.toFixed(1)}</span></span>
-                            <span class="status-badge ${statusClass}">${statusTxt}</span>
+
+                            <div class="media-final">
+
+                                Média das APs:
+
+                                <span>
+                                    ${mediaAP.toFixed(1)}
+                                </span>
+
+                            </div>
+
+
+                            <span
+                                class="status-badge
+                                ${status.classe}">
+
+                                ${status.texto}
+
+                            </span>
+
+
+                            ${afHTML}
+
                         </div>
-                    </div>`;
-                container.innerHTML += htmlMateria;
-            });
+
+                    `
+                    : `
+                        <div class="media-final-area">
+
+                            <span
+                                class="status-badge
+                                recuperacao">
+
+                                AGUARDANDO NOTAS
+
+                            </span>
+
+                        </div>
+                    `
+            }
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   RENDER PARCIAL
+   ========================================================= */
+
+function renderizarParcial(
+    materia,
+    parcial,
+    pIdx
+) {
+
+    const calculo =
+        calcularEtapa(
+            parcial
+        );
+
+
+    let notasHTML =
+        '';
+
+
+    parcial.notas.forEach(
+        nota => {
+
+            notasHTML += `
+
+                <div class="nota-row">
+
+                    <input
+                        type="text"
+                        placeholder="Atividade"
+                        value="${escapeHTML(
+                            nota.tipo
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'tipo',
+                            this.value
+                        )"
+                    >
+
+
+                    <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        placeholder="Peso"
+                        value="${escapeHTML(
+                            nota.peso
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'peso',
+                            this.value
+                        )"
+                    >
+
+
+                    <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        placeholder="Nota"
+                        value="${escapeHTML(
+                            nota.valor
+                        )}"
+                        onchange="atualizarNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}',
+                            'valor',
+                            this.value
+                        )"
+                    >
+
+
+                    <button
+                        class="btn-del-small"
+                        onclick="removerNota(
+                            '${escapeHTML(materia.id)}',
+                            '${escapeHTML(parcial.id)}',
+                            '${escapeHTML(nota.id)}'
+                        )">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    /*
+     * Resultado da etapa.
+     */
+
+    let resultadoHTML =
+        '';
+
+
+    if (
+        calculo.faltantes.length > 0 &&
+        calculo.pesoTotal > 0
+    ) {
+
+        const meta =
+            calculo.meta;
+
+
+        if (
+            meta <= 10
+        ) {
+
+            resultadoHTML = `
+
+                <div class="previsao-tag">
+
+                    🎯 Para fechar esta etapa
+                    com <b>7,0</b>:
+
+                    média de
+                    <b>${Math.max(
+                        0,
+                        meta
+                    ).toFixed(1)}</b>
+
+                    nas próximas notas.
+
+                </div>
+
+            `;
+
+        } else {
+
+            resultadoHTML = `
+
+                <div
+                    class="
+                        previsao-tag
+                        previsao-impossivel
+                    ">
+
+                    ⚠️ Mesmo tirando 10,0
+                    nas notas restantes,
+                    7,0 não será atingido.
+
+                </div>
+
+            `;
+
         }
 
-        // Funções de Lógica
-        function addNP(m) {
-            dadosNotas[m].parciais.push({ nome: 'NP' + (dadosNotas[m].parciais.length + 1), notas: [] });
-            salvar(); renderizar();
-        }
-        function removerNP(m, idx) {
-            if(confirm("Remover esta etapa e suas notas?")) { dadosNotas[m].parciais.splice(idx, 1); salvar(); renderizar(); }
-        }
-        function addLinhaNota(m, pIdx) {
-            dadosNotas[m].parciais[pIdx].notas.push({ tipo: '', peso: 1, valor: '' });
-            salvar(); renderizar();
-        }
-        function removerLinhaNota(m, pIdx, nIdx) {
-            dadosNotas[m].parciais[pIdx].notas.splice(nIdx, 1);
-            salvar(); renderizar();
-        }
-        function atualizarNota(m, pIdx, nIdx, campo, valor) {
-            dadosNotas[m].parciais[pIdx].notas[nIdx][campo] = valor;
-            salvar(); renderizar();
-        }
-        function apagarMateria(m) {
-            if(confirm(`Deseja apagar todas as notas de ${m}?`)) { dadosNotas[m] = { parciais: [] }; salvar(); renderizar(); }
+    } else if (
+        calculo.mediaFinal !== null
+    ) {
+
+        let classe =
+            'media-boa';
+
+
+        if (
+            calculo.mediaFinal < 4
+        ) {
+
+            classe =
+                'media-ruim';
+
+        } else if (
+            calculo.mediaFinal < 7
+        ) {
+
+            classe =
+                'media-baixa';
+
         }
 
-        function baixarHistorico() {
-            const sem = document.getElementById('input-semestre').value;
-            let txt = `📊 RELATÓRIO DE DESEMPENHO - ${sem}\n`;
-            txt += `-------------------------------------------\n\n`;
-            Object.keys(dadosNotas).forEach(m => {
-                const data = dadosNotas[m];
-                txt += `📚 DISCIPLINA: ${m.toUpperCase()}\n`;
-                let soma = 0; let cont = 0;
-                data.parciais.forEach(p => {
-                    let sp = 0; let sw = 0;
-                    p.notas.forEach(n => {
-                        sp += (parseFloat(n.valor) || 0) * (parseFloat(n.peso) || 0);
-                        sw += (parseFloat(n.peso) || 0);
-                    });
-                    let mEtapa = sp / (sw || 1);
-                    soma += mEtapa; cont++;
-                    txt += `   [${p.nome}]: ${mEtapa.toFixed(1)}\n`;
-                });
-                txt += `   >> MÉDIA FINAL: ${(cont > 0 ? soma/cont : 0).toFixed(1)}\n\n`;
-            });
-            const blob = new Blob(["\ufeff" + txt], {type: 'text/plain;charset=utf-8'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `Notas_UFC_${sem.replace('.','_')}.txt`;
-            link.click();
-        }
 
-        sincronizar();
-        renderizar();
-    </script>
+        resultadoHTML = `
+
+            <div
+                class="
+                    media-etapa
+                    ${classe}
+                ">
+
+                Média da etapa:
+                ${calculo.mediaFinal.toFixed(1)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="np-box">
+
+            <div class="np-header">
+
+                <input
+                    class="np-title"
+                    type="text"
+                    value="${escapeHTML(
+                        parcial.nome
+                    )}"
+                    onchange="atualizarParcialNome(
+                        '${escapeHTML(materia.id)}',
+                        '${escapeHTML(parcial.id)}',
+                        this.value
+                    )"
+                >
+
+
+                <button
+                    class="btn-del-small"
+                    onclick="removerNP(
+                        '${escapeHTML(materia.id)}',
+                        '${escapeHTML(parcial.id)}'
+                    )">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+
+            ${
+                notasHTML ||
+                `
+                    <div class="empty-text"
+                        style="
+                            color:#666;
+                            text-align:center;
+                            padding:10px;
+                        ">
+
+                        Nenhuma avaliação cadastrada.
+
+                    </div>
+                `
+            }
+
+
+            ${resultadoHTML}
+
+
+            <button
+                class="btn-add-nota"
+                onclick="adicionarNota(
+                    '${escapeHTML(materia.id)}',
+                    '${escapeHTML(parcial.id)}'
+                )">
+
+                + ADICIONAR NOTA
+
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   ADICIONAR ETAPA
+   ========================================================= */
+
+function adicionarNP(
+    materiaId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    materia.parciais.push({
+
+        id:
+            gerarId('np'),
+
+        nome:
+            `NP${
+                materia.parciais.length + 1
+            }`,
+
+        notas: [],
+
+        af: ''
+
+    });
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   REMOVER ETAPA
+   ========================================================= */
+
+function removerNP(
+    materiaId,
+    parcialId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p => p.id === parcialId
+        );
+
+
+    if (!parcial) {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `Remover a etapa "${parcial.nome}"?`
+        )
+    ) {
+
+        return;
+    }
+
+
+    materia.parciais =
+        materia.parciais.filter(
+            p => p.id !== parcialId
+        );
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   NOME DA ETAPA
+   ========================================================= */
+
+function atualizarParcialNome(
+    materiaId,
+    parcialId,
+    valor
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p => p.id === parcialId
+        );
+
+    if (!parcial) {
+        return;
+    }
+
+
+    parcial.nome =
+        valor.trim() ||
+        'Nova Etapa';
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   ADICIONAR NOTA
+   ========================================================= */
+
+function adicionarNota(
+    materiaId,
+    parcialId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p => p.id === parcialId
+        );
+
+    if (!parcial) {
+        return;
+    }
+
+
+    parcial.notas.push({
+
+        id:
+            gerarId('nota'),
+
+        tipo:
+            '',
+
+        peso:
+            1,
+
+        valor:
+            ''
+
+    });
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   REMOVER NOTA
+   ========================================================= */
+
+function removerNota(
+    materiaId,
+    parcialId,
+    notaId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p => p.id === parcialId
+        );
+
+    if (!parcial) {
+        return;
+    }
+
+
+    parcial.notas =
+        parcial.notas.filter(
+            n => n.id !== notaId
+        );
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   ATUALIZAR NOTA
+   ========================================================= */
+
+function atualizarNota(
+    materiaId,
+    parcialId,
+    notaId,
+    campo,
+    valor
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const parcial =
+        materia.parciais.find(
+            p => p.id === parcialId
+        );
+
+    if (!parcial) {
+        return;
+    }
+
+
+    const nota =
+        parcial.notas.find(
+            n => n.id === notaId
+        );
+
+    if (!nota) {
+        return;
+    }
+
+
+    if (
+        campo === 'valor'
+    ) {
+
+        nota.valor =
+            valor === ''
+                ? ''
+                : limitarNota(valor);
+
+    } else if (
+        campo === 'peso'
+    ) {
+
+        const peso =
+            numero(valor);
+
+        nota.peso =
+            peso === null
+                ? 0
+                : Math.max(
+                    0,
+                    peso
+                );
+
+    } else {
+
+        nota[campo] =
+            String(valor);
+
+    }
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   APAGAR MATÉRIA
+   ========================================================= */
+
+function apagarMateria(
+    materiaId
+) {
+
+    const materia =
+        dados.materias[
+            materiaId
+        ];
+
+    if (!materia) {
+        return;
+    }
+
+
+    const confirmou =
+        confirm(
+            `APAGAR COMPLETAMENTE?\n\n` +
+            `${materia.nome}\n\n` +
+            `Todas as NP, notas e dados dessa matéria ` +
+            `serão removidos das notas.\n\n` +
+            `Ela não será recriada automaticamente pelo Planner.`
+        );
+
+
+    if (!confirmou) {
+        return;
+    }
+
+
+    /*
+     * Remove da lista ativa.
+     */
+
+    delete dados.materias[
+        materiaId
+    ];
+
+
+    /*
+     * Guarda apenas o ID/nome para impedir
+     * que a sincronização automática recrie.
+     *
+     * Não guarda as notas.
+     */
+
+    dados.removidas[
+        materiaId
+    ] = {
+
+        id:
+            materiaId,
+
+        nome:
+            materia.nome
+
+    };
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   RESTAURAR MATÉRIA
+   ========================================================= */
+
+function restaurarMateria(
+    materiaId
+) {
+
+    const removida =
+        dados.removidas[
+            materiaId
+        ];
+
+
+    if (!removida) {
+        return;
+    }
+
+
+    /*
+     * Remove da lista de bloqueio.
+     */
+
+    delete dados.removidas[
+        materiaId
+    ];
+
+
+    /*
+     * Cria uma matéria nova.
+     *
+     * As notas antigas NÃO voltam,
+     * porque o usuário escolheu apagar completamente.
+     */
+
+    dados.materias[
+        materiaId
+    ] = {
+
+        id:
+            materiaId,
+
+        nome:
+            removida.nome,
+
+        parciais: []
+
+    };
+
+
+    salvar();
+
+    renderizar();
+}
+
+
+/* =========================================================
+   MATÉRIAS REMOVIDAS
+   ========================================================= */
+
+function renderizarRemovidas() {
+
+    const container =
+        document.getElementById(
+            'removed-container'
+        );
+
+
+    const lista =
+        Object.values(
+            dados.removidas
+        );
+
+
+    if (
+        lista.length === 0
+    ) {
+
+        container.innerHTML =
+            '';
+
+        return;
+    }
+
+
+    container.innerHTML = `
+
+        <div class="removed-area">
+
+            <div class="removed-title">
+
+                🗑️ Matérias removidas
+
+            </div>
+
+
+            ${lista.map(
+                materia => `
+
+                    <div class="removed-item">
+
+                        <span>
+                            ${escapeHTML(
+                                materia.nome
+                            )}
+                        </span>
+
+
+                        <button
+                            class="btn-restore"
+                            onclick="restaurarMateria(
+                                '${escapeHTML(
+                                    materia.id
+                                )}'
+                            )">
+
+                            RESTAURAR
+
+                        </button>
+
+                    </div>
+
+                `
+            ).join('')}
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   SEMESTRE
+   ========================================================= */
+
+document
+    .getElementById(
+        'input-semestre'
+    )
+    .addEventListener(
+        'change',
+        function() {
+
+            dados.semestre =
+                this.value.trim() ||
+                '2026.1';
+
+            salvar();
+
+        }
+    );
+
+
+/* =========================================================
+   RELATÓRIO
+   ========================================================= */
+
+function baixarHistorico() {
+
+    const semestre =
+        dados.semestre;
+
+
+    let txt =
+`===========================================
+       📊 RELATÓRIO DE NOTAS - UFC
+       SEMESTRE ${semestre}
+===========================================
+
+`;
+
+
+    const materias =
+        Object.values(
+            dados.materias
+        );
+
+
+    if (
+        materias.length === 0
+    ) {
+
+        txt +=
+            'Nenhuma matéria cadastrada.\n';
+
+    }
+
+
+    materias.forEach(
+        materia => {
+
+            txt +=
+`\n📚 DISCIPLINA: ${
+    materia.nome.toUpperCase()
+}
+-------------------------------------------
+`;
+
+
+            materia.parciais.forEach(
+                parcial => {
+
+                    const calculo =
+                        calcularEtapa(
+                            parcial
+                        );
+
+
+                    txt +=
+`\n${parcial.nome}:\n`;
+
+
+                    parcial.notas.forEach(
+                        nota => {
+
+                            const valor =
+                                nota.valor === ''
+                                    ? 'Pendente'
+                                    : nota.valor;
+
+                            txt +=
+`   • ${
+    nota.tipo || 'Avaliação'
+} | Peso: ${
+    nota.peso
+} | Nota: ${
+    valor
+}\n`;
+
+                        }
+                    );
+
+
+                    if (
+                        calculo.mediaFinal !== null
+                    ) {
+
+                        txt +=
+`   Média da etapa: ${
+    calculo.mediaFinal.toFixed(1)
+}\n`;
+
+                    } else if (
+                        calculo.meta !== null
+                    ) {
+
+                        txt +=
+`   Meta para 7,0: ${
+    calculo.meta.toFixed(1)
+}\n`;
+
+                    }
+
+                }
+            );
+
+
+            const mediaAP =
+                calcularMediaAPs(
+                    materia
+                );
+
+
+            txt +=
+`\nMÉDIA DAS APs: ${
+    mediaAP === null
+        ? 'Pendente'
+        : mediaAP.toFixed(1)
+}\n`;
+
+
+            if (
+                mediaAP !== null
+            ) {
+
+                if (
+                    mediaAP >= 7
+                ) {
+
+                    txt +=
+                        'STATUS: APROVADO POR MÉDIA 🏆\n';
+
+                } else if (
+                    mediaAP >= 4
+                ) {
+
+                    const af =
+                        calcularAFnecessaria(
+                            mediaAP
+                        );
+
+                    txt +=
+`STATUS: POSSÍVEL AF\n`;
+
+                    txt +=
+`AF necessária: ${
+    af.toFixed(1)
+}\n`;
+
+                } else {
+
+                    txt +=
+                        'STATUS: ABAIXO DE 4,0\n';
+
+                }
+
+            }
+
+
+            txt += '\n';
+
+        }
+    );
+
+
+    txt +=
+`===========================================
+              FIM DO RELATÓRIO
+===========================================`;
+
+
+    const blob =
+        new Blob(
+            [
+                '\ufeff' +
+                txt
+            ],
+            {
+                type:
+                    'text/plain;charset=utf-8'
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            'a'
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        `Notas_UFC_${
+            semestre
+                .replace(/\./g, '_')
+                .replace(/\s+/g, '_')
+        }.txt`;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+sincronizar();
+
+renderizar();
+
+</script>
+
 </body>
+
 </html>
