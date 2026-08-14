@@ -555,8 +555,8 @@
 
         <button
             class="btn-notes"
-            onclick="baixarNotasTxt()">
-            📄 Exportar Relatório (.txt)
+            onclick="baixarRelatorioHTML()">
+            🌐 Exportar Relatório (.html)
         </button>
 
         <button
@@ -1985,96 +1985,290 @@ function removerDadosDoAplicativo() {
 
 
 /* =========================================================
-   RELATÓRIO TXT
+   RELATÓRIO HTML
    ========================================================= */
 
-function baixarNotasTxt() {
+function baixarRelatorioHTML() {
 
-    const dataHora =
-        new Date().toLocaleString(
-            'pt-BR'
+    const agora = new Date();
+
+    const dataHora = agora.toLocaleString('pt-BR', {
+        dateStyle: 'full',
+        timeStyle: 'short'
+    });
+
+    const hoje =
+        obterDataArquivo();
+
+    const totalTarefas =
+        dados.todos.length;
+
+    const concluidas =
+        dados.todos.filter(
+            t => t.concluida
+        ).length;
+
+    const pendentes =
+        totalTarefas - concluidas;
+
+    const totalMaterias =
+        dados.materias.length;
+
+    const totalAulas =
+        dados.dias.reduce(
+            (total, dia) =>
+                total + dia.aulas.length,
+            0
         );
 
 
-    let txt =
-`==========================================
-        📝 RELATÓRIO GERAL - UFC PLANNER
-        Gerado em: ${dataHora}
-==========================================
-
-`;
-
-
     /* =====================================================
-       LEMBRETES
+       LEMBRETE
        ===================================================== */
 
-    const lembreteGeral =
+    const lembrete =
         localStorage.getItem(
             'not-geral'
-        ) ||
-        'Nenhum lembrete anotado.';
-
-
-    txt +=
-`💡 LEMBRETES GERAIS:
-------------------------------------------
-${lembreteGeral}
-
-`;
+        )?.trim() || 'Nenhum lembrete cadastrado.';
 
 
     /* =====================================================
-       CHECKLIST
+       TAREFAS
        ===================================================== */
 
-    txt +=
-`✅ CHECKLIST DE TAREFAS:
-------------------------------------------
-`;
-
-
-    if (dados.todos.length === 0) {
-
-        txt +=
-            'Nenhuma tarefa na lista.\n';
-
-    } else {
-
-        dados.todos.forEach(
-            tarefa => {
-
-                const status =
-                    tarefa.concluida
-                        ? '[X] FEITO    '
-                        : '[ ] PENDENTE ';
-
-                const prazo =
-                    tarefa.data
-                        ? ` (Prazo: ${formatarData(
-                            tarefa.data
-                        )})`
-                        : '';
-
-                txt +=
-                    `${status} - ${tarefa.texto}${prazo}\n`;
-            }
+    const tarefasPendentes =
+        dados.todos.filter(
+            t => !t.concluida
         );
+
+    const tarefasConcluidas =
+        dados.todos.filter(
+            t => t.concluida
+        );
+
+
+    function gerarTarefa(tarefa) {
+
+        let prazoHTML = '';
+
+        if (tarefa.data) {
+
+            if (tarefa.data < hoje) {
+
+                prazoHTML = `
+                    <span class="prazo atrasada">
+                        ⚠️ Atrasada — ${escapeHTML(
+                            formatarData(tarefa.data)
+                        )}
+                    </span>
+                `;
+
+            } else if (
+                tarefa.data === hoje
+            ) {
+
+                prazoHTML = `
+                    <span class="prazo hoje">
+                        🔥 Hoje
+                    </span>
+                `;
+
+            } else {
+
+                prazoHTML = `
+                    <span class="prazo">
+                        📅 ${escapeHTML(
+                            formatarData(tarefa.data)
+                        )}
+                    </span>
+                `;
+            }
+
+        } else {
+
+            prazoHTML = `
+                <span class="prazo">
+                    📅 Sem prazo
+                </span>
+            `;
+        }
+
+
+        return `
+            <div class="task ${
+                tarefa.concluida
+                    ? 'task-done'
+                    : ''
+            }">
+
+                <div class="task-check">
+                    ${
+                        tarefa.concluida
+                            ? '✓'
+                            : '○'
+                    }
+                </div>
+
+                <div class="task-content">
+
+                    <div class="task-text">
+                        ${escapeHTML(
+                            tarefa.texto
+                        )}
+                    </div>
+
+                    ${prazoHTML}
+
+                </div>
+
+            </div>
+        `;
     }
 
 
-    txt += '\n';
+    let tarefasPendentesHTML = '';
+
+    if (tarefasPendentes.length) {
+
+        tarefasPendentesHTML =
+            tarefasPendentes
+                .map(gerarTarefa)
+                .join('');
+
+    } else {
+
+        tarefasPendentesHTML = `
+            <div class="empty">
+                🎉 Nenhuma tarefa pendente!
+            </div>
+        `;
+    }
+
+
+    let tarefasConcluidasHTML = '';
+
+    if (tarefasConcluidas.length) {
+
+        tarefasConcluidasHTML =
+            tarefasConcluidas
+                .map(gerarTarefa)
+                .join('');
+
+    } else {
+
+        tarefasConcluidasHTML = `
+            <div class="empty">
+                Nenhuma tarefa concluída ainda.
+            </div>
+        `;
+    }
 
 
     /* =====================================================
-       MATÉRIAS
+       CRONOGRAMA
        ===================================================== */
 
-    txt +=
-`📚 ANOTAÇÕES DAS MATÉRIAS:
-------------------------------------------
-`;
+    const diasHTML =
+        dados.dias.map(
+            dia => {
 
+                const aulas =
+                    [...dia.aulas].sort(
+                        (a, b) =>
+                            String(a[0])
+                                .localeCompare(
+                                    String(b[0])
+                                )
+                    );
+
+
+                let aulasHTML = '';
+
+                if (aulas.length) {
+
+                    aulasHTML =
+                        aulas.map(
+                            aula => `
+                                <div class="class-row">
+
+                                    <div class="class-time">
+                                        ${escapeHTML(
+                                            aula[0]
+                                        )}
+                                    </div>
+
+                                    <div class="class-name">
+                                        ${escapeHTML(
+                                            aula[1]
+                                        )}
+                                    </div>
+
+                                    <div class="class-room">
+                                        ${
+                                            escapeHTML(
+                                                aula[2] ||
+                                                '—'
+                                            )
+                                        }
+                                    </div>
+
+                                </div>
+                            `
+                        ).join('');
+
+                } else {
+
+                    aulasHTML = `
+                        <div class="empty">
+                            Nenhuma aula cadastrada.
+                        </div>
+                    `;
+                }
+
+
+                return `
+                    <section class="day-card">
+
+                        <div class="day-header">
+
+                            <div class="day-name">
+                                ${escapeHTML(
+                                    dia.nome
+                                )}
+                            </div>
+
+                            <div class="bus">
+                                🚌 ${escapeHTML(
+                                    dia.bus ||
+                                    'Não informado'
+                                )}
+                            </div>
+
+                        </div>
+
+                        <div class="classes">
+
+                            <div class="class-head">
+                                <span>HORÁRIO</span>
+                                <span>MATÉRIA</span>
+                                <span>SALA</span>
+                            </div>
+
+                            ${aulasHTML}
+
+                        </div>
+
+                    </section>
+                `;
+            }
+        ).join('');
+
+
+    /* =====================================================
+       ANOTAÇÕES
+       ===================================================== */
+
+    let anotacoesHTML = '';
 
     let temAnotacao = false;
 
@@ -2082,54 +2276,959 @@ ${lembreteGeral}
     dados.materias.forEach(
         materia => {
 
-            const chave =
-                `not-${materia.id}`;
-
             const anotacao =
                 localStorage.getItem(
-                    chave
-                );
+                    `not-${materia.id}`
+                )?.trim() || '';
 
 
-            if (
-                anotacao &&
-                anotacao.trim()
-            ) {
-
-                txt +=
-`📖 MATÉRIA: ${materia.nome}
-${anotacao}
-..........................................
-`;
-
-                temAnotacao = true;
+            if (!anotacao) {
+                return;
             }
+
+
+            temAnotacao = true;
+
+
+            anotacoesHTML += `
+                <section class="notes-card">
+
+                    <h3>
+                        📚 ${escapeHTML(
+                            materia.nome
+                        )}
+                    </h3>
+
+                    <div class="notes">
+                        ${escapeHTML(
+                            anotacao
+                        ).replace(
+                            /\n/g,
+                            '<br>'
+                        )}
+                    </div>
+
+                </section>
+            `;
         }
     );
 
 
     if (!temAnotacao) {
 
-        txt +=
-            'Nenhuma anotação de matéria encontrada.\n';
+        anotacoesHTML = `
+            <div class="empty">
+                Nenhuma anotação de matéria encontrada.
+            </div>
+        `;
     }
 
 
-    txt +=
-`
-==========================================
-           FIM DO RELATÓRIO
-==========================================`;
+    /* =====================================================
+       HTML DO RELATÓRIO
+       ===================================================== */
 
+    const html = `<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="theme-color"
+    content="#0d1117"
+>
+
+<title>Relatório — UFC Planner</title>
+
+<style>
+
+:root {
+
+    --bg: #0d1117;
+    --card: #151a22;
+    --card2: #1a2029;
+
+    --text: #eee;
+    --muted: #8b949e;
+
+    --cyan: #00e5ff;
+    --purple: #bb86fc;
+    --green: #00c853;
+    --red: #ff5252;
+    --yellow: #ffab00;
+    --pink: #ff4081;
+
+    --border: #2a3038;
+
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    margin: 0;
+
+    padding: 20px;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #17202d 0,
+            var(--bg) 500px
+        );
+
+    color: var(--text);
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.5;
+
+}
+
+
+.container {
+
+    width: 100%;
+
+    max-width: 850px;
+
+    margin: auto;
+
+}
+
+
+/* =====================================================
+   CABEÇALHO
+   ===================================================== */
+
+.header {
+
+    text-align: center;
+
+    padding: 35px 20px;
+
+    margin-bottom: 25px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #151c26,
+            #11161d
+        );
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.3);
+
+}
+
+
+.logo {
+
+    color: var(--cyan);
+
+    font-size: 2.5rem;
+
+    font-weight: 900;
+
+    letter-spacing: 5px;
+
+    margin: 0;
+
+}
+
+
+.subtitle {
+
+    color: var(--purple);
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    margin-top: 5px;
+
+}
+
+
+.generated {
+
+    color: var(--muted);
+
+    font-size: .85rem;
+
+    margin-top: 15px;
+
+}
+
+
+/* =====================================================
+   TÍTULOS
+   ===================================================== */
+
+.section {
+
+    margin-top: 30px;
+
+    margin-bottom: 12px;
+
+    color: var(--purple);
+
+    font-size: .85rem;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    border-bottom: 2px solid var(--purple);
+
+    padding-bottom: 7px;
+
+}
+
+
+/* =====================================================
+   RESUMO
+   ===================================================== */
+
+.summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 10px;
+
+}
+
+
+.stat {
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
+
+    padding: 15px 10px;
+
+    text-align: center;
+
+}
+
+
+.stat-number {
+
+    display: block;
+
+    font-size: 1.5rem;
+
+    font-weight: 900;
+
+    color: var(--cyan);
+
+}
+
+
+.stat-label {
+
+    color: var(--muted);
+
+    font-size: .72rem;
+
+    text-transform: uppercase;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   CARDS
+   ===================================================== */
+
+.card,
+.day-card,
+.notes-card {
+
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,.2);
+
+}
+
+
+.reminder {
+
+    white-space: pre-wrap;
+
+    color: var(--text);
+
+}
+
+
+/* =====================================================
+   TAREFAS
+   ===================================================== */
+
+.task {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 14px 0;
+
+    border-bottom:
+        1px solid var(--border);
+
+}
+
+
+.task:last-child {
+    border-bottom: none;
+}
+
+
+.task-check {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    border: 2px solid var(--green);
+
+    color: var(--green);
+
+    font-weight: 900;
+
+}
+
+
+.task-done .task-check {
+
+    background: var(--green);
+
+    color: #000;
+
+}
+
+
+.task-text {
+
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.task-done .task-text {
+
+    color: #777;
+
+    text-decoration: line-through;
+
+}
+
+
+.prazo {
+
+    display: inline-block;
+
+    margin-top: 5px;
+
+    color: var(--yellow);
+
+    font-size: .78rem;
+
+    font-weight: 800;
+
+}
+
+
+.prazo.hoje {
+    color: var(--cyan);
+}
+
+
+.prazo.atrasada {
+    color: var(--red);
+}
+
+
+/* =====================================================
+   CRONOGRAMA
+   ===================================================== */
+
+.day-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.day-name {
+
+    color: var(--cyan);
+
+    font-size: 1.35rem;
+
+    font-weight: 900;
+
+}
+
+
+.bus {
+
+    color: var(--yellow);
+
+    background:
+        rgba(255,171,0,.1);
+
+    border:
+        1px solid
+        rgba(255,171,0,.25);
+
+    border-radius: 10px;
+
+    padding: 6px 10px;
+
+    font-size: .78rem;
+
+    font-weight: 800;
+
+}
+
+
+.class-head,
+.class-row {
+
+    display: grid;
+
+    grid-template-columns:
+        80px 1fr 80px;
+
+    gap: 10px;
+
+    align-items: center;
+
+}
+
+
+.class-head {
+
+    color: var(--muted);
+
+    font-size: .65rem;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    padding-bottom: 7px;
+
+}
+
+
+.class-row {
+
+    padding: 12px 0;
+
+    border-top:
+        1px solid var(--border);
+
+}
+
+
+.class-time {
+
+    color: var(--purple);
+
+    font-weight: 900;
+
+}
+
+
+.class-name {
+
+    font-weight: 600;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.class-room {
+
+    color: var(--pink);
+
+    text-align: right;
+
+    font-size: .8rem;
+
+    font-weight: 900;
+
+}
+
+
+/* =====================================================
+   ANOTAÇÕES
+   ===================================================== */
+
+.notes-card h3 {
+
+    margin-top: 0;
+
+    color: var(--cyan);
+
+}
+
+
+.notes {
+
+    white-space: normal;
+
+    overflow-wrap: anywhere;
+
+    color: #ddd;
+
+    line-height: 1.7;
+
+}
+
+
+/* =====================================================
+   VAZIO
+   ===================================================== */
+
+.empty {
+
+    color: var(--muted);
+
+    text-align: center;
+
+    padding: 15px;
+
+    font-size: .85rem;
+
+}
+
+
+/* =====================================================
+   RODAPÉ
+   ===================================================== */
+
+.footer {
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: .75rem;
+
+    padding: 30px 10px 10px;
+
+}
+
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+
+    .header {
+        padding: 25px 15px;
+    }
+
+
+    .logo {
+        font-size: 2rem;
+    }
+
+
+    .summary {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .stat:last-child {
+
+        grid-column:
+            span 2;
+
+    }
+
+
+    .card,
+    .day-card,
+    .notes-card {
+
+        padding: 15px;
+
+    }
+
+
+    .day-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .bus {
+
+        width: 100%;
+
+    }
+
+
+    .class-head,
+    .class-row {
+
+        grid-template-columns:
+            58px 1fr;
+
+    }
+
+
+    .class-head span:last-child {
+        display: none;
+    }
+
+
+    .class-room {
+
+        grid-column: 2;
+
+        text-align: left;
+
+        margin-top: -8px;
+
+    }
+
+}
+
+
+/* =====================================================
+   IMPRESSÃO
+   ===================================================== */
+
+@media print {
+
+    body {
+
+        background: white;
+
+        color: black;
+
+        padding: 0;
+
+    }
+
+
+    .header,
+    .card,
+    .day-card,
+    .notes-card,
+    .stat {
+
+        box-shadow: none;
+
+        background: white;
+
+        color: black;
+
+        border-color: #ccc;
+
+    }
+
+
+    .logo,
+    .day-name,
+    .notes-card h3 {
+
+        color: #111;
+
+    }
+
+
+    .section {
+
+        color: #111;
+
+        border-color: #111;
+
+    }
+
+
+    .task,
+    .class-row {
+
+        border-color: #ddd;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <!-- CABEÇALHO -->
+
+    <header class="header">
+
+        <h1 class="logo">
+            UFC
+        </h1>
+
+        <div class="subtitle">
+            UFC Planner
+        </div>
+
+        <div class="generated">
+            Relatório gerado em ${escapeHTML(
+                dataHora
+            )}
+        </div>
+
+    </header>
+
+
+    <!-- RESUMO -->
+
+    <div class="section">
+        📊 Resumo
+    </div>
+
+    <div class="summary">
+
+        <div class="stat">
+            <span class="stat-number">
+                ${totalMaterias}
+            </span>
+
+            <span class="stat-label">
+                Matérias
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${totalAulas}
+            </span>
+
+            <span class="stat-label">
+                Aulas
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${totalTarefas}
+            </span>
+
+            <span class="stat-label">
+                Tarefas
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${pendentes}
+            </span>
+
+            <span class="stat-label">
+                Pendentes
+            </span>
+        </div>
+
+
+        <div class="stat">
+            <span class="stat-number">
+                ${concluidas}
+            </span>
+
+            <span class="stat-label">
+                Concluídas
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- LEMBRETES -->
+
+    <div class="section">
+        💡 Lembretes
+    </div>
+
+    <div class="card">
+
+        <div class="reminder">
+${escapeHTML(lembrete)}
+        </div>
+
+    </div>
+
+
+    <!-- PENDENTES -->
+
+    <div class="section">
+        ⏳ Tarefas Pendentes
+    </div>
+
+    <div class="card">
+
+        ${tarefasPendentesHTML}
+
+    </div>
+
+
+    <!-- CONCLUÍDAS -->
+
+    <div class="section">
+        ✅ Tarefas Concluídas
+    </div>
+
+    <div class="card">
+
+        ${tarefasConcluidasHTML}
+
+    </div>
+
+
+    <!-- CRONOGRAMA -->
+
+    <div class="section">
+        📅 Cronograma Semanal
+    </div>
+
+    ${diasHTML}
+
+
+    <!-- ANOTAÇÕES -->
+
+    <div class="section">
+        📚 Anotações das Matérias
+    </div>
+
+    ${anotacoesHTML}
+
+
+    <!-- RODAPÉ -->
+
+    <footer class="footer">
+
+        UFC Planner<br>
+
+        Relatório gerado automaticamente<br>
+
+        📚 Boa sorte nos estudos!
+
+    </footer>
+
+
+</div>
+
+</body>
+
+</html>`;
+
+
+    /* =====================================================
+       DOWNLOAD
+       ===================================================== */
 
     const blob =
         new Blob(
             [
-                '\ufeff' + txt
+                '\ufeff' + html
             ],
             {
                 type:
-                    'text/plain;charset=utf-8'
+                    'text/html;charset=utf-8'
             }
         );
 
@@ -2137,13 +3236,15 @@ ${anotacao}
     const url =
         URL.createObjectURL(blob);
 
+
     const link =
         document.createElement('a');
 
     link.href = url;
 
     link.download =
-        `Relatorio_UFC_${obterDataArquivo()}.txt`;
+        `Relatorio_UFC_${obterDataArquivo()}.html`;
+
 
     document.body.appendChild(link);
 
@@ -2155,7 +3256,7 @@ ${anotacao}
 
 
     mostrarStatus(
-        '📄 Relatório exportado'
+        '🌐 Relatório HTML exportado'
     );
 }
 
